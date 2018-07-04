@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -16,8 +17,11 @@ import javafx.stage.Stage;
 import model.Run;
 
 public class FormRun extends GridPane {
-
-	public FormRun(DataLayer manager, Run run) {
+	
+	TextField tfRunID, tfDescEN, tfDescFR, tfType, tfCostCenter, tfApprover;
+	DatePicker datePicker;
+	
+	public FormRun() {
 
 		super();
 
@@ -28,35 +32,33 @@ public class FormRun extends GridPane {
 		this.setVgap(10);
 		this.setPadding(new Insets(25, 25, 25, 25));
 
-		Label lblRunID = new Label("RUN Code");
-		this.add(lblRunID, 0, 0);
-		TextField tfRunID = new TextField(run.getId());
+		this.add(new Label("RUN Code"), 0, 0);
+		tfRunID = new TextField();
 		this.add(tfRunID, 1, 0);
 
-		Label lblDescEN = new Label("Description EN");
-		this.add(lblDescEN, 0, 1);
-		TextField tfDescEN = new TextField(run.getNameEN());
+		this.add(new Label("Description EN"), 0, 1);
+		tfDescEN = new TextField();
 		this.add(tfDescEN, 1, 1);
 		
-		Label lblDescFR = new Label("Description FR");
-		this.add(lblDescFR, 0, 2);
-		TextField tfDescFR = new TextField(run.getNameFR());
+		this.add(new Label("Description FR"), 0, 2);
+		tfDescFR = new TextField();
 		this.add(tfDescFR, 1, 2);
 		
-		Label lblType = new Label("Type");
-		this.add(lblType, 0, 3);
-		TextField tfType = new TextField(run.getType()); // TODO : Change that to scrolling list
+		this.add(new Label("Type"), 0, 3);
+		tfType = new TextField(); // TODO : Change that to scrolling list
 		this.add(tfType, 1, 3);
 		
-		Label lblCostCenter = new Label("Cost Center");
-		this.add(lblCostCenter, 0, 4);
-		TextField tfCostCenter = new TextField(run.getCostcenter().getId());
+		this.add(new Label("Cost Center"), 0, 4);
+		tfCostCenter = new TextField();
 		this.add(tfCostCenter, 1, 4);
 
-		Label lblApprover = new Label("Responsible");
-		this.add(lblApprover, 0, 5);
-		TextField tfApprover = new TextField(run.getResponsible());
+		this.add(new Label("Responsible"), 0, 5);
+		tfApprover = new TextField();
 		this.add(tfApprover, 1, 5);
+		
+		this.add(new Label("Closing Date"), 0, 7);
+		datePicker = new DatePicker();
+		this.add(datePicker, 1, 7);
 		
 		// TODO : Add CSD and Service ID
 
@@ -71,5 +73,16 @@ public class FormRun extends GridPane {
 		});
 		
 		this.add(btn, 1, 6);
+	}
+	public void edit(Run run) {
+		
+		tfRunID.setText(run.getId());
+		tfDescEN.setText(run.getNameEN());
+		tfDescFR.setText(run.getNameFR());
+		tfType.setText(run.getType()); // TODO : Change that to scrolling list
+		tfCostCenter.setText(run.getCostcenter().getId());
+		tfApprover.setText(run.getResponsible());
+		datePicker.setValue(run.getClosingDate());
+
 	}
 }

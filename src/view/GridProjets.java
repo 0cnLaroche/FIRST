@@ -1,6 +1,7 @@
 package view;
 
 import controler.DataLayer;
+import controler.NotFoundException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,7 +15,7 @@ import javafx.stage.Stage;
 
 public class GridProjets extends GridPane {
 	
-	public GridProjets(DataLayer manager) {
+	public GridProjets() {
 		super();
 
 		// SECTION PROJETS
@@ -60,10 +61,16 @@ public class GridProjets extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Find project");
 				//System.out.println(manager.getProject(tfProjectID.getText()));
-				Report report = new Report(manager.getProject(tfProjectID.getText()).toString());
-				report.setTitle("Projects");
-				
-				report.show();
+				ProjectReport report;
+
+				try {
+					report = new ProjectReport(DataLayer.getProject(tfProjectID.getText()));
+					report.setTitle("Projects");
+					report.show();
+				} catch (NotFoundException e1) {
+					// TODO Auto-generated catch block
+					System.err.println(e1);
+				}
 			}
 		});
 		this.add(btn, 1, 5);

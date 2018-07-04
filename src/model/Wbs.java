@@ -12,6 +12,9 @@ public class Wbs extends FinancialCode {
 	private Project project;
 	private CostCenter costcenter;
 	
+	public ArrayList<Network> getNetworks() {
+		return networks;
+	}
 	public Wbs() {
 		this.networks = new ArrayList<Network>();
 	}

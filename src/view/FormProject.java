@@ -16,46 +16,46 @@ import javafx.stage.Stage;
 import model.Project;
 
 public class FormProject extends GridPane {
+	Label lblProjectID, lblDescEN, lblDescFR, lblType, lblProposal, lblApprover;
+	TextField tfProjectID, tfDescEN, tfDescFR, tfType, tfProposal, tfApprover;
 
-	public FormProject(DataLayer manager, Project pj) {
+	public FormProject() {
 
 		super();
-
-		// SECTION RUN
 
 		this.setAlignment(Pos.CENTER);
 		this.setHgap(10);
 		this.setVgap(10);
 		this.setPadding(new Insets(25, 25, 25, 25));
 
-		Label lblRunID = new Label("Project ID");
-		this.add(lblRunID, 0, 0);
-		TextField tfRunID = new TextField(pj.getId());
-		this.add(tfRunID, 1, 0);
+		lblProjectID = new Label("Project ID");
+		this.add(lblProjectID, 0, 0);
+		tfProjectID = new TextField();
+		this.add(tfProjectID, 1, 0);
 
-		Label lblDescEN = new Label("Description EN");
+		lblDescEN = new Label("Description EN");
 		this.add(lblDescEN, 0, 1);
-		TextField tfDescEN = new TextField(pj.getNameEN());
+		tfDescEN = new TextField();
 		this.add(tfDescEN, 1, 1);
 		
-		Label lblDescFR = new Label("Description FR");
+		lblDescFR = new Label("Description FR");
 		this.add(lblDescFR, 0, 2);
-		TextField tfDescFR = new TextField(pj.getNameFR());
+		tfDescFR = new TextField();
 		this.add(tfDescFR, 1, 2);
 		
-		Label lblType = new Label("Governance");
+		lblType = new Label("Governance");
 		this.add(lblType, 0, 3);
-		TextField tfType = new TextField(pj.getType()); // TODO : Change that to scrolling list
+		tfType = new TextField(); // TODO : Change that to scrolling list
 		this.add(tfType, 1, 3);
 		
-		Label lblProposal = new Label("Proposal #");
+		lblProposal = new Label("Proposal #");
 		this.add(lblProposal, 0, 4);
-		TextField tfProposal = new TextField();
+		tfProposal = new TextField();
 		this.add(tfProposal, 1, 4);
 
-		Label lblApprover = new Label("Responsible");
+		lblApprover = new Label("Responsible");
 		this.add(lblApprover, 0, 5);
-		TextField tfApprover = new TextField();
+		tfApprover = new TextField();
 		this.add(tfApprover, 1, 5);
 		
 		// TODO : Add CSD and Service ID
@@ -69,5 +69,14 @@ public class FormProject extends GridPane {
 		});
 		
 		this.add(btnwbs, 1, 6);
+	}
+	public void edit(Project pj) {
+		tfProjectID.setText(pj.getId());
+		tfDescEN.setText(pj.getNameEN());
+		tfDescFR.setText(pj.getNameFR());
+		tfType.setText(pj.getModel());
+		tfProposal.setText(pj.getProposal());
+		// tfApprover.setText();
+		
 	}
 }

@@ -33,9 +33,9 @@ public class Window  extends Application {
 	      */    
 		DataLayer manager = new DataLayer();
 		
-		GridProjets gridProjets = new GridProjets(manager);
-		GridRun gridRun = new GridRun(manager);
-		GridCostCenter gridCC = new GridCostCenter(manager);
+		GridProjets gridProjets = new GridProjets();
+		GridRun gridRun = new GridRun();
+		GridCostCenter gridCC = new GridCostCenter();
 	
 		
 		//Tabulation
@@ -62,18 +62,20 @@ public class Window  extends Application {
 		tabPane.getTabs().addAll(tabProjet,tabRun,tabCC,tabQueries,tabAbout);
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
-		// FormRun form = new FormRun(manager, manager.getRun("10188"));
-		// FormWBS form = new FormWBS(manager, manager.getProject("I-0077"));
-		
-		// form.edit(manager.getProject("I-0153").getWbs().get(4));
 		
 		Scene scene = new Scene(tabPane,500,500, Color.BEIGE);
 		// Scene scene = new Scene(form,500,500, Color.BEIGE);
 		//scene.setFill(Color.GRAY);
 
+
 		stage.setTitle("FIRST");
 		
 		stage.setScene(scene);
+		
+		String css = Window.class.getResource("bootstrap3.css").toExternalForm();
+		
+		scene.getStylesheets().clear();
+		scene.getStylesheets().add(css);
 		
 		stage.show();
 		

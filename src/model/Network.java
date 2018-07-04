@@ -6,6 +6,8 @@ import java.util.HashMap;
 public class Network extends FinancialCode {
 	
 	private Wbs wbs;
+	private String replacedBy;
+
 	private ArrayList<Activity> activities;
 	
 	public Network () {
@@ -32,6 +34,12 @@ public class Network extends FinancialCode {
 		}
 		str += "}";
 		return str;
+	}
+	public String getReplacedBy() {
+		return replacedBy;
+	}
+	public void setReplacedBy(String replacedBy) {
+		this.replacedBy = replacedBy;
 	}
 	
 	

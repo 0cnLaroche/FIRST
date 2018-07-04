@@ -1,8 +1,7 @@
 package view;
 
 import java.util.ArrayList;
-
-import controler.DataLayer;
+import controler.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,10 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.Run;
 
 public class GridRun extends GridPane {
 	
-	public GridRun(DataLayer manager) {
+	public GridRun() {
 		super();
 
 		// SECTION RUN
@@ -25,6 +25,7 @@ public class GridRun extends GridPane {
 		this.setHgap(10);
 		this.setVgap(10);
 		this.setPadding(new Insets(25, 25, 25, 25));
+
 
 		Label lblRunID = new Label("RUN Code");
 		this.add(lblRunID, 0, 0);
@@ -56,11 +57,23 @@ public class GridRun extends GridPane {
 			@Override
 			public void handle(ActionEvent e) {
 				System.out.println("Find run");
-				Report report = new Report(manager.queryRuns(tfKeyword.getText(), tfApprover.getText(), tfCostCenter.getText()).toString());
-				report.setTitle("RUN codes");
-				// ArrayList l = manager.queryRuns(tfKeyword.getText());
-				report.show();
-				
+				try {
+					RUNReport report;
+					if (!tfRunID.getText().equals("")) {
+						ArrayList<Run> res = new ArrayList<Run>();
+						res.add(DataLayer.getRun(tfRunID.getText()));
+						report = new RUNReport(res);
+						report.setTitle("RUN codes");
+						report.show();
+					} else {
+						
+						report = new RUNReport(DataLayer.queryRuns(tfKeyword.getText(), tfApprover.getText(), tfCostCenter.getText()));
+						report.setTitle("RUN codes");
+						report.show();
+					}
+				} catch (NotFoundException ex) {
+					// TODO : Afficher introuvable dans une nouvelle fenêtre 
+				}
 			}
 		});
 		this.add(btn, 1, 4);

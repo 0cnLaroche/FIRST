@@ -12,10 +12,11 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import controler.DataLayer;
+import controler.NotFoundException;
 
 public class GridCostCenter extends GridPane {
 	
-	public GridCostCenter(DataLayer manager) {
+	public GridCostCenter() {
 		super();
 
 		// SECTION COST CENTER
@@ -42,10 +43,16 @@ public class GridCostCenter extends GridPane {
 			@Override
 			public void handle(ActionEvent e) {
 				System.out.println("Find cost center ");
-				System.out.println(manager.getCostCenter(tfCostCenter.getText()).toString());
-				Report report = new Report(manager.getCostCenter(tfCostCenter.getText()).toString());
-				report.setTitle("Cost Center");
-				report.show();
+				try {
+					System.out.println(DataLayer.getCostCenter(tfCostCenter.getText()).toString());
+					//Report report = new Report(manager.getCostCenter(tfCostCenter.getText()));
+					//report.setTitle("Cost Center");
+					//report.show();
+				} catch (NotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 			}
 		});
 		this.add(btn, 1, 4);

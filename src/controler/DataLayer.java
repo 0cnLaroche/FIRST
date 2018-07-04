@@ -1,3 +1,9 @@
+/**
+ * Manage all the data stored in the database. At start up, all the data is pulled from the DB and loaded locally 
+ * in order to reduce traffic and enhance performance. 
+ * @author samuel Laroche
+ */
+
 package controler;
 
 import java.io.BufferedReader;
@@ -8,25 +14,25 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 import model.*;
 
 public class DataLayer {
 	
-	private Connection con = null;
+	private static Connection con = null;
 	private final String user = "webadmin";
 	private final String password = "Pa$$w0rd";
 	private final String url = "jdbc:mysql://10.54.223.154:3306/costing";
 	private final String stuff = "useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	
-	private HashMap<String,Run> runs;
-	private HashMap<String, Project> projects;
-	private HashMap<String, Wbs> wbs;
-	private HashMap<String, Network> networks;
-	private HashMap<String, CostCenter> costcenters;
+	private static HashMap<String,Run> runs;
+	private static HashMap<String, Project> projects;
+	private static HashMap<String, Wbs> wbs;
+	private static HashMap<String, Network> networks;
+	private static HashMap<String, CostCenter> costcenters;
 	
 	public DataLayer() {
 		
@@ -42,60 +48,250 @@ public class DataLayer {
 		this.loadProjects();
 		
 	}
-	public CostCenter getCostCenter(String id) {
-		return costcenters.get(id);
-	}
-	public Run getRun(String id) {
-		return runs.get(id);
-	}
-	public Network getNetwork(String id) {
-		return networks.get(id);
-	}
-	public Wbs getWbs(String id) {
-		return wbs.get(id);
-	}
-	public Project getProject(String id) {
-		return projects.get(id);
-	}
-	public ArrayList<Run> queryRuns(String keyword, String approver, String costcenter){
+	public static ArrayList<String[]> queryFromFile(String path) { // Tested 04/07/2018 SL
 		
-		ArrayList<Run> list = new ArrayList<Run>();
+		ClassLoader classLoader = DataLayer.class.getClassLoader();
+		File file = new File(classLoader.getResource(path).getFile());
 		ResultSet rs = null;
-		PreparedStatement selectStatement = null;
-		String querystring = "SELECT DISTINCT ID FROM RUN WHERE " + 
-				"Name LIKE ? OR NameFR LIKE ?" + 
-				"OR Responsible LIKE ?" +
-				"OR CostCenter_Responsible = ?" ;
+		ArrayList<String[]> result = new ArrayList<String[]>();
 		
+		
+		String query = "";
+		
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+			String line;
+			while ((line = reader.readLine()) != null){
+				query += line;
+			}
+			
+		} catch (FileNotFoundException e) {
+			System.err.println("File not Found");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		try {
+			Statement statement = con.createStatement();
+			rs = statement.executeQuery(query);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			final int columnCount = rsmd.getColumnCount();
+			String[] line = new String[columnCount];
+			
+			for (int i = 1; i <= columnCount; i++) {
+				line[i-1] = rsmd.getColumnLabel(i);
+			}
+			result.add(line); // insert header or column names
+			
+			while (rs.next()) {
+				line = new String[columnCount];
+				for (int i = 1; i <= columnCount; i++) {
+					line[i-1] = rs.getString(i);
+				}
+				result.add(line);
+			}
+			
+			
+		} catch (SQLException e) {
+			System.err.println("SQL Exception for query : " + query);
+		}
+		
+		return result;
+		
+	}
+	public static CostCenter getCostCenter(String id) throws NotFoundException {
+		if (costcenters.containsKey(id)) {
+			return costcenters.get(id);
+		} else {
+			throw new NotFoundException();
+		}
+	}
+	/**
+	 * Inserts a new RUN code into the database.
+	 * @param run
+	 */
+	public static void addRun(Run run) {
+		
+		PreparedStatement insert = null;
+		String query = "INSERT INTO RUN (ID, Name, NameFR, Type, Responsible, "
+				+ "CostCenter_Responsible, CostCenter_Requesting, EffectiveDate, ClosingDate, ReplacedBy, Status) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+		try {
+			insert = con.prepareStatement(query);
+			
+			insert.setInt(1, Integer.parseInt(run.getId()));
+			insert.setString(2, run.getNameEN());
+			insert.setString(3, run.getNameFR());
+			insert.setString(4, run.getType());
+			insert.setString(5, run.getResponsible());
+			
+			insert.setInt(6, Integer.parseInt(run.getCostcenter().getId()));
+			insert.setInt(7, Integer.parseInt(run.getCostcenter().getId()));
+			insert.setObject(8, run.getEffectiveDate());
+			insert.setObject(9, run.getClosingDate());
+			insert.setString(10, run.getReplacedBy());
+			insert.setString(11, run.getStatusString());
+			
+			insert.execute();
+	
+			runs.put(run.getId(), run);
 
+		} catch (SQLException e) {
+			
+		}
+	}
+	public static void updateProject(Network nw) {
+		PreparedStatement update = null;
+		String queryNw = "UPDATE Network SET Name = ?, NameFR = ?, EffectiveDate = ?, "
+				+ "ClosingDate = ?, ReplacedBy = ?, Status = ?, Stage = ? "
+				+ "WHERE ID = ?;";
 		
 		try {
 			
-			selectStatement = con.prepareStatement(querystring);
+			update = con.prepareStatement(queryNw);
 			
-			if (keyword != "") {
-				keyword = "%" + keyword + "%";
-				selectStatement.setString(1, keyword);
-				selectStatement.setString(2, keyword);
+			update.setString(1, nw.getNameEN());
+			update.setString(2, nw.getNameFR());
+			if (nw.getEffectiveDate() != null) {
+				update.setDate(3, Date.valueOf(nw.getEffectiveDate()));
+			} else {
+				update.setNull(3, java.sql.Types.DATE);
 			}
-			if (approver != "") {
-				approver = "%" + approver + "%";
-				selectStatement.setString(3, approver);
+			if (nw.getClosingDate() != null) {
+				update.setDate(4, Date.valueOf(nw.getClosingDate()));
+			} else {
+				update.setNull(4, java.sql.Types.DATE);
 			}
-			if (costcenter != "") {
-				int cc = Integer.parseInt(costcenter);
-				selectStatement.setInt(4, cc);
-			}
-
-			rs = selectStatement.executeQuery();
+			update.setString(5, nw.getReplacedBy());
+			update.setString(6, nw.getStatusString());
+			update.setInt(7, nw.getWbs().getStage());
+			update.setString(8, nw.getId()); // WHERE
 			
-			while(rs.next()) {
-				System.out.println(runs.get(rs.getString(1)).getId());
-				list.add(runs.get(rs.getString(1)));
-			}
+			update.execute();
+			System.out.println("Update to database sucessful for network : " + nw.toString());
+			
+			networks.put(nw.getId(), nw);
+		
+		} catch (SQLException e) {
+			
+		}
+		String queryWbs = "UPDATE WBS SET Name = ?, NameFR = ?, ResponsibleCostCenter = ?, "
+				+ "RequestingCostCenter = ?, "
+				+ "Approver = ?, "
+				+ "ProjectDefinition = ?, "
+				+ "Status = ?,  "
+				+ "Stage = ? "
+				+ "WHERE ID = ?";
+		
+		try {
+			update = con.prepareStatement(queryWbs);
+			
+			update.setString(1, nw.getNameEN());
+			update.setString(2, nw.getNameFR());
+			update.setInt(3, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
+			update.setInt(4, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
+			update.setString(5, nw.getWbs().getApprover());
+			update.setString(6, nw.getWbs().getProject().getId());
+			update.setString(7,nw.getStatusString());
+			update.setInt(8,nw.getWbs().getStage());
+			update.setString(9, nw.getWbs().getId());
+			
+			update.execute();
+			
+			System.out.println("Update to database sucessful for WBS : " + nw.getWbs().toString());
+			
+			wbs.put(nw.getWbs().getId(), nw.getWbs());
+			projects.get(nw.getWbs().getProject().getId()).addWbs(nw.getWbs()); // Ajouter le WBS au projet
 			
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+
+		
+	}
+	public static Run getRun(String id) throws NotFoundException {
+		if (runs.containsKey(id)) {
+			return runs.get(id);
+		} else {
+			throw new NotFoundException();
+		}		
+	}
+	public static Network getNetwork(String id) throws NotFoundException {
+		if (networks.containsKey(id)) {
+			return networks.get(id);
+		} else {
+			throw new NotFoundException();
+		}
+	}
+	public static Wbs getWbs(String id) throws NotFoundException {
+		if (wbs.containsKey(id)) {
+			return wbs.get(id);
+		} else {
+			throw new NotFoundException();
+		}
+		
+	}
+	public static Project getProject(String id) throws NotFoundException {
+		if (projects.containsKey(id)) {
+			return projects.get(id);
+		} else {
+			throw new NotFoundException();
+		}
+	}
+	public static ArrayList<Run> queryRuns(String keyword, String approver, String costcenter) throws NotFoundException {
+		// TODO : Find a way to sort results by description
+		ArrayList<Run> list = new ArrayList<Run>();
+		ResultSet rs = null;
+		PreparedStatement selectStatement = null;
+		String querystring = "SELECT DISTINCT ID FROM RUN WHERE" + 
+				" Name LIKE ? OR NameFR LIKE ?" + 
+				" OR IF( ? = '',0, Responsible LIKE ? ) " +
+				" OR CostCenter_Responsible = ?" ;
+		
+		if (keyword.equals("") && approver.equals("") && costcenter.equals("")) {
+			// Don"t fetch anything from db, just load every run from local hashmap
+			for (String key : runs.keySet()) {
+				list.add(runs.get(key));
+			}
+		} else {
+			// fetch from db
+			try {
+				
+				selectStatement = con.prepareStatement(querystring);
+
+				if (!keyword.equals("")) {
+					keyword = "%" + keyword + "%";
+				}
+				selectStatement.setString(1, keyword);
+				selectStatement.setString(2, keyword);
+				if (!approver.equals("")) {
+					approver = "%" + approver + "%";
+
+				}
+				selectStatement.setString(3, approver);
+				selectStatement.setString(4, approver);
+				
+				if (!costcenter.equals("")) {
+					int cc = Integer.parseInt(costcenter);
+					selectStatement.setInt(5, cc);
+				} else {
+					selectStatement.setNull(5, java.sql.Types.INTEGER);
+				}
+
+				System.out.println(selectStatement.toString());
+				rs = selectStatement.executeQuery();
+				
+				while(rs.next()) {
+					list.add(runs.get(rs.getString(1)));
+				}
+				if (list.isEmpty())
+					throw new NotFoundException();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return list;
 	
@@ -131,22 +327,26 @@ public class DataLayer {
 			ResultSet rs = statement.executeQuery(
 					"SELECT ID, ReportsTo, Name, Manager, Directorate, EffectiveDate, ClosingDate, Comments, Level FROM CostCenter");
 			
-			//HashMap<String, CostCenter> list = new HashMap<String, CostCenter>();
 			ArrayList<String[]> index = new ArrayList<String[]>();
 			
 			
 			while (rs.next()) {
 				String[] entry = {"" +rs.getInt(1),"" + rs.getInt(2)}; // pos 0 : ID ; pos 1 : ReportsTo
-				//System.out.println(entry[0] + ";" + entry[1]);
 				index.add(entry);
 				
 				CostCenter cc = new CostCenter();
 				cc.setId(rs.getString(1));
 				cc.setNameEN(rs.getString(3));
-				
-				cc.setEffectiveDate(rs.getDate(6)); //Pas certain ça va marcher
-				cc.setClosingDate(rs.getDate(7));
-				
+				try {
+					cc.setEffectiveDate(rs.getDate(6).toLocalDate());
+				} catch (NullPointerException e) {
+					cc.setEffectiveDate(null);
+				}
+				try {
+					cc.setClosingDate(rs.getDate(7).toLocalDate());
+				} catch (NullPointerException e) {
+					cc.setClosingDate(null);
+				}
 				costcenters.put(cc.getId(), cc);
 				//Other fields to be added
 
@@ -165,7 +365,7 @@ public class DataLayer {
 
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(
-					"SELECT ID, Name, NameFR, Type, Responsible, CostCenter_Responsible, EffectiveDate, ClosingDate, ReplacedBy, Comments FROM RUN");
+					"SELECT ID, Name, NameFR, Type, Responsible, CostCenter_Responsible, EffectiveDate, ClosingDate, ReplacedBy, Status, Comments FROM RUN");
 
 			while (rs.next()) {
 				Run run = new Run();
@@ -173,9 +373,53 @@ public class DataLayer {
 				run.setNameEN(rs.getString(2));
 				run.setNameFR(rs.getString(3));
 				run.setType(rs.getString(4));
-				run.setResponsible(rs.getString(5));
-				run.setCostcenter(costcenters.get(rs.getString(6)));
+				if (rs.getString(4) != null) {
+					run.setType(rs.getString(4));
+				} else {
+					run.setType("N/A");
+				}
+				if (rs.getString(5) != null) {
+					run.setResponsible(rs.getString(5));
+				} else {
+					run.setResponsible("blank");
+				}
+				
+				if (costcenters.containsKey(rs.getString(6))) {
+					run.setCostcenter(costcenters.get(rs.getString(6)));
+				} else {
+					CostCenter cc = new CostCenter();
+					cc.setId(rs.getString(6));
+					run.setCostcenter(cc);
+				}
+				if (rs.getDate(7) != null) {
+					run.setEffectiveDate(rs.getDate(7).toLocalDate());
+				} else {
+					run.setEffectiveDate(null);
+				}
+				if (rs.getDate(8) != null) {
+					run.setClosingDate(rs.getDate(8).toLocalDate());
+				} else {
+					run.setClosingDate(null);
+				}
+
+				run.setReplacedBy(rs.getString(9));
+				
+				switch (rs.getString(10)) {
+				case "Active":
+					run.setStatus(Run.ACTIVE);
+					break;
+				case "Closed":
+					run.setStatus(Run.CLOSED);
+					break;
+				case "Unreleased":
+					run.setStatus(Run.UNRELEASED);
+					break;
+				default:
+					run.setStatus(Run.ACTIVE);
+					break;
+				}
 				//Other fields to be added
+				
 				runs.put(run.getId(), run);
 			}
 
@@ -194,7 +438,7 @@ public class DataLayer {
 			// NETWORKS
 
 			Statement statement = null;
-			String queryString = "SELECT ID, Name, NameFR, WBS, Project, Stage, ClosingDate, EffectiveDate, Status, ReplacedBy, Comments FROM Network";
+			String queryString = "SELECT ID, Name, NameFR, WBS, Project, Stage, EffectiveDate, ClosingDate, Status, ReplacedBy, Comments FROM Network";
 
 			statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(queryString);
@@ -206,12 +450,41 @@ public class DataLayer {
 				nw.setId(rs.getString(1));
 				nw.setNameEN(rs.getString(2));
 				nw.setNameFR(rs.getString(3));
-				// load Network here
+				if (rs.getDate(7) != null) {
+					nw.setEffectiveDate(rs.getDate(7).toLocalDate());
+				} else {
+					nw.setEffectiveDate(null);
+				}
+				if (rs.getDate(8) != null) {
+					nw.setClosingDate(rs.getDate(8).toLocalDate());
+				} else {
+					nw.setClosingDate(null);
+				}
+				
+
+				
+				switch (rs.getString(9) ) {
+				case "Closed":
+					nw.setStatus(Network.CLOSED);
+					break;
+				case "Active": 
+					nw.setStatus(Network.ACTIVE);
+					break;
+				case "Unreleased":
+					nw.setStatus(Network.UNRELEASED);
+					break;
+				default:
+					nw.setStatus(Network.ACTIVE);
+					break;
+				}
+				nw.setReplacedBy(rs.getString(10));
+				
 				// Other fields to be added
-				this.networks.put(nw.getId(), nw);
+				networks.put(nw.getId(), nw);
 			}
-			// WBS
 			
+			// WBS
+		
 			queryString = "SELECT ID, Name, NameFR, ResponsibleCostCenter, Approver, Stage, ParentWBS, ProjectDefinition, ClosingDate, Status, ReplacedBy, Comments FROM WBS";
 			statement = con.createStatement();
 			rs = statement.executeQuery(queryString);
@@ -237,9 +510,6 @@ public class DataLayer {
 				mapNetwork(networkToWbs, wbs.getId());
 
 			}
-			//for (String[] entry : networkToWbs) {
-				
-			//}
 			
 			// PROJECT DEFINITION
 			statement = con.createStatement();
@@ -251,12 +521,12 @@ public class DataLayer {
 				project.setId(rs.getString(1));
 				project.setNameEN(rs.getString(2));
 				project.setNameFR(rs.getString(3));
-				// System.out.println(project.getId());
+				project.setModel(rs.getString(4));
+				project.setProposal(rs.getString(5));
 				// Other fields to be added
 				projects.put(project.getId(), project);
 				mapWbs(wbsToProject, project.getId());
 			}
-
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -282,7 +552,7 @@ public class DataLayer {
 
 		}
 	}
-	public void importCost(String path) {
+	public static void importCost(String path) {
 		// Ça fonctionne mais trop long
 		
 		ArrayList<String[]> list = new ArrayList<String[]>();

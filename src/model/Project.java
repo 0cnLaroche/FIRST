@@ -4,11 +4,17 @@ import java.util.ArrayList;
 
 public class Project extends FinancialCode {
 	
-	private String type, proposal;
+	private String type, proposal, model;
 	private ArrayList<Wbs> wbs;
 	
 	public Project() {
 		this.wbs = new ArrayList<Wbs>();
+	}
+	public String getModel() {
+		return model;
+	}
+	public void setModel(String model) {
+		this.model = model;
 	}
 	public String getType() {
 		return type;

@@ -1,7 +1,12 @@
 package controler;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import view.ProjectReport;
+
 import java.util.ArrayList;
+
+import model.Run;
 
 public class Main {
 
@@ -9,11 +14,8 @@ public class Main {
 		
 		DataLayer manager = new DataLayer();
 		
-		//ArrayList list = manager.queryRuns("générale");
-		//System.out.println(manager.getCostCenter("206410").toString());
-		System.out.println(manager.getProject("I-0130").toString());
-		
-		// manager.importCost("res/export.csv");
+		QueryWriter qw = new QueryWriter();
+		qw.exportNetworkList("test.xlsx");
 		
 		manager.disconnect();
 		

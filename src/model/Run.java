@@ -1,7 +1,9 @@
 package model;
 
 public class Run extends FinancialCode {
-	private String type, responsible;
+	private String type;
+	private String responsible;
+	private String replacedBy;
 	private CostCenter costcenter;
 
 	public CostCenter getCostcenter() {
@@ -30,5 +32,13 @@ public class Run extends FinancialCode {
 	public String toString() {
 		String str = "{Id: '" + this.getId() + ", Name: '" + this.getNameEN() + "', CostCenter: '" + this.costcenter.getId() + "'}";
 		return str;
+	}
+
+	public String getReplacedBy() {
+		return replacedBy;
+	}
+
+	public void setReplacedBy(String replacedBy) {
+		this.replacedBy = replacedBy;
 	}
 }
