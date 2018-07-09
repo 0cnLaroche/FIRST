@@ -44,11 +44,11 @@ public class GridCostCenter extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Find cost center ");
 				try {
-					System.out.println(DataLayer.getCostCenter(tfCostCenter.getText()).toString());
-					//Report report = new Report(manager.getCostCenter(tfCostCenter.getText()));
-					//report.setTitle("Cost Center");
-					//report.show();
-				} catch (NotFoundException e1) {
+					//System.out.println(DataLayer.getCostCenter(tfCostCenter.getText()).toString());
+					CostCenterReport report = new CostCenterReport();
+					report.setTitle("Cost Center");
+					report.show();
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}

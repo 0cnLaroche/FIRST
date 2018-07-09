@@ -1,10 +1,7 @@
 package controler;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -15,19 +12,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class QueryWriter {
 	
-	public void exportNetworkList(String path) {
-		File file = new File(path);
+	public void export(String exportToPath, String queryLocation, String title) {
+		File file = new File(exportToPath);
 		ArrayList<String[]> data = new ArrayList<String[]>();
-		data = DataLayer.queryFromFile("sql/network_by_approver.sql");
+		data = DataLayer.queryFromFile(queryLocation);
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Networks by Approver");
+        XSSFSheet sheet = workbook.createSheet(title);
         
 		
 		try {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-			//BufferedWriter bwriter = new BufferedWriter(new FileWriter(file));
+
 			FileOutputStream out = new FileOutputStream(file);
 			
 			for (int i = 0; i<data.size() -1; i++) {
@@ -37,17 +34,23 @@ public class QueryWriter {
 			        Cell cell = row.createCell(j);
 			        cell.setCellValue(line[j]);
 				}
-				//bwriter.write("\n");
+
 			}
 			workbook.write(out);
 			out.close();
-			//bwriter.close();
+
 			
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
 
+	}
+	public void exportNetworkList(String path) {
+		this.export(path, "sql/network_by_approver.sql", "Network by Approver");
+	}
+	public void exportRunList(String path) {
+		this.export(path, "sql/run.sql", "RUN");
 	}
 
 }

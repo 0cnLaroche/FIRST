@@ -1,0 +1,5 @@
+SELECT * 
+FROM RUN
+	LEFT JOIN RUN_Solution ON RUN.ID = RUN_Solution.RUN
+	LEFT JOIN RUN_Service ON RUN.ID = RUN_Service.RUN
+ORDER BY ID;

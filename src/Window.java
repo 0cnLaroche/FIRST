@@ -14,13 +14,18 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import view.*;
+
+import java.io.File;
+
 import controler.DataLayer;
 
 public class Window  extends Application {
@@ -55,6 +60,22 @@ public class Window  extends Application {
 		
 		Tab tabQueries = new Tab();
 		tabQueries.setText("Queries");
+
+		Button btnQuery = new Button("Open");
+		btnQuery.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				DirectoryChooser dChooser = new DirectoryChooser();
+				dChooser.setInitialDirectory(new File("C://"));
+				dChooser.showDialog(stage);
+				
+			}
+			
+		});
+		FlowPane queriesBox = new FlowPane(btnQuery);
+		queriesBox.setAlignment(Pos.CENTER);
+		tabQueries.setContent(queriesBox);
 		
 		Tab tabAbout = new Tab();
 		tabAbout.setText("About");
