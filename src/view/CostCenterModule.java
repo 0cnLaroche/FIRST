@@ -30,12 +30,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.*;
 
-public class CostCenterReport extends Stage {
+public class CostCenterModule extends BorderPane {
 	
-	protected BorderPane root;
+	protected BorderPane me = this;
 	protected TreeView<CostCenter> treeView;
 	
-	public CostCenterReport() {
+	public CostCenterModule() {
 		
 		try {
 			model.CostCenter ccroot = DataLayer.getCostCenter("103100");
@@ -44,23 +44,21 @@ public class CostCenterReport extends Stage {
 			troot.setExpanded(true); // Expended at start
 			troot.getChildren().addAll(populate(troot,ccroot));
 			treeView = new TreeView<CostCenter>(troot);
+			treeView.setPrefWidth(500);
 			treeView.setCellFactory(new Callback<TreeView<CostCenter>,TreeCell<CostCenter>>(){
 	            @Override
 	            public TreeCell<CostCenter> call(TreeView<CostCenter> p) {
 	                return new selectorTreeCellImpl();
 	            }
 	        });
-			
-			
-			
-			root = new BorderPane();
-			root.setLeft(treeView);
 
-			
-			Scene scene = new Scene(root, 1440, 900);
+			// root = new BorderPane();
+			this.setLeft(treeView);
+
+			/*Scene scene = new Scene(root, 1440, 900);
 			this.setTitle("RUN");
 			this.setScene(scene);
-			
+			*/
 			
 		} catch (Exception e) {
 
@@ -83,6 +81,13 @@ public class CostCenterReport extends Stage {
 	}
 	private class selectorTreeCellImpl extends TreeCell<CostCenter>{
 		
+		@Override
+		public void updateItem(CostCenter item, boolean empty) {
+			super.updateItem(item, empty);
+            setText((item == null || empty) ? null : item.toString());
+            setGraphic(null);
+		}
+		
 		
 		public selectorTreeCellImpl() {
 			
@@ -93,8 +98,8 @@ public class CostCenterReport extends Stage {
 					// ccSelector.setCC(getTreeItem().getValue().getId());
 					FormCostCenter form = new FormCostCenter();
 					form.edit(getTreeItem().getValue());
-					root.setCenter(null);
-					root.setCenter(form);
+					me.setCenter(null);
+					me.setCenter(form);
 					
 					
 				}

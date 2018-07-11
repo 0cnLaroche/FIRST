@@ -58,16 +58,20 @@ public class GridRun extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Find run");
 				try {
-					RUNReport report;
+					Stage report;
 					if (!tfRunID.getText().equals("")) {
 						ArrayList<Run> res = new ArrayList<Run>();
 						res.add(DataLayer.getRun(tfRunID.getText()));
-						report = new RUNReport(res);
+						Scene scene = new Scene(new RUNModule(res));
+						report = new Stage();
+						report.setScene(scene);
 						report.setTitle("RUN codes");
 						report.show();
 					} else {
-						
-						report = new RUNReport(DataLayer.queryRuns(tfKeyword.getText(), tfApprover.getText(), tfCostCenter.getText()));
+						Scene scene = new Scene(new RUNModule(
+								DataLayer.queryRuns(tfKeyword.getText(), tfApprover.getText(), tfCostCenter.getText())));
+						report = new Stage();
+						report.setScene(scene);
 						report.setTitle("RUN codes");
 						report.show();
 					}

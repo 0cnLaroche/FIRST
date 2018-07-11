@@ -2,7 +2,7 @@ package controler;
 
 import java.time.LocalDate;
 
-import view.ProjectReport;
+import view.ProjectModule;
 
 import java.util.ArrayList;
 
@@ -12,12 +12,19 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		DataLayer manager = new DataLayer();
+		DataLayer manager;
+		try {
+			manager = new DataLayer();
+			QueryWriter qw = new QueryWriter();
+			qw.exportNetworkList("test.xlsx");
+			
+			manager.disconnect();
+		} catch (DatabaseCommunicationsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		QueryWriter qw = new QueryWriter();
-		qw.exportNetworkList("test.xlsx");
-		
-		manager.disconnect();
+
 		
 		
 	}

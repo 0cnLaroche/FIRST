@@ -15,7 +15,7 @@ import javafx.scene.layout.HBox;
 import model.*;
 
 
-public class ProjectReport extends Stage {
+public class ProjectModule extends Stage {
 	
 	protected BorderPane root;
 	protected HBox hb;
@@ -23,7 +23,7 @@ public class ProjectReport extends Stage {
 	protected GridPane grid;
 	
 	
-	public ProjectReport (Project project) {
+	public ProjectModule (Project project) {
 		
 		root = new BorderPane();
 		hb = new HBox(5);

@@ -18,6 +18,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import model.*;
 
 public class DataLayer {
@@ -34,7 +38,7 @@ public class DataLayer {
 	private static HashMap<String, Network> networks;
 	private static HashMap<String, CostCenter> costcenters;
 	
-	public DataLayer() {
+	public DataLayer() throws DatabaseCommunicationsException {
 		
 		runs = new HashMap<String,Run>();
 		wbs = new HashMap<String, Wbs>();
@@ -240,6 +244,14 @@ public class DataLayer {
 			throw new NotFoundException();
 		}
 	}
+	public static ArrayList<Run> getRunList(){
+		ArrayList<Run> list = new ArrayList<Run>(runs.values());
+		/*for(String key : runs.keySet()) {
+			list.add(runs.get(key));
+		}*/
+		return list;
+		
+	}
 	public static ArrayList<Run> queryRuns(String keyword, String approver, String costcenter) throws NotFoundException {
 		// TODO : Find a way to sort results by description
 		ArrayList<Run> list = new ArrayList<Run>();
@@ -297,12 +309,13 @@ public class DataLayer {
 	
 	}
 	
-	public void connect() {
+	public void connect() throws DatabaseCommunicationsException {
 
 		try {
 			con = DriverManager.getConnection(url + "?" + stuff, user, password);
 			System.out.println("Connected to database");
-
+		} catch (CommunicationsException e) {
+			throw new DatabaseCommunicationsException();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -45,7 +45,9 @@ public class GridCostCenter extends GridPane {
 				System.out.println("Find cost center ");
 				try {
 					//System.out.println(DataLayer.getCostCenter(tfCostCenter.getText()).toString());
-					CostCenterReport report = new CostCenterReport();
+					Scene scene = new Scene(new CostCenterModule());
+					Stage report = new Stage();
+					report.setScene(scene);
 					report.setTitle("Cost Center");
 					report.show();
 				} catch (Exception e1) {

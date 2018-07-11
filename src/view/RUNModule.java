@@ -5,11 +5,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.sun.javafx.geom.BaseBounds;
+import com.sun.javafx.geom.transform.BaseTransform;
+import com.sun.javafx.jmx.MXNodeAlgorithm;
+import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+import com.sun.javafx.sg.prism.NGNode;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
@@ -24,7 +31,7 @@ import javafx.scene.layout.VBox;
 import model.*;
 
 
-public class RUNReport extends Stage {
+public class RUNModule extends BorderPane {
 	
 	protected ArrayList<Run> source;
 	protected BorderPane root;
@@ -38,7 +45,7 @@ public class RUNReport extends Stage {
 	private String labelStyle = "-fx-text-fill: #ffffff;-fx-font: 16 Geneva; -fx-font-weight:bold;";
 	private String filterStyle = "-fx-text-fill: #ffffff;-fx-font: 14 Geneva;-fx-text-weight:bold;";
 	
-	public RUNReport(ArrayList<Run> run) {
+	public RUNModule(ArrayList<Run> run) {
 		
 		source = run;
 		
@@ -221,15 +228,18 @@ public class RUNReport extends Stage {
         
 		resultBox.getChildren().addAll(hbLegend, spList);
         
-        root.setLeft(spFilters);
+        // root.setLeft(spFilters);  
+        //root.setCenter(resultBox);
         
-        root.setCenter(resultBox);
+        this.setLeft(spFilters);
+        
+        this.setCenter(resultBox);
         
         generateList(source);
 
-		Scene scene = new Scene(root, 1440, 900);
+		/*Scene scene = new Scene(root, 1440, 900);
 		this.setTitle("RUN");
-		this.setScene(scene);
+		this.setScene(scene);*/
 	}
 	public ArrayList<Run> filter() {
 		ArrayList<Run> filtered = (ArrayList<Run>) source.clone();
@@ -352,4 +362,5 @@ public class RUNReport extends Stage {
 		cbManager.setItems(options);
 		
 	}
+
 }

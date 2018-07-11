@@ -16,21 +16,33 @@ import view.*;
 
 import java.io.File;
 
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
 import controler.DataLayer;
 
 public class Window  extends Application {
-
+	
+	DataLayer manager;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 	      /* 
 	      Code for JavaFX application. 
 	      (Stage, scene, scene graph) 
 	      */    
-		DataLayer manager = new DataLayer();
+		try {
+			manager = new DataLayer();
+		} catch (controler.DatabaseCommunicationsException e) {
+			this.stop();
+		}
 		
 		GridProjets gridProjets = new GridProjets();
 		GridRun gridRun = new GridRun();
 		GridCostCenter gridCC = new GridCostCenter();
+		// Modules
+		RUNModule runMod = new RUNModule(DataLayer.getRunList());
+		CostCenterModule ccMod = new CostCenterModule();
+		//ProjectModule pMod = new ProjectModule();
 	
 		
 		//Tabulation
@@ -42,11 +54,11 @@ public class Window  extends Application {
 		
 		Tab tabRun = new Tab();
 		tabRun.setText("RUN");
-		tabRun.setContent(gridRun);
+		tabRun.setContent(runMod);
 		
 		Tab tabCC = new Tab();
 		tabCC.setText("Cost Centers");
-		tabCC.setContent(gridCC);
+		tabCC.setContent(ccMod);
 		
 		Tab tabQueries = new Tab();
 		tabQueries.setText("Queries");
@@ -74,7 +86,7 @@ public class Window  extends Application {
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
 		
-		Scene scene = new Scene(tabPane,500,500, Color.BEIGE);
+		Scene scene = new Scene(tabPane, 1440, 900);
 		// Scene scene = new Scene(form,500,500, Color.BEIGE);
 		//scene.setFill(Color.GRAY);
 

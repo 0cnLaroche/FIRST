@@ -61,10 +61,10 @@ public class GridProjets extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Find project");
 				//System.out.println(manager.getProject(tfProjectID.getText()));
-				ProjectReport report;
+				ProjectModule report;
 
 				try {
-					report = new ProjectReport(DataLayer.getProject(tfProjectID.getText()));
+					report = new ProjectModule(DataLayer.getProject(tfProjectID.getText()));
 					report.setTitle("Projects");
 					report.show();
 				} catch (NotFoundException e1) {
