@@ -37,7 +37,7 @@ public class CostCenter extends FinancialCode {
 	public void addChild(CostCenter child) {
 		children.add(child);
 	}
-	public String toString() {
+	public String childrenToString() {
 		String str = "{Id: '" + this.getId() + "', Name: '" + this.getNameEN() + "'";
 		
 		if (!children.isEmpty()) {
@@ -55,6 +55,9 @@ public class CostCenter extends FinancialCode {
 		str += "}\n";
 		return str;
 		
+	}
+	public String toString() {
+		return this.getId() + " - " + this.getNameEN();
 	}
 	
 }

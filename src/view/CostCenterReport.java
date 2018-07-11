@@ -14,13 +14,16 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -30,21 +33,29 @@ import model.*;
 public class CostCenterReport extends Stage {
 	
 	protected BorderPane root;
-	protected TreeView<String> h;
+	protected TreeView<CostCenter> treeView;
 	
 	public CostCenterReport() {
 		
 		try {
 			model.CostCenter ccroot = DataLayer.getCostCenter("103100");
-			TreeItem<String> troot = new TreeItem<String>(ccroot.getId() + " - " + ccroot.getNameEN());
+			TreeItem<CostCenter> troot = new TreeItem<CostCenter>();
+			troot.setValue(ccroot);
 			troot.setExpanded(true); // Expended at start
 			troot.getChildren().addAll(populate(troot,ccroot));
-			h = new TreeView<String>(troot);
+			treeView = new TreeView<CostCenter>(troot);
+			treeView.setCellFactory(new Callback<TreeView<CostCenter>,TreeCell<CostCenter>>(){
+	            @Override
+	            public TreeCell<CostCenter> call(TreeView<CostCenter> p) {
+	                return new selectorTreeCellImpl();
+	            }
+	        });
+			
 			
 			
 			root = new BorderPane();
-			// root.setLeft(h);
-			root.setCenter(h);
+			root.setLeft(treeView);
+
 			
 			Scene scene = new Scene(root, 1440, 900);
 			this.setTitle("RUN");
@@ -52,21 +63,44 @@ public class CostCenterReport extends Stage {
 			
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 				
 	}
-	private ArrayList<TreeItem<String>> populate(TreeItem<String> pitem, CostCenter pcc ){
-		ArrayList<TreeItem<String>> children = new ArrayList<TreeItem<String>>();
+	private ArrayList<TreeItem<CostCenter>> populate(TreeItem<CostCenter> pitem, CostCenter pcc ){
+		ArrayList<TreeItem<CostCenter>> children = new ArrayList<TreeItem<CostCenter>>();
 		
 		
 		for (CostCenter cc : pcc.getChildren()) {
-			TreeItem<String> item = new TreeItem<String>(cc.getId() + " - " + cc.getNameEN());
+			TreeItem<CostCenter> item = new TreeItem<CostCenter>();
+			item.setValue(cc);
 			item.getChildren().addAll(populate(item,cc));
 			children.add(item);
 		}
 		return children;
+		
+	}
+	private class selectorTreeCellImpl extends TreeCell<CostCenter>{
+		
+		
+		public selectorTreeCellImpl() {
+			
+			super.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent e) {
+					// ccSelector.setCC(getTreeItem().getValue().getId());
+					FormCostCenter form = new FormCostCenter();
+					form.edit(getTreeItem().getValue());
+					root.setCenter(null);
+					root.setCenter(form);
+					
+					
+				}
+				
+			});
+		}
 		
 	}
 	
