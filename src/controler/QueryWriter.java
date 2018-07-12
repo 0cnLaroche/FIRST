@@ -12,8 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class QueryWriter {
 	
-	public void export(String exportToPath, String queryLocation, String title) {
-		File file = new File(exportToPath);
+	public void export(File file, String queryLocation, String title) {
+		
 		ArrayList<String[]> data = new ArrayList<String[]>();
 		data = DataLayer.queryFromFile(queryLocation);
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -46,11 +46,22 @@ public class QueryWriter {
 		}
 
 	}
-	public void exportNetworkList(String path) {
-		this.export(path, "sql/network_by_approver.sql", "Network by Approver");
+	public void exportNetworkList(File file) throws NullPointerException {
+		
+		if (file != null) {
+			this.export(file, "sql/network_by_approver.sql", "Network by Approver");
+		} else {
+			throw new NullPointerException();
+		}
+
 	}
-	public void exportRunList(String path) {
-		this.export(path, "sql/run.sql", "RUN");
+	public void exportRunList(File file) throws NullPointerException {
+		if (file != null) {
+			this.export(file, "sql/run.sql", "RUN");
+		} else {
+			throw new NullPointerException();
+		}
+
 	}
 
 }

@@ -16,7 +16,7 @@ public class Main {
 		try {
 			manager = new DataLayer();
 			QueryWriter qw = new QueryWriter();
-			qw.exportNetworkList("test.xlsx");
+			//qw.exportNetworkList("test.xlsx");
 			
 			manager.disconnect();
 		} catch (DatabaseCommunicationsException e) {

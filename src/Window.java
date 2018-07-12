@@ -1,22 +1,11 @@
 import javafx.application.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
-import javafx.scene.layout.FlowPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import view.*;
-
-import java.io.File;
-
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
 import controler.DataLayer;
 
@@ -35,13 +24,15 @@ public class Window  extends Application {
 		} catch (controler.DatabaseCommunicationsException e) {
 			this.stop();
 		}
-		
+		// Search Grids
 		GridProjets gridProjets = new GridProjets();
-		GridRun gridRun = new GridRun();
-		GridCostCenter gridCC = new GridCostCenter();
+		//GridRun gridRun = new GridRun();
+		//GridCostCenter gridCC = new GridCostCenter();
+		
 		// Modules
 		RUNModule runMod = new RUNModule(DataLayer.getRunList());
 		CostCenterModule ccMod = new CostCenterModule();
+		QueryModule queryMod = new QueryModule();
 		//ProjectModule pMod = new ProjectModule();
 	
 		
@@ -61,23 +52,8 @@ public class Window  extends Application {
 		tabCC.setContent(ccMod);
 		
 		Tab tabQueries = new Tab();
-		tabQueries.setText("Queries");
-
-		Button btnQuery = new Button("Open");
-		btnQuery.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				DirectoryChooser dChooser = new DirectoryChooser();
-				dChooser.setInitialDirectory(new File("C://"));
-				dChooser.showDialog(stage);
-				
-			}
-			
-		});
-		FlowPane queriesBox = new FlowPane(btnQuery);
-		queriesBox.setAlignment(Pos.CENTER);
-		tabQueries.setContent(queriesBox);
+		tabQueries.setText("Queries");	
+		tabQueries.setContent(queryMod);
 		
 		Tab tabAbout = new Tab();
 		tabAbout.setText("About");
@@ -87,9 +63,6 @@ public class Window  extends Application {
 		
 		
 		Scene scene = new Scene(tabPane, 1440, 900);
-		// Scene scene = new Scene(form,500,500, Color.BEIGE);
-		//scene.setFill(Color.GRAY);
-
 
 		stage.setTitle("FIRST");
 		
