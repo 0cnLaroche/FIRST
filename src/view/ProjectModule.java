@@ -7,6 +7,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -28,8 +29,7 @@ public class ProjectModule extends Stage {
 		root = new BorderPane();
 		hb = new HBox(5);
 		sp = new ScrollPane();
-		
-		
+
 		// IDée : Créer un group pour chaque element et ajouter le text comme objet Text qui pourront être accedé
         
         graphics.Project prj = new graphics.Project();
@@ -42,7 +42,7 @@ public class ProjectModule extends Stage {
 		FlowPane stage0 = new FlowPane();
 		stage0.setVgap(10);
 		stage0.setHgap(10);
-		stage0.setMaxWidth(1440);
+		//stage0.setMaxWidth(1440);
 		//stage0.setPrefWrapLength(1440);
 		stage0.setAlignment(Pos.TOP_CENTER);
 		stage0.setStyle("-fx-background-color:rgb(150,206,180,0.5);-fx-padding:10"); // Color : #96CEB4
@@ -50,48 +50,54 @@ public class ProjectModule extends Stage {
 		FlowPane stage2 = new FlowPane();
 		stage2.setVgap(10);
 		stage2.setHgap(10);
-		stage0.setMaxWidth(1440);
+		stage2.setMaxWidth(1440);
 		stage2.setAlignment(Pos.TOP_CENTER);
 		stage2.setStyle("-fx-background-color:#96ceb4;-fx-padding:10");
-		Text txStage2 = new Text("Stage 2");
+		stage2.prefWidthProperty().bind(root.widthProperty().divide(4));
+		Label txStage2 = new Label("Stage 2");
 		txStage2.setStyle(txtStageStyle);
 		stage2.getChildren().add(txStage2);
 		
 		FlowPane stage3 = new FlowPane();
 		stage3.setVgap(10);
 		stage3.setHgap(10);
-		stage0.setMaxWidth(1440);
-		stage3.setAlignment(Pos.TOP_CENTER);
+		stage3.setMaxWidth(1440);
+		// stage3.setMinWidth(1000);
+		stage3.setAlignment(Pos.BASELINE_LEFT);
 		stage3.setStyle("-fx-background-color:#ffeead;-fx-padding:10");
-		Text txStage3 = new Text("Stage 3");
+		stage3.prefWidthProperty().bind(root.widthProperty().divide(4));
+		Label txStage3 = new Label("Stage 3");
 		txStage3.setStyle(txtStageStyle);
 		stage3.getChildren().add(txStage3);
 		
 		FlowPane stage4 = new FlowPane();
 		stage4.setVgap(10);
 		stage4.setHgap(10);
-		stage0.setMaxWidth(1440);
+		stage4.setMaxWidth(1440);
 		stage4.setAlignment(Pos.TOP_CENTER);
 		stage4.setStyle("-fx-background-color:#ffcc5c;-fx-padding:10");
-		Text txStage4 = new Text("Stage 4");
+		stage4.prefWidthProperty().bind(root.widthProperty().divide(4));
+		Label txStage4 = new Label("Stage 4");
 		txStage4.setStyle(txtStageStyle);
 		stage4.getChildren().add(txStage4);
 		
 		FlowPane stage5 = new FlowPane();
 		stage5.setVgap(10);
 		stage5.setHgap(10);
-		stage0.setMaxWidth(1440);
+		stage5.setMaxWidth(1440);
 		stage5.setAlignment(Pos.TOP_CENTER);
 		stage5.setStyle("-fx-background-color:#ff6f69;-fx-padding:10");
-		Text txStage5 = new Text("Stage 5");
+		stage5.prefWidthProperty().bind(root.widthProperty().divide(4));
+		Label txStage5 = new Label("Stage 5");
 		txStage5.setStyle(txtStageStyle);
 		stage5.getChildren().add(txStage5);
 		
            for (Wbs w : project.getWbs()) {
+        	// VBox flow;
         	FlowPane flow;
         	switch (w.getStage()) {
         	case 0 :
-        		flow = stage2;
+        		flow = stage0;
         		break;
         	case 2:
         		flow = stage2;
@@ -106,7 +112,7 @@ public class ProjectModule extends Stage {
         		flow = stage5;
         		break;
         	default:
-        		flow = stage4;
+        		flow = stage0;
         		break;
             }
         	
@@ -127,12 +133,27 @@ public class ProjectModule extends Stage {
         
         hb.setPadding(new Insets(10));
         
-        hb.getChildren().add(stage0);
-        hb.getChildren().add(stage2);
-        hb.getChildren().add(stage3);
-        hb.getChildren().add(stage4);
-        hb.getChildren().add(stage5);
-        
+        switch(project.getModel()) {
+        	case Project.STAGEGATED :
+                hb.getChildren().add(stage2);
+                hb.getChildren().add(stage3);
+                hb.getChildren().add(stage4);
+                hb.getChildren().add(stage5);
+                break;
+        	case Project.BRANCHINITIATIVE:
+        	case Project.LITE:
+        	case Project.NONSTAGEGATED:
+        		hb.getChildren().add(stage0);
+        		break;
+        	default :
+        		hb.getChildren().add(stage0);
+                hb.getChildren().add(stage2);
+                hb.getChildren().add(stage3);
+                hb.getChildren().add(stage4);
+                hb.getChildren().add(stage5);
+                break;
+        }
+
         sp = new ScrollPane(hb);
         sp.setFitToHeight(true);
         

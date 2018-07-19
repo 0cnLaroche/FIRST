@@ -1,27 +1,19 @@
 package graphics;
 
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.FinancialCode;
 import view.FormWBS;
@@ -29,11 +21,14 @@ import view.FormWBS;
 public class Network extends Sprite {
 	
 	private model.Network nw;
-	private Text name, id, cc, approver;
+	private Label name, id, cc, approver;
 	private Canvas canvas;
 	private GraphicsContext gc;
 	
 	private Label pjmngt, analyse, plan, design, build, test, deploy, stabilize;
+	
+	String nwStyle = "-fx-border-radius:20;-fx-border-width:5;-fx-background-radius:20;-fx-background-color:white;";
+	
 	
 	private ToggleButton showAct;
 	
@@ -67,16 +62,16 @@ public class Network extends Sprite {
 		grid.setVgap(5);
 		grid.setPadding(new Insets(padding + 5, padding + 5, padding + 5, padding + 5));
 		
-		name = new Text(nw.getNameEN());
+		name = new Label(nw.getNameEN());
 		grid.add(name, 0, 0);
 		
-		cc = new Text(nw.getWbs().getCostcenter().getId());
+		cc = new Label(nw.getWbs().getCostcenter().getId());
 		grid.add(cc, 0, 1);
 		
-		approver = new Text(nw.getWbs().getApprover());
+		approver = new Label(nw.getWbs().getApprover());
 		grid.add(approver, 0, 2);
 		
-		id = new Text(nw.getId());
+		id = new Label(nw.getId());
 		grid.add(id, 1, 0);
 		
 		showAct = new ToggleButton("+");
@@ -136,20 +131,32 @@ public class Network extends Sprite {
 		
 		vb.getChildren().add(grid);
 		
-		String nwStyle = "-fx-border-color:white;-fx-border-radius:20;-fx-border-width:5;-fx-background-radius:20;-fx-background-color:white;";
-		
-		switch (nw.getStatus()) {
+		switch (nw.getStatus().getValue()) {
 		case FinancialCode.ACTIVE :
-			grid.setStyle(nwStyle + "-fx-border-style:solid;");
+			grid.setStyle(nwStyle + "-fx-border-color:white;-fx-border-style:solid;");
+			for (Node lb : grid.getChildren()) {
+				lb.setStyle("-fx-text-fill: black");
+			}
 			break;
 		case FinancialCode.CLOSED :
-			grid.setStyle(nwStyle + "-fx-border-style:solid;");
+			// grid.setStyle(nwStyle + "-fx-border-color: red;-fx-border-style:solid;");
+			grid.setStyle(nwStyle);
+			for (Node lb : grid.getChildren()) {
+				lb.setStyle("-fx-text-fill: red");
+			}
 			break; //-fx-background-color:LightGray;
 		case FinancialCode.UNRELEASED :
-			grid.setStyle(nwStyle + "-fx-border-style:dotted;");
+			grid.setStyle("-fx-border-radius:20;-fx-border-width:5;"
+					+ "-fx-border-color:white;-fx-border-style:dotted;");
+			for (Node lb : grid.getChildren()) {
+				lb.setStyle("-fx-text-fill: black;");
+			}
 			break;
 		default : 
-			grid.setStyle(nwStyle + "-fx-border-style:solid;");
+			grid.setStyle(nwStyle + "-fx-border-color:white;-fx-border-style:solid;");
+			for (Node lb : grid.getChildren()) {
+				lb.setStyle("-fx-text-fill: black");
+			}
 			break;
 		}
 		

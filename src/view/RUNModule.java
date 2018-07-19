@@ -247,12 +247,12 @@ public class RUNModule extends BorderPane {
 		// for (int i = 0; i < source.size() -1; i++) {
 		for (Run r : source) {
 			if (!cbActive.isSelected()) {
-				if (r.getStatus() == FinancialCode.ACTIVE) {
+				if (r.getStatus().getValue() == FinancialCode.ACTIVE) {
 					filtered.remove(r);
 				}
 			}
 			if (!cbClosed.isSelected()) {
-				if (r.getStatus() == FinancialCode.CLOSED) {
+				if (r.getStatus().getValue() == FinancialCode.CLOSED) {
 					filtered.remove(r);
 				}
 			}

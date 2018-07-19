@@ -47,9 +47,9 @@ public class DataLayer {
 		costcenters = new HashMap<String, CostCenter>();
 		
 		this.connect();
-		this.loadCostCenters();
-		this.loadRuns();
-		this.loadProjects();
+		loadCostCenters();
+		loadRuns();
+		loadProjects();
 		
 	}
 	public static ArrayList<String[]> queryFromFile(String path) { // Tested 04/07/2018 SL
@@ -134,7 +134,7 @@ public class DataLayer {
 			insert.setObject(8, run.getEffectiveDate());
 			insert.setObject(9, run.getClosingDate());
 			insert.setString(10, run.getReplacedBy());
-			insert.setString(11, run.getStatusString());
+			insert.setString(11, run.getStatus().toString());
 			
 			insert.execute();
 	
@@ -167,7 +167,7 @@ public class DataLayer {
 				update.setNull(4, java.sql.Types.DATE);
 			}
 			update.setString(5, nw.getReplacedBy());
-			update.setString(6, nw.getStatusString());
+			update.setString(6, nw.getStatus().toString());
 			update.setInt(7, nw.getWbs().getStage());
 			update.setString(8, nw.getId()); // WHERE
 			
@@ -196,11 +196,11 @@ public class DataLayer {
 			update.setInt(4, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
 			update.setString(5, nw.getWbs().getApprover());
 			update.setString(6, nw.getWbs().getProject().getId());
-			update.setString(7,nw.getStatusString());
+			update.setString(7,nw.getStatus().toString());
 			update.setInt(8,nw.getWbs().getStage());
 			update.setString(9, nw.getWbs().getId());
 			
-			update.execute();
+			update.executeUpdate();
 			
 			System.out.println("Update to database sucessful for WBS : " + nw.getWbs().toString());
 			
@@ -213,6 +213,49 @@ public class DataLayer {
 		}
 		
 
+		
+	}
+	/**
+	 * Update a run element in the database.
+	 * @param run Object
+	 */
+	public static void updateRun(Run run) {
+		PreparedStatement update;
+		String query = "UPDATE RUN SET Name = ?, NameFR = ?, "
+				+ "ResponsibleCostCenter = ?, RequestingCostCenter = ?, "
+				+ "Responsible = ?, "
+				+ "Type = ?, "
+				+ "ClosingDate = ?, "
+				+ "Status = ?, "
+				+ "ReplacedBy = ?, "
+				+ "WHERE ID = ?";
+
+		
+		try {
+			update = con.prepareStatement(query);
+			
+			update.setString(1, run.getNameEN());
+			update.setString(1, run.getNameFR());
+			update.setInt(3, Integer.parseInt(run.getCostcenter().getId()));
+			update.setInt(4, Integer.parseInt(run.getCostcenter().getId()));		
+			update.setString(5, run.getResponsible());
+			update.setDate(6, Date.valueOf(run.getClosingDate()));
+			update.setString(7, run.getStatus().toString());
+			update.setString(8, run.getReplacedBy());
+			
+			// WHERE
+			update.setString(9, run.getId());
+			
+			update.executeUpdate();
+			
+			loadRuns(); // This may not the most efficient way of updating date but it's less work for now
+			
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
 		
 	}
 	public static Run getRun(String id) throws NotFoundException {
@@ -321,7 +364,7 @@ public class DataLayer {
 		}
 
 	}
-	private void loadCostCenterRelationships(ArrayList<String[]> index, String parent){
+	private static void loadCostCenterRelationships(ArrayList<String[]> index, String parent){
 
 		for (String[] entry: index) {
 			if (entry[1].equals(parent)) {
@@ -332,7 +375,7 @@ public class DataLayer {
 			}
 		}
 	}
-	private void loadCostCenters() {
+	private static void loadCostCenters() {
 
 		try {
 
@@ -372,7 +415,7 @@ public class DataLayer {
 		}
 	}
 
-	private void loadRuns() {
+	private static void loadRuns() {
 
 		try {
 
@@ -440,7 +483,7 @@ public class DataLayer {
 			e.printStackTrace();
 		}
 	}
-	private void loadProjects() {
+	private static void loadProjects() {
 		
 		ArrayList<String[]> wbsToProject = new ArrayList<String[]>();
 		ArrayList<String[]> networkToWbs = new ArrayList<String[]>();
@@ -505,22 +548,22 @@ public class DataLayer {
 			while (rs.next()) {
 				String[] entry = { rs.getString(1), rs.getString(8) }; // {ID, ProjectDefinition} pair
 				wbsToProject.add(entry);
-				Wbs wbs = new Wbs();
-				wbs.setId(rs.getString(1));
-				wbs.setNameEN(rs.getString(2));
-				wbs.setNameFR(rs.getString(3));
+				Wbs wbsNew = new Wbs();
+				wbsNew.setId(rs.getString(1));
+				wbsNew.setNameEN(rs.getString(2));
+				wbsNew.setNameFR(rs.getString(3));
 				if (costcenters.containsKey(rs.getString(4))) {
-					wbs.setCostcenter(costcenters.get(rs.getString(4)));
+					wbsNew.setCostcenter(costcenters.get(rs.getString(4)));
 				} else {
 					CostCenter cc = new CostCenter();
 					cc.setId(rs.getString(4));
-					wbs.setCostcenter(cc);
+					wbsNew.setCostcenter(cc);
 				}
-				wbs.setApprover(rs.getString(5));
-				wbs.setStage(rs.getByte(6));
+				wbsNew.setApprover(rs.getString(5));
+				wbsNew.setStage(rs.getByte(6));
 				// Other fields to be added
-				this.wbs.put(wbs.getId(), wbs);
-				mapNetwork(networkToWbs, wbs.getId());
+				wbs.put(wbsNew.getId(), wbsNew);
+				mapNetwork(networkToWbs, wbsNew.getId());
 
 			}
 			
@@ -546,7 +589,7 @@ public class DataLayer {
 		}
 	}
 
-	private void mapWbs(ArrayList<String[]> wbsToProject, String parent) {
+	private static void mapWbs(ArrayList<String[]> wbsToProject, String parent) {
 		
 		for (String[] entry : wbsToProject) {
 			if (entry[1].equals(parent)) {
@@ -556,7 +599,7 @@ public class DataLayer {
 		}
 
 	}
-	private void mapNetwork(ArrayList<String[]> networkToWbs, String parent) {
+	private static void mapNetwork(ArrayList<String[]> networkToWbs, String parent) {
 		for (String[] entry : networkToWbs) {
 			if (entry[1].equals(parent)) {
 				wbs.get(entry[1]).addNetwork(networks.get(entry[0]));
@@ -565,11 +608,10 @@ public class DataLayer {
 
 		}
 	}
-	public static void importCost(String path) {
+	public static void importCost(File file) {
 		// Ça fonctionne mais trop long
 		
 		ArrayList<String[]> list = new ArrayList<String[]>();
-		File file = new File (path);
 		int eIndex = 0;
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))){
@@ -586,6 +628,7 @@ public class DataLayer {
 			
 			PreparedStatement insert = null;
 			insert = con.prepareStatement(query);
+			
 			
 			final int batchSize = 1000;
 

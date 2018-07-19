@@ -6,6 +6,10 @@ public class Project extends FinancialCode {
 	
 	private String type, proposal, model;
 	private ArrayList<Wbs> wbs;
+	public static final String STAGEGATED = "Stage-Gated";
+	public static final String NONSTAGEGATED = "Non Stage Gated";
+	public static final String LITE = "Lite";
+	public static final String BRANCHINITIATIVE = "Branch Initiatives";
 	
 	public Project() {
 		this.wbs = new ArrayList<Wbs>();
@@ -16,12 +20,12 @@ public class Project extends FinancialCode {
 	public void setModel(String model) {
 		this.model = model;
 	}
-	public String getType() {
+	/*public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
-	}
+	}*/
 	public String getProposal() {
 		return proposal;
 	}

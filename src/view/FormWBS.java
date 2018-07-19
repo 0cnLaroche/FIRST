@@ -91,7 +91,7 @@ public class FormWBS extends GridPane {
 		tfCostCenter.setText(nw.getWbs().getCostcenter().getId());
 		tfApprover.setText(nw.getWbs().getApprover());
 		datePicker.setValue(nw.getClosingDate());
-		cbStatus.setValue(nw.getStatusString());
+		cbStatus.setValue(nw.getStatus().toString());
 		
 		Button btn = new Button("Save");
 		btn.setOnAction(new EventHandler<ActionEvent>() {

@@ -34,7 +34,7 @@ public class Run extends HBox {
 		resp.setPrefWidth(160);
 		cc = new Label(r.getCostcenter().getId());
 		cc.setPrefWidth(55);
-		status = new Label("" + r.getStatusString());
+		status = new Label("" + r.getStatus().toString());
 		
 		Tooltip tpCC = new Tooltip();
 		tpCC.setText(r.getCostcenter().getId() + "\nManager: " + r.getCostcenter().getManager());
@@ -44,7 +44,7 @@ public class Run extends HBox {
 		for (Node n : this.getChildren()) {
 			n.setStyle(textStyle);
 		}
-		if (r.getStatus() == model.Run.CLOSED) {
+		if (r.getStatus().getValue() == model.Run.CLOSED) {
 			status.setStyle("-fx-text-fill: #ef8354;-fx-font-weight: bold;");
 		}
 		

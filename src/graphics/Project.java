@@ -40,7 +40,7 @@ public class Project extends Sprite {
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
-			public void handle(MouseEvent arg0) {
+			public void handle(MouseEvent e) {
 				// Open network form
 				System.out.println(prj.getNameEN());
 				
