@@ -44,7 +44,7 @@ public class Run extends HBox {
 		for (Node n : this.getChildren()) {
 			n.setStyle(textStyle);
 		}
-		if (r.getStatus().getValue() == model.Run.CLOSED) {
+		if (r.getStatus() == model.Run.CLOSED) {
 			status.setStyle("-fx-text-fill: #ef8354;-fx-font-weight: bold;");
 		}
 		

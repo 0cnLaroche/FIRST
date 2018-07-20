@@ -1,5 +1,6 @@
 package view;
 
+import controler.DataLayer;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,7 +18,7 @@ import model.Run;
 
 public class FormRun extends GridPane {
 	
-	TextField tfRunID, tfDescEN, tfDescFR, tfType, tfCostCenter, tfApprover, tfReplacedBy;
+	TextField tfRunID, tfDescEN, tfDescFR, tfCostCenter, tfApprover, tfReplacedBy;
 	ChoiceBox<String> cbType,cbStatus; // TODO: Implement
 	DatePicker datePicker;
 	Run run;
@@ -47,12 +48,9 @@ public class FormRun extends GridPane {
 		this.add(tfDescFR, 1, 2);
 		
 		this.add(new Label("Type"), 0, 3);
-		tfType = new TextField(); // TODO : Change that to scrolling list
-		this.add(tfType, 1, 3);
-		
-		this.add(new Label("Type"), 0, 3);
 		cbType = new ChoiceBox<String>(); // TODO: Replace with a dropdown list
-		cbType.setItems(FXCollections.observableArrayList("Unreleased", "Active", "Closed"));
+		cbType.setItems(FXCollections.observableArrayList(Run.MAINTENANCE,Run.SERVICE,Run.BUSINESSMANAGEMENT,
+				Run.INVESTMENT));
 		this.add(cbType, 1, 3);
 		
 		this.add(new Label("Cost Center"), 0, 4);
@@ -94,9 +92,12 @@ public class FormRun extends GridPane {
 					cc.setId(me.tfCostCenter.getText());
 					run.setCostcenter(cc);
 					run.setResponsible(me.tfApprover.getText());
-					// run.setStatus(me.cbStatus.getValue); 
+					run.setStatus(me.cbStatus.getValue()); 
 					run.setType(me.cbType.getValue()); // this should be changed once we switch to choice box instead
-					// run.setReplacedBy();
+					run.setReplacedBy(me.tfReplacedBy.getText());
+					
+					DataLayer.updateRun(run);
+					System.out.println("Update Run Success");
 				}
 				
 
@@ -112,9 +113,11 @@ public class FormRun extends GridPane {
 		tfRunID.setText(run.getId());
 		tfDescEN.setText(run.getNameEN());
 		tfDescFR.setText(run.getNameFR());
-		tfType.setText(run.getType()); // TODO : Change that to scrolling list
+		cbType.setValue(run.getType()); // TODO : Change that to scrolling list
 		tfCostCenter.setText(run.getCostcenter().getId());
 		tfApprover.setText(run.getResponsible());
+		tfReplacedBy.setText(run.getReplacedBy());
+		cbStatus.setValue(run.getStatus());
 		datePicker.setValue(run.getClosingDate());
 
 	}

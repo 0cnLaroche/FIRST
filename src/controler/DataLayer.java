@@ -222,35 +222,34 @@ public class DataLayer {
 	public static void updateRun(Run run) {
 		PreparedStatement update;
 		String query = "UPDATE RUN SET Name = ?, NameFR = ?, "
-				+ "ResponsibleCostCenter = ?, RequestingCostCenter = ?, "
+				+ "CostCenter_Responsible = ?, CostCenter_Requesting = ?, "
 				+ "Responsible = ?, "
 				+ "Type = ?, "
 				+ "ClosingDate = ?, "
 				+ "Status = ?, "
-				+ "ReplacedBy = ?, "
-				+ "WHERE ID = ?";
+				+ "ReplacedBy = ? "
+				+ "WHERE ID = ?;";
 
 		
 		try {
 			update = con.prepareStatement(query);
 			
 			update.setString(1, run.getNameEN());
-			update.setString(1, run.getNameFR());
+			update.setString(2, run.getNameFR());
 			update.setInt(3, Integer.parseInt(run.getCostcenter().getId()));
 			update.setInt(4, Integer.parseInt(run.getCostcenter().getId()));		
 			update.setString(5, run.getResponsible());
-			update.setDate(6, Date.valueOf(run.getClosingDate()));
-			update.setString(7, run.getStatus().toString());
-			update.setString(8, run.getReplacedBy());
+			update.setString(6, run.getType());
+			update.setDate(7, Date.valueOf(run.getClosingDate()));
+			update.setString(8, run.getStatus());
+			update.setString(9, run.getReplacedBy());
 			
 			// WHERE
-			update.setString(9, run.getId());
+			update.setString(10, run.getId());
 			
 			update.executeUpdate();
 			
-			loadRuns(); // This may not the most efficient way of updating date but it's less work for now
-			
-			
+			loadRuns();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -416,7 +415,9 @@ public class DataLayer {
 	}
 
 	private static void loadRuns() {
-
+		
+		runs.clear();
+		
 		try {
 
 			Statement statement = con.createStatement();

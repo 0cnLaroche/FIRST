@@ -7,13 +7,13 @@ public abstract class FinancialCode {
 	
 	private String id, nameEN, nameFR;
 	LocalDate effectiveDate, closingDate;
-	private Status status;
-	public static final byte UNRELEASED = 0;
-	public static final byte ACTIVE = 1;
-	public static final byte CLOSED = 2;
+	private String status;
+	public static final String UNRELEASED = "Unreleased";
+	public static final String ACTIVE = "Active";
+	public static final String CLOSED = "Closed";
 	
 	
-	public Status getStatus() {
+	public String getStatus() {
 		return status;
 	}
 	public Status[] getStatusList() {
@@ -21,22 +21,9 @@ public abstract class FinancialCode {
 		return values;
 	}
 
-	/*public String getStatusString() {
-		switch (status) {
-		case 0:
-			return "Unreleased";
-		case 1:
-			return "Active";
-		case 2:
-			return "Closed";
-		default:
-			return "";
-		}
-		
-	}*/
 
-	public void setStatus(byte status) {
-		this.status = this.getStatusList()[status];
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public LocalDate getEffectiveDate() {

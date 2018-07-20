@@ -97,22 +97,6 @@ public class FormWBS extends GridPane {
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				byte status;
-				
-				switch (cbStatus.getValue()) {
-					case "Active" :
-						status = FinancialCode.ACTIVE;
-						break;
-					case "Unreleased":
-						status = FinancialCode.UNRELEASED;
-						break;
-					case "Closed" :
-						status = FinancialCode.CLOSED;
-						break;
-					default:
-						status = FinancialCode.ACTIVE;
-						break;
-				}
 				
 				model.Network nw = new Network();
 				nw.setId(tfNetwork.getText());
@@ -120,7 +104,7 @@ public class FormWBS extends GridPane {
 				nw.setNameFR(tfDescFR.getText());
 				nw.setClosingDate(datePicker.getValue());
 				nw.setEffectiveDate(LocalDate.now());
-				nw.setStatus(status);
+				nw.setStatus(cbStatus.getValue());
 	
 				model.Wbs wbs = new model.Wbs();
 				wbs.setId(tfWbsID.getText());
@@ -130,7 +114,7 @@ public class FormWBS extends GridPane {
 				wbs.setEffectiveDate(LocalDate.now());
 				wbs.setClosingDate(datePicker.getValue());
 				wbs.setStage(cbStage.getValue());
-				wbs.setStatus(status);
+				wbs.setStatus(cbStatus.getValue());
 				
 				
 				try {

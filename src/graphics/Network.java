@@ -131,7 +131,7 @@ public class Network extends Sprite {
 		
 		vb.getChildren().add(grid);
 		
-		switch (nw.getStatus().getValue()) {
+		switch (nw.getStatus()) {
 		case FinancialCode.ACTIVE :
 			grid.setStyle(nwStyle + "-fx-border-color:white;-fx-border-style:solid;");
 			for (Node lb : grid.getChildren()) {

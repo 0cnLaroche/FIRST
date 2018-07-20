@@ -5,6 +5,11 @@ public class Run extends FinancialCode {
 	private String responsible;
 	private String replacedBy;
 	private CostCenter costcenter;
+	public static final String MAINTENANCE = "MNT-Maintenance";
+	public static final String SERVICE = "SRV-Service";
+	public static final String BUSINESSMANAGEMENT = "BMT-Business Management";
+	public static final String INVESTMENT = "INV-Investment";
+	
 
 	public CostCenter getCostcenter() {
 		return costcenter;
