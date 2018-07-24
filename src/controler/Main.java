@@ -15,11 +15,13 @@ public class Main {
 		DataLayer manager;
 		try {
 			manager = new DataLayer();
-			QueryWriter qw = new QueryWriter();
+			Admin.login("admin", "abcmb");
+			System.out.println(Admin.isAdmin());
+			
 			//qw.exportNetworkList("test.xlsx");
 			
 			manager.disconnect();
-		} catch (DatabaseCommunicationsException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

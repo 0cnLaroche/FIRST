@@ -66,7 +66,6 @@ public class RUNModule extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Action Triggered");
 				list.getChildren().clear();
 				generateList(filter());
 			}

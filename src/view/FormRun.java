@@ -1,5 +1,8 @@
 package view;
 
+import java.util.Optional;
+
+import controler.Admin;
 import controler.DataLayer;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -12,6 +15,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 import model.CostCenter;
 import model.FinancialCode;
 import model.Run;
@@ -84,21 +88,29 @@ public class FormRun extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Edit run");
 				
-				if (me.run != null) {
-					Run run = me.run;
-					run.setNameEN(me.tfDescEN.getText());
-					run.setNameFR(me.tfDescFR.getText());
-					CostCenter cc = new CostCenter();
-					cc.setId(me.tfCostCenter.getText());
-					run.setCostcenter(cc);
-					run.setResponsible(me.tfApprover.getText());
-					run.setStatus(me.cbStatus.getValue()); 
-					run.setType(me.cbType.getValue()); // this should be changed once we switch to choice box instead
-					run.setReplacedBy(me.tfReplacedBy.getText());
+				if (Admin.isAdmin()) {
 					
-					DataLayer.updateRun(run);
-					System.out.println("Update Run Success");
+					if (me.run != null ) {
+						Run run = me.run;
+						run.setNameEN(me.tfDescEN.getText());
+						run.setNameFR(me.tfDescFR.getText());
+						CostCenter cc = new CostCenter();
+						cc.setId(me.tfCostCenter.getText());
+						run.setCostcenter(cc);
+						run.setResponsible(me.tfApprover.getText());
+						run.setStatus(me.cbStatus.getValue()); 
+						run.setType(me.cbType.getValue()); // this should be changed once we switch to choice box instead
+						run.setReplacedBy(me.tfReplacedBy.getText());
+						
+						DataLayer.updateRun(run);
+						System.out.println("Update Run Success");
+					}
+					
+				} else {
+					Admin.showLoginDialog();
 				}
+				
+				
 				
 
 			}

@@ -9,7 +9,8 @@ import view.*;
 
 import controler.DataLayer;
 
-public class Window  extends Application {
+public class FIRST  extends Application {
+	
 	
 	DataLayer manager;
 	
@@ -68,7 +69,7 @@ public class Window  extends Application {
 		
 		stage.setScene(scene);
 		
-		String css = Window.class.getResource("bootstrap3.css").toExternalForm();
+		String css = FIRST.class.getResource("bootstrap3.css").toExternalForm();
 		
 		scene.getStylesheets().clear();
 		scene.getStylesheets().add(css);

@@ -14,14 +14,11 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import model.*;
 
 public class DataLayer {
@@ -250,6 +247,40 @@ public class DataLayer {
 			update.executeUpdate();
 			
 			loadRuns();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		}
+		
+	}
+	public static void updateCostCenter(CostCenter cc) {
+		PreparedStatement update;
+		String query = "UPDATE CostCenter SET Name = ?, "
+				+ "ReportsTo = ?, "
+				+ "Manager = ?, "
+				// + "Directorate = ?, "
+				+ "EffectiveDate = ?, "
+				+ "ClosingDate = ?, "
+				+ "WHERE ID = ?;";
+
+		
+		try {
+			update = con.prepareStatement(query);
+			
+			update.setString(1, cc.getNameEN());
+			update.setInt(2, Integer.parseInt(cc.getParent().getParent().getId()));		
+			update.setString(5, cc.getManager());
+			//update.setString(6, run.getType());
+			update.setDate(7, Date.valueOf(cc.getEffectiveDate()));
+			update.setDate(8, Date.valueOf(cc.getClosingDate()));
+			
+			// WHERE
+			update.setInt(9, Integer.parseInt(cc.getId()));
+			
+			update.executeUpdate();
+			
+			loadCostCenters();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -608,6 +639,34 @@ public class DataLayer {
 			}
 
 		}
+	}
+	public static String getUserHash(String id) {
+		PreparedStatement select = null;
+		String query = "SELECT Hash FROM Admin WHERE ID = ?;";
+		ResultSet rs = null;
+		String hash = "";
+		
+		try {
+			select = con.prepareStatement(query);
+			
+			select.setString(1, id);
+			
+			rs = select.executeQuery();
+			
+			while (rs.next()) {
+				hash = rs.getString(1);
+			}
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hash;
+		
+		
+		
 	}
 	public static void importCost(File file) {
 		// Ça fonctionne mais trop long
