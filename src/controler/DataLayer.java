@@ -201,8 +201,9 @@ public class DataLayer {
 			
 			System.out.println("Update to database sucessful for WBS : " + nw.getWbs().toString());
 			
-			wbs.put(nw.getWbs().getId(), nw.getWbs());
-			projects.get(nw.getWbs().getProject().getId()).addWbs(nw.getWbs()); // Ajouter le WBS au projet
+			loadProjects();
+			// wbs.put(nw.getWbs().getId(), nw.getWbs());
+			// projects.get(nw.getWbs().getProject().getId()).addWbs(nw.getWbs()); // Ajouter le WBS au projet
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -237,7 +238,16 @@ public class DataLayer {
 			update.setInt(4, Integer.parseInt(run.getCostcenter().getId()));		
 			update.setString(5, run.getResponsible());
 			update.setString(6, run.getType());
-			update.setDate(7, Date.valueOf(run.getClosingDate()));
+			if (run.getClosingDate() != null) {
+				update.setDate(7, Date.valueOf(run.getClosingDate()));
+			} else {
+				update.setNull(7, java.sql.Types.DATE);
+			}
+			if (run.getEffectiveDate() != null) {
+				update.setDate(8, Date.valueOf(run.getEffectiveDate()));
+			} else {
+				update.setNull(8, java.sql.Types.DATE);
+			}
 			update.setString(8, run.getStatus());
 			update.setString(9, run.getReplacedBy());
 			
@@ -259,9 +269,9 @@ public class DataLayer {
 		String query = "UPDATE CostCenter SET Name = ?, "
 				+ "ReportsTo = ?, "
 				+ "Manager = ?, "
-				// + "Directorate = ?, "
+				+ "Directorate = ?, "
 				+ "EffectiveDate = ?, "
-				+ "ClosingDate = ?, "
+				+ "ClosingDate = ? "
 				+ "WHERE ID = ?;";
 
 		
@@ -269,14 +279,24 @@ public class DataLayer {
 			update = con.prepareStatement(query);
 			
 			update.setString(1, cc.getNameEN());
-			update.setInt(2, Integer.parseInt(cc.getParent().getParent().getId()));		
-			update.setString(5, cc.getManager());
-			//update.setString(6, run.getType());
-			update.setDate(7, Date.valueOf(cc.getEffectiveDate()));
-			update.setDate(8, Date.valueOf(cc.getClosingDate()));
+			update.setInt(2, Integer.parseInt(cc.getParent().getId()));		
+			update.setString(3, cc.getManager());
+			update.setString(4, cc.getDirectorate());
+
+			if (cc.getEffectiveDate() != null) {
+				update.setDate(5, Date.valueOf(cc.getEffectiveDate()));
+			} else {
+				update.setNull(5, java.sql.Types.DATE);
+			}
 			
+			if (cc.getClosingDate() != null) {
+				update.setDate(6, Date.valueOf(cc.getClosingDate()));
+			} else {
+				update.setNull(6, java.sql.Types.DATE);
+			}
+	
 			// WHERE
-			update.setInt(9, Integer.parseInt(cc.getId()));
+			update.setInt(7, Integer.parseInt(cc.getId()));
 			
 			update.executeUpdate();
 			
@@ -423,6 +443,8 @@ public class DataLayer {
 				CostCenter cc = new CostCenter();
 				cc.setId(rs.getString(1));
 				cc.setNameEN(rs.getString(3));
+				cc.setManager(rs.getString(4));
+				cc.setDirectorate(rs.getString(5));
 				try {
 					cc.setEffectiveDate(rs.getDate(6).toLocalDate());
 				} catch (NullPointerException e) {
@@ -437,7 +459,7 @@ public class DataLayer {
 				//Other fields to be added
 
 			}
-			loadCostCenterRelationships(index, "103100"); // 103100 as root
+			loadCostCenterRelationships(index, "103100");
 			
 
 		} catch (SQLException e) {

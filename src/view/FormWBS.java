@@ -3,6 +3,7 @@ package view;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import controler.Admin;
 import controler.DataLayer;
 import controler.NotFoundException;
 import javafx.collections.FXCollections;
@@ -26,6 +27,8 @@ public class FormWBS extends GridPane {
 	ChoiceBox<Byte> cbStage;
 	ChoiceBox<String> cbStatus;
 	DatePicker datePicker;
+	FormWBS me = this;
+	Network nw;
 	
 
 	public FormWBS() {
@@ -83,6 +86,7 @@ public class FormWBS extends GridPane {
 	}
 	
 	public void edit(Network nw) {
+		this.nw = nw;
 		tfNetwork.setText(nw.getId());
 		tfWbsID.setText(nw.getWbs().getId());
 		tfDescEN.setText(nw.getNameEN());
@@ -98,43 +102,56 @@ public class FormWBS extends GridPane {
 			@Override
 			public void handle(ActionEvent e) {
 				
-				model.Network nw = new Network();
-				nw.setId(tfNetwork.getText());
-				nw.setNameEN(tfDescEN.getText());
-				nw.setNameFR(tfDescFR.getText());
-				nw.setClosingDate(datePicker.getValue());
-				nw.setEffectiveDate(LocalDate.now());
-				nw.setStatus(cbStatus.getValue());
-	
-				model.Wbs wbs = new model.Wbs();
-				wbs.setId(tfWbsID.getText());
-				wbs.setNameEN(tfDescEN.getText());
-				wbs.setNameFR(tfDescFR.getText());
-				wbs.setApprover(tfApprover.getText());
-				wbs.setEffectiveDate(LocalDate.now());
-				wbs.setClosingDate(datePicker.getValue());
-				wbs.setStage(cbStage.getValue());
-				wbs.setStatus(cbStatus.getValue());
-				
-				
-				try {
-					wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
-				} catch (NotFoundException e1) {
-					// TODO Auto-generated catch block
-					System.err.println(e);
-				}
-				
-				nw.setWbs(wbs);
-				wbs.addNetwork(nw);
+				if (Admin.isAdmin()) {
+					
+					if (me.nw != null ) {
+						
+						model.Network nw = new Network();
+						nw.setId(tfNetwork.getText());
+						nw.setNameEN(tfDescEN.getText());
+						nw.setNameFR(tfDescFR.getText());
+						nw.setClosingDate(datePicker.getValue());
+						nw.setEffectiveDate(LocalDate.now());
+						nw.setStatus(cbStatus.getValue());
+			
+						model.Wbs wbs = new model.Wbs();
+						wbs.setId(tfWbsID.getText());
+						wbs.setNameEN(tfDescEN.getText());
+						wbs.setNameFR(tfDescFR.getText());
+						wbs.setApprover(tfApprover.getText());
+						wbs.setEffectiveDate(LocalDate.now());
+						wbs.setClosingDate(datePicker.getValue());
+						wbs.setStage(cbStage.getValue());
+						wbs.setStatus(cbStatus.getValue());
+						
+						
+						try {
+							wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
+						} catch (NotFoundException e1) {
+							// TODO Auto-generated catch block
+							System.err.println(e);
+						}
+						
+						nw.setWbs(wbs);
+						wbs.addNetwork(nw);
 
-				try {
-					wbs.setProject(DataLayer.getProject(wbs.getId().substring(0, 6)));
-					// REmplacer par quelque chose de plus fiable. Dropdown List?
-				} catch (NotFoundException e1) {
-					System.err.println(e);
+						try {
+							wbs.setProject(DataLayer.getProject(wbs.getId().substring(0, 6)));
+							// REmplacer par quelque chose de plus fiable. Dropdown List?
+						} catch (NotFoundException e1) {
+							System.err.println(e);
+						}
+						
+						DataLayer.updateProject(nw);
+
+						System.out.println("Update Project Success");
+					}
+					
+				} else {
+					Admin.showLoginDialog();
 				}
 				
-				DataLayer.updateProject(nw);
+
 
 			}
 		});

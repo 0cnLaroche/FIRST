@@ -91,7 +91,19 @@ public class FormRun extends GridPane {
 				if (Admin.isAdmin()) {
 					
 					if (me.run != null ) {
+						
 						Run run = me.run;
+						
+						tfRunID.setEditable(true);
+						tfDescEN.setEditable(true);
+						tfDescFR.setEditable(true);
+						// cbType // TODO : can disable apparently
+						tfCostCenter.setEditable(true);
+						tfApprover.setEditable(true);
+						tfReplacedBy.setEditable(true);
+						// cbStatus
+						datePicker.setEditable(true);
+						
 						run.setNameEN(me.tfDescEN.getText());
 						run.setNameFR(me.tfDescFR.getText());
 						CostCenter cc = new CostCenter();
@@ -101,6 +113,7 @@ public class FormRun extends GridPane {
 						run.setStatus(me.cbStatus.getValue()); 
 						run.setType(me.cbType.getValue()); // this should be changed once we switch to choice box instead
 						run.setReplacedBy(me.tfReplacedBy.getText());
+						run.setClosingDate(datePicker.getValue());
 						
 						DataLayer.updateRun(run);
 						System.out.println("Update Run Success");
@@ -121,6 +134,19 @@ public class FormRun extends GridPane {
 	public void edit(Run run) {
 		
 		this.run = run;
+		
+		if (Admin.isAdmin()) {
+			tfRunID.setEditable(false);
+			tfDescEN.setEditable(false);
+			tfDescFR.setEditable(false);
+			// cbType // TODO : can disable apparently
+			tfCostCenter.setEditable(false);
+			tfApprover.setEditable(false);
+			tfReplacedBy.setEditable(false);
+			// cbStatus
+			datePicker.setEditable(false);
+		}
+
 		
 		tfRunID.setText(run.getId());
 		tfDescEN.setText(run.getNameEN());

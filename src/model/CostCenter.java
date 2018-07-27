@@ -8,6 +8,7 @@ public class CostCenter extends FinancialCode {
 	
 	private ArrayList<CostCenter> children;
 	private CostCenter parent;
+	private String directorate;
 	
 	public CostCenter() {
 		children = new ArrayList<CostCenter>();
@@ -58,6 +59,14 @@ public class CostCenter extends FinancialCode {
 	}
 	public String toString() {
 		return this.getId() + " - " + this.getNameEN();
+	}
+
+	public String getDirectorate() {
+		return directorate;
+	}
+
+	public void setDirectorate(String directorate) {
+		this.directorate = directorate;
 	}
 	
 }

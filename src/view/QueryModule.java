@@ -80,7 +80,7 @@ public class QueryModule extends StackPane {
 
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setTitle("Query export confirmation");
-				alert.setHeaderText("Youpi, export succsessful!");
+				alert.setHeaderText("Yah, export succsessful!");
 				alert.setContentText("Do you wish to open the saved file?");
 				ButtonType btnYes = new ButtonType("Yes");
 				ButtonType btnNo = new ButtonType("No", ButtonData.CANCEL_CLOSE);
