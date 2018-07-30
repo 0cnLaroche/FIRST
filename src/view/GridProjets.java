@@ -1,14 +1,20 @@
 package view;
 
+import java.util.Optional;
+
 import controler.DataLayer;
 import controler.NotFoundException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -64,7 +70,26 @@ public class GridProjets extends GridPane {
 				ProjectModule report;
 
 				try {
+					Dialog dialog = new Dialog();
+					dialog.setTitle("Text Input Dialog");
+					dialog.setHeaderText("Look, a Text Input Dialog");
+					dialog.setContentText("Please enter your name:");
+					ListView lv = new ListView();
+					//ObservableList<String> items = FXCollections.observableArrayList(DataLayer);
+						//lv.setItems(items);
+					
+
+					// Traditional way to get the response value.
+					Optional<String> result = dialog.showAndWait();
+					if (result.isPresent()){
+					    System.out.println("Your name: " + result.get());
+					}
+
+					// The Java 8 way to get the response value (with lambda expression).
+					result.ifPresent(name -> System.out.println("Your name: " + name));
+					
 					report = new ProjectModule(DataLayer.getProject(tfProjectID.getText()));
+					
 					report.setTitle("Projects");
 					report.show();
 				} catch (NotFoundException e1) {
