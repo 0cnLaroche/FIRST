@@ -16,6 +16,10 @@ Users can export data from the export module in excel format. Eventually, we wan
 
 The application is made to integrate the IT Cost Model with an import functionality and index management.
 
+### Trello
+
+https://trello.com/b/eHTpWd8K/first-2
+
 ### Contact
 
 samuel.laroche@hrsdc-rhdcc.gc.ca
