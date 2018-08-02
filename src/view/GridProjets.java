@@ -12,12 +12,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.CostCenter;
+import model.Project;
 
 public class GridProjets extends GridPane {
 	
@@ -31,73 +37,73 @@ public class GridProjets extends GridPane {
 		this.setVgap(10);
 		this.setPadding(new Insets(25, 25, 25, 25));
 
-		Label lblProjectID = new Label("Project Code");
-		this.add(lblProjectID, 0, 0);
-
-		Label lblProposal = new Label("Proposal");
-		this.add(lblProposal, 0, 1);
-
-		Label lblNetwork = new Label("Network");
-		this.add(lblNetwork, 0, 2);
-
-		Label lblApprover = new Label("Approver");
-		this.add(lblApprover, 0, 3);
-
-		Label lblProjectName = new Label("Project Name");
-		this.add(lblProjectName, 0, 4);
-
-		TextField tfProjectID = new TextField();
-		this.add(tfProjectID, 1, 0);
-
-		TextField tfProposal = new TextField();
-		this.add(tfProposal, 1, 1);
-
-		TextField tfNetwork = new TextField();
-		this.add(tfNetwork, 1, 2);
-
-		TextField tfApprover = new TextField();
-		this.add(tfApprover, 1, 3);
-
-		TextField tfProjectName = new TextField();
-		this.add(tfProjectName, 1, 4);
-
+		Label lbKeyword = new Label("Keyword");
+		this.add(lbKeyword, 0, 0);
+		
+		TextField tfKeyword = new TextField();
+		this.add(tfKeyword, 0, 1);
+		
 		Button btn = new Button("Go");
+
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				System.out.println("Find project");
-				//System.out.println(manager.getProject(tfProjectID.getText()));
-				ProjectModule report;
+
+				Dialog<Project> dialog = new Dialog<Project>();
+				dialog.setTitle("Project Selection Dialog");
+				dialog.setHeaderText("Please select your project");
+				// dialog.setContentText("Please enter your name:");
+
+				ListView<Project> lv = new ListView<Project>();
+				lv.setPrefSize(500, 300);
+				ButtonType selectButtonType = new ButtonType("Select", ButtonData.OK_DONE);
+				dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
 
 				try {
-					Dialog dialog = new Dialog();
-					dialog.setTitle("Text Input Dialog");
-					dialog.setHeaderText("Look, a Text Input Dialog");
-					dialog.setContentText("Please enter your name:");
-					ListView lv = new ListView();
-					//ObservableList<String> items = FXCollections.observableArrayList(DataLayer);
-						//lv.setItems(items);
-					
 
-					// Traditional way to get the response value.
-					Optional<String> result = dialog.showAndWait();
-					if (result.isPresent()){
-					    System.out.println("Your name: " + result.get());
-					}
+					ObservableList<Project> items = FXCollections
+							.observableArrayList(DataLayer.queryProjects(tfKeyword.getText()));
+					lv.setItems(items);
+					MultipleSelectionModel<Project> lvSelModel = lv.getSelectionModel();
+					dialog.getDialogPane().setContent(lv);
+					
+					// Convert the result to a username-password-pair when the login button is clicked.
+					dialog.setResultConverter(dialogButton -> {
+					    if (dialogButton == selectButtonType) {
+					        return lvSelModel.selectedItemProperty().getValue();
+					    }
+					    return null;
+					});
 
-					// The Java 8 way to get the response value (with lambda expression).
-					result.ifPresent(name -> System.out.println("Your name: " + name));
-					
-					report = new ProjectModule(DataLayer.getProject(tfProjectID.getText()));
-					
-					report.setTitle("Projects");
-					report.show();
+					Optional<Project> result = dialog.showAndWait();
+
+					result.ifPresent(selection -> {
+						ProjectModule report;
+
+						//try {
+							report = new ProjectModule(selection);
+							report.setTitle("Projects");
+							report.show();
+						//} catch (NotFoundException e2) {
+							
+						//}
+
+					});
+
 				} catch (NotFoundException e1) {
-					// TODO Auto-generated catch block
 					System.err.println(e1);
 				}
 			}
 		});
-		this.add(btn, 1, 5);
+		this.add(btn, 1, 1);
+	}
+	private class selectorTreeCellImpl extends TreeCell<Project>{
+		
+		@Override
+		public void updateItem(Project item, boolean empty) {
+			super.updateItem(item, empty);
+            setText((item == null || empty) ? null : item.toString());
+            setGraphic(null);
+		}
 	}
 }

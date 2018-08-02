@@ -37,7 +37,7 @@ public class Run extends HBox {
 		status = new Label("" + r.getStatus().toString());
 		
 		Tooltip tpCC = new Tooltip();
-		tpCC.setText(r.getCostcenter().getId() + "\nManager: " + r.getCostcenter().getManager());
+		tpCC.setText(r.getCostcenter().getNameEN() + "\nManager: " + r.getCostcenter().getManager());
 		cc.setTooltip(tpCC);
 		
 		this.getChildren().addAll(id,desc,type,resp,cc,status);

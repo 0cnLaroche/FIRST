@@ -67,18 +67,18 @@ public class CostCenterModule extends BorderPane {
 				
 	}
 	private ArrayList<TreeItem<CostCenter>> populate(TreeItem<CostCenter> pitem, CostCenter pcc ){
+		
 		ArrayList<TreeItem<CostCenter>> children = new ArrayList<TreeItem<CostCenter>>();
 		
-		// TODO : if closed -> don't add
-		
 		for (CostCenter cc : pcc.getChildren()) {
-			TreeItem<CostCenter> item = new TreeItem<CostCenter>();
-			item.setValue(cc);
-			item.getChildren().addAll(populate(item,cc));
-			children.add(item);
+			if (cc.getStatus() != CostCenter.CLOSED) {
+				TreeItem<CostCenter> item = new TreeItem<CostCenter>();
+				item.setValue(cc);
+				item.getChildren().addAll(populate(item,cc));
+				children.add(item);
+			}
 		}
-		return children;
-		
+		return children;		
 	}
 	private class selectorTreeCellImpl extends TreeCell<CostCenter>{
 		

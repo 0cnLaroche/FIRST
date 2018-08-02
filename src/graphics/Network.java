@@ -21,13 +21,13 @@ import view.FormWBS;
 public class Network extends Sprite {
 	
 	private model.Network nw;
-	private Label name, id, cc, approver;
+	private Label name, id, cc, approver, status;
 	private Canvas canvas;
 	private GraphicsContext gc;
 	
 	private Label pjmngt, analyse, plan, design, build, test, deploy, stabilize;
 	
-	String nwStyle = "-fx-border-radius:20;-fx-border-width:5;-fx-background-radius:20;-fx-background-color:white;";
+	String nwStyle = "-fx-border-radius:20;-fx-border-width:5;-fx-background-radius:15;-fx-background-color:white;";
 	
 	
 	private ToggleButton showAct;
@@ -37,8 +37,8 @@ public class Network extends Sprite {
 		padding = 10;
 		this.setDimension(200, 100);
 		
-		canvas = new Canvas(this.getWidth() + padding * 2, this.getHeight() + padding * 2);
-		gc = canvas.getGraphicsContext2D();
+		//canvas = new Canvas(this.getWidth() + padding * 2, this.getHeight() + padding * 2);
+		//gc = canvas.getGraphicsContext2D();
 		
 		
 
@@ -54,28 +54,38 @@ public class Network extends Sprite {
 		VBox vb = new VBox();
 		DropShadow shadow = new DropShadow();
 		
-		vb.setSpacing(2);
+		vb.setSpacing(5);
 		
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER_LEFT);
-		grid.setHgap(5);
-		grid.setVgap(5);
-		grid.setPadding(new Insets(padding + 5, padding + 5, padding + 5, padding + 5));
+		grid.setHgap(15);
+		//grid.setVgap(5);
+		grid.setPadding(new Insets(5,10,5,10));
+		//grid.setPrefWidth(1300);
 		
-		name = new Label(nw.getNameEN());
-		grid.add(name, 0, 0);
-		
-		cc = new Label(nw.getWbs().getCostcenter().getId());
-		grid.add(cc, 0, 1);
-		
-		approver = new Label(nw.getWbs().getApprover());
-		grid.add(approver, 0, 2);
 		
 		id = new Label(nw.getId());
-		grid.add(id, 1, 0);
+		grid.add(id, 0, 0);
 		
+		name = new Label(nw.getNameEN());
+		name.setPrefWidth(500);
+		grid.add(name, 1, 0);
+		
+		status = new Label(nw.getStatus());
+		grid.add(status, 4, 0);
+		
+		cc = new Label(nw.getWbs().getCostcenter().getId());
+		cc.setPrefWidth(55);
+		grid.add(cc, 2, 0);
+		
+		approver = new Label(nw.getWbs().getApprover());
+		approver.setPrefWidth(500);
+		grid.add(approver, 3, 0);
+
 		showAct = new ToggleButton("+");
-		grid.add(showAct, 1, 2);
+		showAct.setPadding(new Insets(2));
+		grid.add(showAct, 5, 0);
+		
 		
 		showAct.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
@@ -135,27 +145,27 @@ public class Network extends Sprite {
 		case FinancialCode.ACTIVE :
 			grid.setStyle(nwStyle + "-fx-border-color:white;-fx-border-style:solid;");
 			for (Node lb : grid.getChildren()) {
-				lb.setStyle("-fx-text-fill: black");
+				lb.setStyle("-fx-text-fill: black;-fx-font:16px Tahoma;");
 			}
 			break;
 		case FinancialCode.CLOSED :
 			// grid.setStyle(nwStyle + "-fx-border-color: red;-fx-border-style:solid;");
 			grid.setStyle(nwStyle);
 			for (Node lb : grid.getChildren()) {
-				lb.setStyle("-fx-text-fill: red");
+				lb.setStyle("-fx-text-fill: red;-fx-font:16px Tahoma;");
 			}
 			break; //-fx-background-color:LightGray;
 		case FinancialCode.UNRELEASED :
 			grid.setStyle("-fx-border-radius:20;-fx-border-width:5;"
 					+ "-fx-border-color:white;-fx-border-style:dotted;");
 			for (Node lb : grid.getChildren()) {
-				lb.setStyle("-fx-text-fill: black;");
+				lb.setStyle("-fx-text-fill: black;-fx-font:16px Tahoma;");
 			}
 			break;
 		default : 
 			grid.setStyle(nwStyle + "-fx-border-color:white;-fx-border-style:solid;");
 			for (Node lb : grid.getChildren()) {
-				lb.setStyle("-fx-text-fill: black");
+				lb.setStyle("-fx-text-fill: black;-fx-font:16px Tahoma;");
 			}
 			break;
 		}

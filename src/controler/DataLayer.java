@@ -348,6 +348,51 @@ public class DataLayer {
 		return list;
 		
 	}
+	public static ArrayList<Project> queryProjects(String keyword) throws NotFoundException {
+		ArrayList<Project> list = new ArrayList<Project>();
+		ResultSet rs = null;
+		PreparedStatement statement = null;
+		String query = "SELECT DISTINCT p.ID FROM ProjectDefinition p "
+				+ "INNER JOIN WBS w on w.ProjectDefinition = p.ID "
+				+ "INNER JOIN Network n ON w.ID = n.WBS "
+				+ "WHERE p.ID = ? OR p.Proposal LIKE ? OR p.Name LIKE ? "
+				+ "OR n.ID = ? OR n.Name LIKE ? "
+				+ "OR w.ResponsibleCostCenter = ? OR w.Approver LIKE ?;";
+		
+		try {
+			statement = con.prepareStatement(query);
+			
+			statement.setString(1, keyword.toUpperCase()); //Project #
+			statement.setString(2, "%" + keyword + "%"); // Proposal
+			statement.setString(3, "%" + keyword + "%"); //Project Name
+			statement.setString(4, keyword); // Network #
+			statement.setString(5, "%" + keyword + "%"); // Network Name
+			try {
+				statement.setInt(6, Integer.parseInt(keyword)); // CostCenter
+			} catch (NumberFormatException e) {
+				statement.setNull(6, java.sql.Types.INTEGER);
+			}
+			statement.setString(7, "%" + keyword + "%"); // Approver
+			
+			rs = statement.executeQuery();
+			
+			if (rs.next() == false) {
+				throw new NotFoundException(); // Return exception if there is no projects found
+			} else {
+				do {
+					list.add(projects.get(rs.getString(1)));
+				} while (rs.next());
+			}
+
+			
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return list;
+		
+	}
 	public static ArrayList<Run> queryRuns(String keyword, String approver, String costcenter) throws NotFoundException {
 		// TODO : Find a way to sort results by description
 		ArrayList<Run> list = new ArrayList<Run>();

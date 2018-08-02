@@ -38,7 +38,7 @@ public class Project extends FinancialCode {
 	public ArrayList<Wbs> getWbs(){
 		return this.wbs;
 	}
-	public String toString() {
+	public String toJSON() {
 		String str = "{Id: '" + this.getId() + "', Name :'" + this.getNameEN() + "'";
 		if (!this.wbs.isEmpty()) {
 			int i = 1;
@@ -53,6 +53,9 @@ public class Project extends FinancialCode {
 		}
 		str += "}\n";
 		return str;
+	}
+	public String toString() {
+		return this.getId() + " | " + this.getNameEN();
 	}
 	
 	//TODO: Get WBS list 

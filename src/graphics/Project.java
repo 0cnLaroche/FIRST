@@ -64,22 +64,21 @@ public class Project extends Sprite {
 		grid.setVgap(5);
 		grid.setPadding(new Insets(20,10,5,10));
 		
+		id = new Text(prj.getId());
+		id.setStyle(textStyle);
+		grid.add(id, 0, 0);
 		
 		name = new Text(prj.getNameEN());
 		name.setStyle(textStyle);
-		grid.add(name, 0, 0);
+		grid.add(name, 1, 0);
 		
-		model = new Text();
+		model = new Text(prj.getModel());
 		model.setStyle(textStyle);
 		grid.add(model, 0, 1);
 		
 		proposal = new Text(prj.getProposal());
 		proposal.setStyle(textStyle);
-		grid.add(proposal, 0, 2);
-		
-		id = new Text(prj.getId());
-		id.setStyle(textStyle);
-		grid.add(id, 1, 0);
+		grid.add(proposal, 1, 1);
 		
 		// grid.setStyle("-fx-border-color:purple;-fx-border-style:solid;-fx-border-radius:20;");
 		

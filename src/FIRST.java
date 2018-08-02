@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import view.*;
@@ -16,10 +17,9 @@ public class FIRST  extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-	      /* 
-	      Code for JavaFX application. 
-	      (Stage, scene, scene graph) 
-	      */    
+		
+		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("res/raccoon.png")));
+
 		try {
 			manager = new DataLayer();
 		} catch (controler.DatabaseCommunicationsException e) {
@@ -35,8 +35,7 @@ public class FIRST  extends Application {
 		CostCenterModule ccMod = new CostCenterModule();
 		QueryModule queryMod = new QueryModule();
 		//ProjectModule pMod = new ProjectModule();
-	
-		
+			
 		//Tabulation
 		TabPane tabPane = new TabPane();
 		

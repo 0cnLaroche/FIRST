@@ -38,8 +38,7 @@ public class QueryModule extends StackPane {
 
 		// Queries Elements
 		ObservableList<String> queryList = FXCollections.observableArrayList("Networks by Approvers", "RUN codes", 
-				"Cost Centers", "Cost Center by level"); // Add other queries here
-
+				"Cost Centers by level"); // Add other queries here
 
 		ListView<String> lvQueries = new ListView<String>(queryList);
 		lvQueries.setPrefSize(250, 120);
@@ -53,7 +52,6 @@ public class QueryModule extends StackPane {
 				// TODO: add description of queries in a label
 			}
 		});
-
 		Button btnQuery = new Button("Open");
 
 		grid = new GridPane();
@@ -88,16 +86,14 @@ public class QueryModule extends StackPane {
 				Desktop desktop = Desktop.getDesktop();
 
 				switch (lvSelModel.selectedItemProperty().getValue()) {
-				
-				// TODO: Add cost center lists by level and on a single column
 
-				case "Networks by Approvers":
+				case "Cost Centers by level":
 
-					fChooser.setInitialFileName("NetworksByApprover");
+					fChooser.setInitialFileName("CostCentersByLevel");
 					selectedFile = fChooser.showSaveDialog(null);
 
 					try {
-						qw.exportNetworkList(selectedFile);
+						qw.exportCostCenterByLevel(selectedFile);;
 
 						Optional<ButtonType> result = alert.showAndWait();
 
@@ -113,7 +109,6 @@ public class QueryModule extends StackPane {
 
 						e.printStackTrace();
 					}
-
 					break;
 				case "RUN codes":
 
@@ -137,6 +132,30 @@ public class QueryModule extends StackPane {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					break;
+				case "Networks by Approvers":
+
+					fChooser.setInitialFileName("NetworksByApprover");
+					selectedFile = fChooser.showSaveDialog(null);
+
+					try {
+						qw.exportNetworkList(selectedFile);
+
+						Optional<ButtonType> result = alert.showAndWait();
+
+						if (result.get() == btnYes) {
+							desktop.open(selectedFile);
+						} else {
+							// ... user chose CANCEL or closed the dialog
+						}
+
+					} catch (NullPointerException e) {
+						System.out.println("Export cancelled by User");
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+
 					break;
 				}
 

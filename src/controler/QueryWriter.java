@@ -73,6 +73,9 @@ public class QueryWriter {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("CostCenters_by_level");
         
+        String[] header = {"Cost Center #", "Description", "Manager", "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6"};    
+        data.add(header);
+        
         for (CostCenter cc : DataLayer.getCostCenterList().values()) {
         	data.add(familyToArray(cc));
         	
@@ -105,9 +108,9 @@ public class QueryWriter {
 	private String[] familyToArray(CostCenter cc) {
 		
 		CostCenter parent = cc;
-		String[] line = new String[7];
+		String[] line = new String[10];
 		ArrayList<String> family = new ArrayList<String>();
-		int size;
+		int size,gap;
 		
 		do {
 			family.add(parent.getId());
@@ -116,11 +119,16 @@ public class QueryWriter {
 		} while (parent != null);
 		
 		size = family.size();
+		gap = 3;
+		line[0] = cc.getId();
+		line[1] = cc.getNameEN();
+		line[2] = cc.getManager();
+		
 		for (int i = 0; i < size;i++) {
-			line[i] = family.get(size-1-i);
+			line[i+gap] = family.get(size-1-i);
 		}
 		try {
-			for (int j = 0 + size; j < 6; j++) {
+			for (int j = 0 + size+gap; j < 6+gap; j++) {
 				line[j] = cc.getId();
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
