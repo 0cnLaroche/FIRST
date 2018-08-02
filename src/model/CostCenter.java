@@ -57,6 +57,7 @@ public class CostCenter extends FinancialCode {
 		return str;
 		
 	}
+
 	public String toString() {
 		return this.getId() + " - " + this.getNameEN();
 	}

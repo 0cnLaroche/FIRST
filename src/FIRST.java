@@ -31,7 +31,7 @@ public class FIRST  extends Application {
 		//GridCostCenter gridCC = new GridCostCenter();
 		
 		// Modules
-		RUNModule runMod = new RUNModule(DataLayer.getRunList());
+		RUNModule runMod = new RUNModule();
 		CostCenterModule ccMod = new CostCenterModule();
 		QueryModule queryMod = new QueryModule();
 		//ProjectModule pMod = new ProjectModule();
@@ -53,8 +53,8 @@ public class FIRST  extends Application {
 		tabCC.setContent(ccMod);
 		
 		Tab tabQueries = new Tab();
-		tabQueries.setText("Queries");	
-		tabQueries.setContent(queryMod);
+		tabQueries.setText("Export");	// Changed that from 'Queries' to 'Export' cause seems to make more sense 
+		tabQueries.setContent(queryMod); // to from a user perspective
 		
 		Tab tabAbout = new Tab();
 		tabAbout.setText("About");

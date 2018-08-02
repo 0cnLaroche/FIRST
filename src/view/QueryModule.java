@@ -37,10 +37,9 @@ public class QueryModule extends StackPane {
 		Loading loadAnim = new Loading();
 
 		// Queries Elements
-		ObservableList<String> queryList = FXCollections.observableArrayList("Networks by Approvers", "RUN codes"); // Add
-																													// other
-																													// queries
-																													// here
+		ObservableList<String> queryList = FXCollections.observableArrayList("Networks by Approvers", "RUN codes", 
+				"Cost Centers", "Cost Center by level"); // Add other queries here
+
 
 		ListView<String> lvQueries = new ListView<String>(queryList);
 		lvQueries.setPrefSize(250, 120);
@@ -89,6 +88,8 @@ public class QueryModule extends StackPane {
 				Desktop desktop = Desktop.getDesktop();
 
 				switch (lvSelModel.selectedItemProperty().getValue()) {
+				
+				// TODO: Add cost center lists by level and on a single column
 
 				case "Networks by Approvers":
 

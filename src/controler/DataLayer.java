@@ -49,6 +49,9 @@ public class DataLayer {
 		loadProjects();
 		
 	}
+	public static HashMap<String, CostCenter> getCostCenterList() {
+		return costcenters;
+	}
 	public static ArrayList<String[]> queryFromFile(String path) { // Tested 04/07/2018 SL
 		
 		ClassLoader classLoader = DataLayer.class.getClassLoader();

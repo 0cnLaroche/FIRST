@@ -10,6 +10,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import model.CostCenter;
+
 public class QueryWriter {
 	
 	public void export(File file, String queryLocation, String title) {
@@ -63,5 +65,70 @@ public class QueryWriter {
 		}
 
 	}
+	public void exportCostCenterByLevel(File file) {
 
+		
+		ArrayList<String[]> data = new ArrayList<String[]>();
+		//data = DataLayer.queryFromFile(queryLocation);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("CostCenters_by_level");
+        
+        for (CostCenter cc : DataLayer.getCostCenterList().values()) {
+        	data.add(familyToArray(cc));
+        	
+        }
+		
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileOutputStream out = new FileOutputStream(file);
+			
+			for (int i = 0; i<data.size() -1; i++) {
+		        Row row = sheet.createRow(i);
+		        String[] line = data.get(i);
+				for (int j = 0; j<line.length-1;j++) {
+			        Cell cell = row.createCell(j);
+			        cell.setCellValue(line[j]);
+				}
+
+			}
+			workbook.write(out);
+			out.close();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		
+	}
+	private String[] familyToArray(CostCenter cc) {
+		
+		CostCenter parent = cc;
+		String[] line = new String[7];
+		ArrayList<String> family = new ArrayList<String>();
+		int size;
+		
+		do {
+			family.add(parent.getId());
+			parent = parent.getParent();
+			
+		} while (parent != null);
+		
+		size = family.size();
+		for (int i = 0; i < size;i++) {
+			line[i] = family.get(size-1-i);
+		}
+		try {
+			for (int j = 0 + size; j < 6; j++) {
+				line[j] = cc.getId();
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println(family.toString());
+		}
+
+		// TODO: Add manager; description; col headers
+		return line;
+		
+	}
 }

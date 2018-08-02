@@ -5,25 +5,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.javafx.geom.BaseBounds;
-import com.sun.javafx.geom.transform.BaseTransform;
-import com.sun.javafx.jmx.MXNodeAlgorithm;
-import com.sun.javafx.jmx.MXNodeAlgorithmContext;
-import com.sun.javafx.sg.prism.NGNode;
-
+import controler.DataLayer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -41,14 +37,15 @@ public class RUNModule extends BorderPane {
 	protected GridPane grid;
 	protected CheckBox cbActive, cbClosed, cbMnt, cbSrv, cbBmt, cbInv;
 	protected ComboBox<String> cbCostCenter, cbManager;
+	protected TextField tfId, tfDesc;
 	protected Button filterReset;
 	private String labelStyle = "-fx-text-fill: #ffffff;-fx-font: 16 Geneva; -fx-font-weight:bold;";
 	private String filterStyle = "-fx-text-fill: #ffffff;-fx-font: 14 Geneva;-fx-text-weight:bold;";
 	
-	public RUNModule(ArrayList<Run> run) {
+	public RUNModule() {
 		
-		source = run;
-		
+		source = DataLayer.getRunList();
+
         root = new BorderPane();
         hbLegend = new HBox();
         resultBox = new VBox();
@@ -181,12 +178,48 @@ public class RUNModule extends BorderPane {
         
         filtersBox.getChildren().addAll(lbManager, cbManager);
         
+        Label lbId = new Label("#");
+        lbId.setStyle(labelStyle);
+        
+        tfId = new TextField();
+        tfId.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				list.getChildren().clear();
+				generateList(filter());
+				
+			}
+        	
+        });
+        
+        filtersBox.getChildren().addAll(lbId,tfId);
+        
+        Label lbDesc = new Label("Keyword");
+        lbDesc.setStyle(labelStyle);
+        
+        tfDesc = new TextField();
+        tfDesc.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				list.getChildren().clear();
+				generateList(filter());
+				
+			}
+        	
+        });
+        
+        filtersBox.getChildren().addAll(lbDesc,tfDesc);
+
+        
         filterReset = new Button("Clear");
         filterReset.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				list.getChildren().clear();
+				source = DataLayer.getRunList();
 				generateList(source);
 				cbActive.setSelected(true);
 				cbClosed.setSelected(true);
@@ -243,8 +276,18 @@ public class RUNModule extends BorderPane {
 	public ArrayList<Run> filter() {
 		ArrayList<Run> filtered = (ArrayList<Run>) source.clone();
 
-		// for (int i = 0; i < source.size() -1; i++) {
 		for (Run r : source) {
+			if(tfId.getText() != null) {
+				if (!r.getId().contains(tfId.getText())) {
+					filtered.remove(r);
+				}
+			}
+			if(tfDesc.getText() != null || tfDesc.getText().length() < 2) {
+				if (!r.getNameEN().toLowerCase().contains(tfDesc.getCharacters()) 
+						/*|| !r.getNameFR().contains(tfDesc.getCharacters())*/) {
+					filtered.remove(r);
+				}
+			}
 			if (!cbActive.isSelected()) {
 				if (r.getStatus().equals(FinancialCode.ACTIVE)) {
 					filtered.remove(r);
@@ -361,5 +404,6 @@ public class RUNModule extends BorderPane {
 		cbManager.setItems(options);
 		
 	}
+	
 
 }

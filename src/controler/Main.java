@@ -20,8 +20,8 @@ public class Main {
 			System.out.println(Admin.isAdmin());
 			
 			// DataLayer.importCost(new File("C://dev/2019.csv"));
-			
-			//qw.exportNetworkList("test.xlsx");
+			QueryWriter qw = new QueryWriter();
+			qw.exportCostCenterByLevel(new File("C://dev/cclist.xlsx"));
 			
 			manager.disconnect();
 		} catch (Exception e) {
