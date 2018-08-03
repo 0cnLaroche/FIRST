@@ -277,62 +277,70 @@ public class RUNModule extends BorderPane {
 		ArrayList<Run> filtered = (ArrayList<Run>) source.clone();
 
 		for (Run r : source) {
-			if(tfId.getText() != null) {
-				if (!r.getId().contains(tfId.getText())) {
-					filtered.remove(r);
-				}
-			}
-			if(tfDesc.getText() != null || tfDesc.getText().length() < 2) {
-				if (!r.getNameEN().toLowerCase().contains(tfDesc.getCharacters()) 
-						/*|| !r.getNameFR().contains(tfDesc.getCharacters())*/) {
-					filtered.remove(r);
-				}
-			}
-			if (!cbActive.isSelected()) {
-				if (r.getStatus().equals(FinancialCode.ACTIVE)) {
-					filtered.remove(r);
-				}
-			}
-			if (!cbClosed.isSelected()) {
-				if (r.getStatus().equals(FinancialCode.CLOSED)) {
-					filtered.remove(r);
-				}
-			}
-			if (!cbMnt.isSelected()) {
-				if (r.getType().equals("MNT-Maintenance")) {
-					filtered.remove(r);
-				}
-			}
-			if (!cbSrv.isSelected()) {
-				if (r.getType().equals("SRV-Service")) {
-					filtered.remove(r);
-				}
-			}
-			if (!cbBmt.isSelected()) {
-				if (r.getType().equals("BMT-Business Management")) {
-					filtered.remove(r);
-				}
-			}
-			if (!cbInv.isSelected()) {
-				if (r.getType().equals("INV-Investment")) {
-					filtered.remove(r);
-				}
-			}
-			if (cbCostCenter.getValue() != null) {
-				if (!r.getCostcenter().getId().equals(cbCostCenter.getValue())) {
-					filtered.remove(r);
-				}
-			}
-			if (cbManager.getValue() != null) {
-				try {
-					if (!r.getResponsible().equals(cbManager.getValue())) {
+			
+			try {
+				
+				if(tfId.getText() != null && tfId.getText().length() > 0) {
+					if (!r.getId().contains(tfId.getText())) {
 						filtered.remove(r);
 					}
-				} catch (NullPointerException e) {
-					System.out.println(r.toString());
 				}
+				if(tfDesc.getText() != null && tfDesc.getText().length() > 0) {
+					if (!r.getNameEN().toLowerCase().contains(tfDesc.getCharacters()) 
+							/*|| !r.getNameFR().contains(tfDesc.getCharacters())*/) {
+						filtered.remove(r);
+					}
+				}
+				if (!cbActive.isSelected()) {
+					if (r.getStatus().equals(FinancialCode.ACTIVE)) {
+						filtered.remove(r);
+					}
+				}
+				if (!cbClosed.isSelected()) {
+					if (r.getStatus().equals(FinancialCode.CLOSED)) {
+						filtered.remove(r);
+					}
+				}
+				if (!cbMnt.isSelected()) {
+					if (r.getType().equals("MNT-Maintenance")) {
+						filtered.remove(r);
+					}
+				}
+				if (!cbSrv.isSelected()) {
+					if (r.getType().equals("SRV-Service")) {
+						filtered.remove(r);
+					}
+				}
+				if (!cbBmt.isSelected()) {
+					if (r.getType().equals("BMT-Business Management")) {
+						filtered.remove(r);
+					}
+				}
+				if (!cbInv.isSelected()) {
+					if (r.getType().equals("INV-Investment")) {
+						filtered.remove(r);
+					}
+				}
+				if (cbCostCenter.getValue() != null) {
+					if (!r.getCostcenter().getId().equals(cbCostCenter.getValue())) {
+						filtered.remove(r);
+					}
+				}
+				if (cbManager.getValue() != null) {
+					try {
+						if (!r.getResponsible().equals(cbManager.getValue())) {
+							filtered.remove(r);
+						}
+					} catch (NullPointerException e) {
+						System.out.println(r.toString());
+					}
 
+				}
+				
+			} catch (NullPointerException e) {
+				
 			}
+			
 			// TODO: Add filters for cost centers
 		}
 		return filtered;
