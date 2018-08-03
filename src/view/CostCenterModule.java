@@ -36,7 +36,9 @@ public class CostCenterModule extends BorderPane {
 	protected TreeView<CostCenter> treeView;
 	
 	public CostCenterModule() {
-		
+		load();		
+	}
+	public void load() {
 		try {
 			model.CostCenter ccroot = DataLayer.getCostCenter("103100");
 			TreeItem<CostCenter> troot = new TreeItem<CostCenter>();
@@ -64,7 +66,6 @@ public class CostCenterModule extends BorderPane {
 
 			e.printStackTrace();
 		}
-				
 	}
 	private ArrayList<TreeItem<CostCenter>> populate(TreeItem<CostCenter> pitem, CostCenter pcc ){
 		

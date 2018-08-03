@@ -51,7 +51,7 @@ public class QueryWriter {
 	public void exportNetworkList(File file) throws NullPointerException {
 		
 		if (file != null) {
-			this.export(file, "sql/network_by_approver.sql", "Network by Approver");
+			this.export(file, "/sql/network_by_approver.sql", "Network by Approver");
 		} else {
 			throw new NullPointerException();
 		}
@@ -59,7 +59,7 @@ public class QueryWriter {
 	}
 	public void exportRunList(File file) throws NullPointerException {
 		if (file != null) {
-			this.export(file, "sql/run.sql", "RUN");
+			this.export(file, "/sql/run.sql", "RUN");
 		} else {
 			throw new NullPointerException();
 		}

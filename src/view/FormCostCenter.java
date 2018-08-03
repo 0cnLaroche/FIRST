@@ -1,12 +1,17 @@
 package view;
 
+import java.util.Optional;
+
 import controler.Admin;
 import controler.DataLayer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,6 +23,7 @@ public class FormCostCenter extends GridPane {
 	TextField tfID, tfDescEN, tfDescFR, tfManager, tfDirectorate;
 	DatePicker datePicker;
 	CostCenter cc;
+	FormCostCenter me = this;
 	
 	public FormCostCenter() {
 
@@ -72,21 +78,43 @@ public class FormCostCenter extends GridPane {
 					tfDirectorate.setEditable(true);
 					datePicker.setEditable(true);
 					
-					CostCenter newcc = new CostCenter();
-					newcc.setId(tfID.getText());
-					newcc.setNameEN(tfDescEN.getText());
-					newcc.setNameFR(tfDescFR.getText());
-					newcc.setManager(tfManager.getText());
-					newcc.setClosingDate(datePicker.getValue());
-					newcc.setDirectorate(cc.getDirectorate()); // TODO : Create a choiceBox
-					newcc.setParent(cc.getParent());
-					newcc.setEffectiveDate(cc.getEffectiveDate());
+					Alert alert = new Alert(AlertType.CONFIRMATION);
+					alert.setTitle("Confirmation Dialog");
+					alert.setHeaderText("Updating Cost Center");
+					alert.setContentText("Are you sure you want to update this cost center?");
+
+					Optional<ButtonType> result = alert.showAndWait();
 					
-					DataLayer.updateCostCenter(newcc);
-					System.out.println("Update Cost Center Success");
+					if (result.get() == ButtonType.OK) {
+						CostCenter newcc = new CostCenter();
+						newcc.setId(tfID.getText());
+						newcc.setNameEN(tfDescEN.getText());
+						newcc.setNameFR(tfDescFR.getText());
+						newcc.setManager(tfManager.getText());
+						newcc.setClosingDate(datePicker.getValue());
+						newcc.setDirectorate(cc.getDirectorate()); // TODO : Create a choiceBox
+						newcc.setParent(cc.getParent());
+						newcc.setEffectiveDate(cc.getEffectiveDate());
+						
+						DataLayer.updateCostCenter(newcc);
+						
+						CostCenterModule parent = (CostCenterModule) me.getParent();
+						parent.load(); // to refresh
+						
+					} else {
+						
+					}
 				
 				} else {
-					Admin.showLoginDialog();
+					if (Admin.showLoginDialog()) {
+						tfID.setEditable(true);
+						tfDescEN.setEditable(true);
+						tfDescFR.setEditable(true);
+						tfManager.setEditable(true);
+						tfDirectorate.setEditable(true);
+						datePicker.setEditable(true);
+						
+					}
 				}
 				
 

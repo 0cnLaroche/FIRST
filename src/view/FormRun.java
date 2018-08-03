@@ -77,7 +77,7 @@ public class FormRun extends GridPane {
 		
 		this.add(new Label("Closing Date"), 0, 8);
 		datePicker = new DatePicker();
-		this.add(datePicker, 1, 7);
+		this.add(datePicker, 1, 8);
 		
 		// TODO : Add CSD and Service ID
 
@@ -129,7 +129,7 @@ public class FormRun extends GridPane {
 			}
 		});
 		
-		this.add(btn, 1, 8);
+		this.add(btn, 1, 9);
 	}
 	public void edit(Run run) {
 		

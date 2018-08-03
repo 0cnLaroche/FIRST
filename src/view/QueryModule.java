@@ -105,8 +105,8 @@ public class QueryModule extends StackPane {
 
 					} catch (NullPointerException e) {
 						System.out.println("Export cancelled by User");
+						e.printStackTrace();
 					} catch (IOException e) {
-
 						e.printStackTrace();
 					}
 					break;
@@ -129,6 +129,7 @@ public class QueryModule extends StackPane {
 
 					} catch (NullPointerException e) {
 						System.out.println("Export cancelled by User");
+						e.printStackTrace();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -151,6 +152,7 @@ public class QueryModule extends StackPane {
 
 					} catch (NullPointerException e) {
 						System.out.println("Export cancelled by User");
+						e.printStackTrace();
 					} catch (IOException e) {
 
 						e.printStackTrace();

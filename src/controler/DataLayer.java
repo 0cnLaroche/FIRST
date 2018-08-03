@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,14 +57,18 @@ public class DataLayer {
 	public static ArrayList<String[]> queryFromFile(String path) { // Tested 04/07/2018 SL
 		
 		ClassLoader classLoader = DataLayer.class.getClassLoader();
-		File file = new File(classLoader.getResource(path).getFile());
+		//DataLayer.class.getResource("/sql/" + path);
+		//FIRST.class.getResourceAsStream("res/raccoon.png")
+		//File file = new File(classLoader.getResource(path).getFile());
+		InputStream is = DataLayer.class.getResourceAsStream(path);
+		
 		ResultSet rs = null;
 		ArrayList<String[]> result = new ArrayList<String[]>();
 		
 		
 		String query = "";
 		
-		try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))){
 			String line;
 			while ((line = reader.readLine()) != null){
 				query += line;

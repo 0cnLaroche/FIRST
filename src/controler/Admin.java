@@ -40,7 +40,7 @@ public class Admin {
 
         
 	}
-	public static void showLoginDialog() {
+	public static boolean showLoginDialog() {
 		
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("Login Dialog");
@@ -92,6 +92,7 @@ public class Admin {
 		result.ifPresent(usernamePassword -> {
 			Admin.login(usernamePassword.getKey(), usernamePassword.getValue());
 		});
+		return adminUsr;
 	}
 	public static boolean isAdmin() {
 		return adminUsr;
