@@ -1,4 +1,4 @@
-package graphics;
+package element;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

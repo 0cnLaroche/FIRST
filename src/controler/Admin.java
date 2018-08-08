@@ -40,11 +40,14 @@ public class Admin {
 
         
 	}
+	public static void logoff() {
+		adminUsr = false;
+	}
 	public static boolean showLoginDialog() {
 		
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("Login Dialog");
-		dialog.setHeaderText("Hey You need to be an admin to change that, please login");
+		dialog.setHeaderText("Need access to change my data? I will need some identification please");
 		
 		GridPane grid = new GridPane();
 

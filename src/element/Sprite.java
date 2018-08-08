@@ -1,4 +1,4 @@
-package graphics;
+package element;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;

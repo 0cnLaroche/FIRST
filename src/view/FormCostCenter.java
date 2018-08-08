@@ -106,15 +106,12 @@ public class FormCostCenter extends GridPane {
 					}
 				
 				} else {
-					if (Admin.showLoginDialog()) {
-						tfID.setEditable(true);
-						tfDescEN.setEditable(true);
-						tfDescFR.setEditable(true);
-						tfManager.setEditable(true);
-						tfDirectorate.setEditable(true);
-						datePicker.setEditable(true);
-						
-					}
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Admin Dialog");
+					alert.setHeaderText("Hey, seems like you don't have access to change that");
+					alert.setContentText("You can contact your CATS Administration Team to request a change. "
+							+ "For Admins, click on the lock button to enter your credentials.");
+					alert.showAndWait();
 				}
 				
 
@@ -127,14 +124,14 @@ public class FormCostCenter extends GridPane {
 		
 		this.cc = cc;
 		
-		if (!Admin.isAdmin()) {
+		/*if (!Admin.isAdmin()) {
 			tfID.setEditable(false);
 			tfDescEN.setEditable(false);
 			tfDescFR.setEditable(false);
 			tfManager.setEditable(false);
 			tfDirectorate.setEditable(false);
 			datePicker.setEditable(false);
-		}
+		}*/
 		
 		tfID.setText(cc.getId());
 		tfDescEN.setText(cc.getNameEN());

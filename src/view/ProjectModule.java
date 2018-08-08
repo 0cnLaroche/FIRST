@@ -34,7 +34,7 @@ public class ProjectModule extends Stage {
 
 		// IDée : Créer un group pour chaque element et ajouter le text comme objet Text qui pourront être accedé
         
-        graphics.Project prj = new graphics.Project();
+        element.Project prj = new element.Project();
         prj.setSource(project);
         //prj.setPrefWidth(1440);
         prj.render();
@@ -108,7 +108,7 @@ public class ProjectModule extends Stage {
             }
         	
         	for (Network n : w.getNetworks()) {
-        		graphics.Network gn = new graphics.Network();
+        		element.Network gn = new element.Network();
         		gn.setSource(n);
         		gn.render();
         		flow.getChildren().add(gn);

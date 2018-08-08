@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import controler.QueryWriter;
-import graphics.Loading;
+import element.Loading;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;

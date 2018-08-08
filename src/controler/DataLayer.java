@@ -468,6 +468,11 @@ public class DataLayer {
 		}
 
 	}
+	public static void refresh() {
+		loadCostCenters();
+		loadRuns();
+		loadProjects();
+	}
 	private static void loadCostCenterRelationships(ArrayList<String[]> index, String parent){
 
 		for (String[] entry: index) {

@@ -1,17 +1,26 @@
 import javafx.application.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import view.*;
-
-import controler.DataLayer;
+import controler.*;
 
 public class FIRST  extends Application {
 	
+	GridProjets gridProjets;
+	RUNModule runMod;
+	CostCenterModule ccMod;
+	QueryModule queryMod;
 	
 	DataLayer manager;
 	
@@ -25,19 +34,92 @@ public class FIRST  extends Application {
 		} catch (controler.DatabaseCommunicationsException e) {
 			this.stop();
 		}
+		
 		// Search Grids
-		GridProjets gridProjets = new GridProjets();
+		gridProjets = new GridProjets();
 		//GridRun gridRun = new GridRun();
 		//GridCostCenter gridCC = new GridCostCenter();
 		
 		// Modules
-		RUNModule runMod = new RUNModule();
-		CostCenterModule ccMod = new CostCenterModule();
-		QueryModule queryMod = new QueryModule();
+		runMod = new RUNModule();
+		ccMod = new CostCenterModule();
+		queryMod = new QueryModule();
 		//ProjectModule pMod = new ProjectModule();
 			
 		//Tabulation
 		TabPane tabPane = new TabPane();
+		// HBox of control buttons
+		HBox hbox = new HBox();
+		hbox.setSpacing(2);
+		
+		Button btnCopy = createButton("copy.png");
+		btnCopy.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent e) {
+				// TODO copy to clipboard
+				
+			}
+			
+		});
+		
+		Button btnExport = createButton("export.png");
+		btnExport.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Export to PDF
+				
+			}
+			
+		});
+		
+
+		Button btnLock = createButton("lock.png");
+		
+		btnLock.setOnAction(new EventHandler<ActionEvent>() {
+			// Just switch the image whether or not the user is logged as admin
+			@Override
+			public void handle(ActionEvent event) {
+				if (!Admin.isAdmin()) {
+					if(Admin.showLoginDialog()) {
+				        ImageView imageView = new ImageView(new Image(getClass().getResource("res/unlock.png").toExternalForm(),
+				                40, 40, false, true));
+				        btnLock.setGraphic(imageView);
+					}
+				} else {
+					Admin.logoff();
+			        ImageView imageView = new ImageView(new Image(getClass().getResource("res/lock.png").toExternalForm(),
+			                40, 40, false, true));
+			        btnLock.setGraphic(imageView);
+				}
+			}
+		});
+		
+		
+		Button btnRefresh = createButton("refresh.png");
+		btnRefresh.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				DataLayer.refresh(); // refresh data from db
+				// reload modules
+				ccMod.load();
+				runMod.load();
+				// Project Module doesn't need to be reloaded right now since we still need a keywork to open it
+			}
+		});
+		hbox.getChildren().addAll(btnCopy,btnExport,btnLock,btnRefresh);
+        // Anchor the controls
+        AnchorPane anchor = new AnchorPane();
+        anchor.getChildren().addAll(tabPane, hbox);
+        AnchorPane.setTopAnchor(hbox, 3.0);
+        AnchorPane.setRightAnchor(hbox, 5.0);
+        AnchorPane.setTopAnchor(tabPane, 1.0);
+        AnchorPane.setRightAnchor(tabPane, 1.0);
+        AnchorPane.setLeftAnchor(tabPane, 1.0);
+        AnchorPane.setBottomAnchor(tabPane, 1.0);
+		
 		
 		Tab tabProjet = new Tab();
 		tabProjet.setText("Projects");
@@ -62,7 +144,7 @@ public class FIRST  extends Application {
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
 		
-		Scene scene = new Scene(tabPane, 1440, 900);
+		Scene scene = new Scene(anchor, 1440, 900);
 
 		stage.setTitle("FIRST");
 		
@@ -87,4 +169,12 @@ public class FIRST  extends Application {
 		launch(args);
 
 	}
+    private Button createButton(String iconName) {
+        Button button = new Button();
+        ImageView imageView = new ImageView(new Image(getClass().getResource("res/" + iconName).toExternalForm(),
+                40, 40, false, true));
+        button.setGraphic(imageView);
+        button.getStyleClass().add("main-button");
+        return button;
+    }
 }

@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
@@ -84,6 +86,7 @@ public class FormRun extends GridPane {
 
 		Button btn = new Button("Go");
 		btn.setOnAction(new EventHandler<ActionEvent>() {
+			// Action to change data
 			@Override
 			public void handle(ActionEvent e) {
 				System.out.println("Edit run");
@@ -120,7 +123,12 @@ public class FormRun extends GridPane {
 					}
 					
 				} else {
-					Admin.showLoginDialog();
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Admin Dialog");
+					alert.setHeaderText("Hey, seems like you don't have access to change that");
+					alert.setContentText("You can contact your CATS Administration Team to request a change. "
+							+ "For Admins, click on the lock button to enter your credentials.");
+					alert.showAndWait();
 				}
 				
 				

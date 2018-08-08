@@ -1,3 +1,22 @@
+/*******************************************************************
+ * FIRST custom style 
+ *******************************************************************/
+ 
+ .main-button {
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-content-display: graphic-only;
+}
+
+.main-button:hover {
+    -fx-background-color: white;
+}
+ 
+ /*****************************************************************
+  * Bootstrap3
+  *****************************************************************/
+
 .root {
 	-fx-body-color : #F5F5F5;
 	-fx-outer-border : #cecece;

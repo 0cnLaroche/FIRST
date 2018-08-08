@@ -43,6 +43,9 @@ public class RUNModule extends BorderPane {
 	private String filterStyle = "-fx-text-fill: #ffffff;-fx-font: 14 Geneva;-fx-text-weight:bold;";
 	
 	public RUNModule() {
+		this.load();
+	}
+	public void load() {
 		
 		source = DataLayer.getRunList();
 
@@ -59,6 +62,7 @@ public class RUNModule extends BorderPane {
         cbActive = new CheckBox("Active");
         cbActive.setStyle(filterStyle);
         cbActive.setSelected(true);
+
         cbActive.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -351,7 +355,7 @@ public class RUNModule extends BorderPane {
 		
         for (Run r : run) {
 
-        	graphics.Run line = new graphics.Run(r);
+        	element.Run line = new element.Run(r);
         	
 /*        	HBox hb = new HBox(5);
         	Text id = new Text(r.getId());

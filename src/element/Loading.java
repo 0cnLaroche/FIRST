@@ -1,4 +1,4 @@
-package graphics;
+package element;
 
 import javafx.util.Duration;
 
@@ -11,7 +11,7 @@ import javafx.scene.layout.StackPane;
 public class Loading extends StackPane {
 	
 	public Loading() {
-		Image raccoon = new Image("graphics/rocking-chair.png");
+		Image raccoon = new Image("res/rocking-chair.png");
 		ImageView image = new ImageView(raccoon);
 		this.setStyle("-fx-background-color: rgba(50, 50, 50, 0.5);");
 		this.setAlignment(Pos.CENTER);
