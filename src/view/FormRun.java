@@ -27,7 +27,9 @@ public class FormRun extends GridPane {
 	TextField tfRunID, tfDescEN, tfDescFR, tfCostCenter, tfApprover, tfReplacedBy;
 	ChoiceBox<String> cbType,cbStatus; // TODO: Implement
 	DatePicker datePicker;
+	Button submit;
 	Run run;
+	EventHandler<ActionEvent> editHandler, newHandler;
 	private FormRun me = this;
 	
 	public FormRun() {
@@ -82,10 +84,8 @@ public class FormRun extends GridPane {
 		this.add(datePicker, 1, 8);
 		
 		// TODO : Add CSD and Service ID
-
-
-		Button btn = new Button("Go");
-		btn.setOnAction(new EventHandler<ActionEvent>() {
+		
+		EventHandler<ActionEvent> editHandler = new EventHandler<ActionEvent>() {
 			// Action to change data
 			@Override
 			public void handle(ActionEvent e) {
@@ -130,18 +130,18 @@ public class FormRun extends GridPane {
 							+ "For Admins, click on the lock button to enter your credentials.");
 					alert.showAndWait();
 				}
-				
-				
-				
-
 			}
-		});
-		
-		this.add(btn, 1, 9);
+		};
+
+
+		submit = new Button("Go");
+	
+		this.add(submit, 1, 9);
 	}
 	public void edit(Run run) {
 		
 		this.run = run;
+		submit.setOnAction(editHandler);
 		
 		if (Admin.isAdmin()) {
 			tfRunID.setEditable(false);

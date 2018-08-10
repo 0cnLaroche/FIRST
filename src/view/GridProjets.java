@@ -21,13 +21,15 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.CostCenter;
 import model.Project;
 
 public class GridProjets extends GridPane {
 	
-	public GridProjets() {
+	/*public GridProjets() {
 		super();
 
 		// SECTION PROJETS
@@ -36,14 +38,24 @@ public class GridProjets extends GridPane {
 		this.setHgap(10);
 		this.setVgap(10);
 		this.setPadding(new Insets(25, 25, 25, 25));
+	
 
 		Label lbKeyword = new Label("Keyword");
 		this.add(lbKeyword, 0, 0);
 		
 		TextField tfKeyword = new TextField();
-		this.add(tfKeyword, 0, 1);
+		//tfKeyword.prefWidthProperty().bind(this.widthProperty());
+		this.add(tfKeyword, 1, 0);
+		GridProjets.setHgrow(tfKeyword, Priority.ALWAYS);
+		
+		Label label = new Label("Projects are found here\nUse any keyword related to this project and FIRST will"
+				+ " return you a list of results you can pick from.\nTry any keyword such as the name of the project, a proposal"
+				+ " number, project manager, costcenter, network code, SAP code...");
+		label.setTextAlignment(TextAlignment.CENTER);
+		this.add(label, 1, 1);
 		
 		Button btn = new Button("Go");
+		btn.getStyleClass().add("primary");
 
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -95,7 +107,7 @@ public class GridProjets extends GridPane {
 				}
 			}
 		});
-		this.add(btn, 1, 1);
+		this.add(btn, 2, 0);
 	}
 	private class selectorTreeCellImpl extends TreeCell<Project>{
 		
@@ -105,5 +117,5 @@ public class GridProjets extends GridPane {
             setText((item == null || empty) ? null : item.toString());
             setGraphic(null);
 		}
-	}
+	}*/
 }

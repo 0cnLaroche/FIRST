@@ -1,8 +1,10 @@
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -10,9 +12,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import view.*;
+
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
+
+import javax.swing.table.DefaultTableModel;
+
 import controler.*;
 
 public class FIRST  extends Application {
@@ -36,15 +47,20 @@ public class FIRST  extends Application {
 		}
 		
 		// Search Grids
-		gridProjets = new GridProjets();
-		//GridRun gridRun = new GridRun();
-		//GridCostCenter gridCC = new GridCostCenter();
+		// Project
+		//gridProjets = new GridProjets();
+		//AnchorPane projectAnchor = new AnchorPane();
+		//projectAnchor.getChildren().addAll(gridProjets);
+		//AnchorPane.setTopAnchor(gridProjets, 10.0);
+		//gridProjets.prefWidthProperty().bind(projectAnchor.widthProperty());
+		
+		
 		
 		// Modules
 		runMod = new RUNModule();
 		ccMod = new CostCenterModule();
 		queryMod = new QueryModule();
-		//ProjectModule pMod = new ProjectModule();
+		ProjectModule pMod = new ProjectModule();
 			
 		//Tabulation
 		TabPane tabPane = new TabPane();
@@ -53,11 +69,42 @@ public class FIRST  extends Application {
 		hbox.setSpacing(2);
 		
 		Button btnCopy = createButton("copy.png");
+		// Copy Action
 		btnCopy.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {
-				// TODO copy to clipboard
+				
+				switch (tabPane.getSelectionModel().getSelectedIndex()) {
+				case 1: // Project
+					Node pm = tabPane.getSelectionModel().getSelectedItem().getContent();
+
+					break;
+				case 2: // RUN
+					break;
+				case 3: // CostCenter
+					break;
+					
+				}
+				
+		        Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+		        
+				DefaultTableModel model = new DefaultTableModel(
+		                new Object[][]{
+		            {"A1", "A2", "A3", "A4", "A5"},
+		            {"B1", "B2", "B3", "B4", "B5"},
+		            {"C1", "C2", "C3", "C4", "C5"},
+		            {"D1", "D2", "D3", "D4", "D5"},
+		            {"E1", "E2", "E3", "E4", "E5"},
+		            {"F1", "F2", "F3", "F4", "F5"}
+		        },
+		                new Object[]{"1", "2", "3", "4", "5"});
+				cb.setContents(new TableTransferable(model), new ClipboardOwner() {
+		            @Override
+		            public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		                System.out.println("You lose :(");
+		            }
+		        });
 				
 			}
 			
@@ -111,8 +158,8 @@ public class FIRST  extends Application {
 		});
 		hbox.getChildren().addAll(btnCopy,btnExport,btnLock,btnRefresh);
         // Anchor the controls
-        AnchorPane anchor = new AnchorPane();
-        anchor.getChildren().addAll(tabPane, hbox);
+        AnchorPane mainAnchor = new AnchorPane();
+        mainAnchor.getChildren().addAll(tabPane, hbox);
         AnchorPane.setTopAnchor(hbox, 3.0);
         AnchorPane.setRightAnchor(hbox, 5.0);
         AnchorPane.setTopAnchor(tabPane, 1.0);
@@ -123,7 +170,8 @@ public class FIRST  extends Application {
 		
 		Tab tabProjet = new Tab();
 		tabProjet.setText("Projects");
-		tabProjet.setContent(gridProjets);
+		//tabProjet.setContent(projectAnchor);
+		tabProjet.setContent(pMod);
 		
 		Tab tabRun = new Tab();
 		tabRun.setText("RUN");
@@ -144,7 +192,7 @@ public class FIRST  extends Application {
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
 		
-		Scene scene = new Scene(anchor, 1440, 900);
+		Scene scene = new Scene(mainAnchor, 1440, 900);
 
 		stage.setTitle("FIRST");
 		
