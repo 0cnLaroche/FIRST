@@ -1,7 +1,5 @@
 package view;
 
-import java.util.Optional;
-
 import controler.Admin;
 import controler.DataLayer;
 import javafx.collections.FXCollections;
@@ -17,15 +15,17 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 import model.CostCenter;
-import model.FinancialCode;
 import model.Run;
 
+/**The RUN form has two event handlers one to edit and the other one to create a new run code. The constructor sets 
+ * the form in "Creation Mode";
+ * @author samuel.laroche
+ */
 public class FormRun extends GridPane {
 	
 	TextField tfRunID, tfDescEN, tfDescFR, tfCostCenter, tfApprover, tfReplacedBy;
-	ChoiceBox<String> cbType,cbStatus; // TODO: Implement
+	ChoiceBox<String> cbType,cbStatus;
 	DatePicker datePicker;
 	Button submit;
 	Run run;
@@ -85,7 +85,9 @@ public class FormRun extends GridPane {
 		
 		// TODO : Add CSD and Service ID
 		
-		EventHandler<ActionEvent> editHandler = new EventHandler<ActionEvent>() {
+		submit = new Button("Go");
+				
+		editHandler = new EventHandler<ActionEvent>() {
 			// Action to change data
 			@Override
 			public void handle(ActionEvent e) {
@@ -132,18 +134,30 @@ public class FormRun extends GridPane {
 				}
 			}
 		};
+		
+		newHandler = new EventHandler<ActionEvent>() { // TODO: Implement handler for creating a new RUN code
 
+			@Override
+			public void handle(ActionEvent event) {
+				
+				
+			}
+			
+		};
 
-		submit = new Button("Go");
-	
 		this.add(submit, 1, 9);
+
 	}
+	/**A run object is passed to this method to switch to edit mode. Admin authentification is required in order to 
+	 * process a modification
+	 * @param RUN Object
+	 */
 	public void edit(Run run) {
 		
 		this.run = run;
 		submit.setOnAction(editHandler);
 		
-		if (Admin.isAdmin()) {
+		/*if (Admin.isAdmin()) {
 			tfRunID.setEditable(false);
 			tfDescEN.setEditable(false);
 			tfDescFR.setEditable(false);
@@ -153,7 +167,7 @@ public class FormRun extends GridPane {
 			tfReplacedBy.setEditable(false);
 			// cbStatus
 			datePicker.setEditable(false);
-		}
+		}*/
 
 		
 		tfRunID.setText(run.getId());

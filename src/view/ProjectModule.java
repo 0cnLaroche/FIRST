@@ -189,7 +189,7 @@ public class ProjectModule extends BorderPane {
 		TextField tfKeyword = new TextField();
 		//tfKeyword.prefWidthProperty().bind(this.widthProperty());
 		gSearch.add(tfKeyword, 1, 0);
-		GridProjets.setHgrow(tfKeyword, Priority.ALWAYS);
+		GridPane.setHgrow(tfKeyword, Priority.ALWAYS);
 		
 		label = new Label("Projects are found here\nUse any keyword related to this project and FIRST will"
 				+ " return you a list of results you can pick from.\nTry any keyword such as the name of the project, a proposal"

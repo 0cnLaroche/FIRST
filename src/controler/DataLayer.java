@@ -37,6 +37,9 @@ public class DataLayer {
 	private static HashMap<String, Network> networks;
 	private static HashMap<String, CostCenter> costcenters;
 	
+	/**All data for cost centers, Run, and projects are loaded by the constructor.
+	 * @throws DatabaseCommunicationsException
+	 */
 	public DataLayer() throws DatabaseCommunicationsException {
 		
 		runs = new HashMap<String,Run>();
@@ -54,12 +57,13 @@ public class DataLayer {
 	public static HashMap<String, CostCenter> getCostCenterList() {
 		return costcenters;
 	}
+	/**
+	 * @param path of the SQL query file 
+	 * @return ArrayList of String Arrays for each line
+	 */
 	public static ArrayList<String[]> queryFromFile(String path) { // Tested 04/07/2018 SL
 		
 		ClassLoader classLoader = DataLayer.class.getClassLoader();
-		//DataLayer.class.getResource("/sql/" + path);
-		//FIRST.class.getResourceAsStream("res/raccoon.png")
-		//File file = new File(classLoader.getResource(path).getFile());
 		InputStream is = DataLayer.class.getResourceAsStream(path);
 		
 		ResultSet rs = null;
@@ -537,59 +541,64 @@ public class DataLayer {
 					"SELECT ID, Name, NameFR, Type, Responsible, CostCenter_Responsible, EffectiveDate, ClosingDate, ReplacedBy, Status, Comments FROM RUN");
 
 			while (rs.next()) {
-				Run run = new Run();
-				run.setId(rs.getString(1));
-				run.setNameEN(rs.getString(2));
-				run.setNameFR(rs.getString(3));
-				run.setType(rs.getString(4));
-				if (rs.getString(4) != null) {
+				try {
+					Run run = new Run();
+					run.setId(rs.getString(1));
+					run.setNameEN(rs.getString(2));
+					run.setNameFR(rs.getString(3));
 					run.setType(rs.getString(4));
-				} else {
-					run.setType("N/A");
-				}
-				if (rs.getString(5) != null) {
-					run.setResponsible(rs.getString(5));
-				} else {
-					run.setResponsible("blank");
-				}
-				
-				if (costcenters.containsKey(rs.getString(6))) {
-					run.setCostcenter(costcenters.get(rs.getString(6)));
-				} else {
-					CostCenter cc = new CostCenter();
-					cc.setId(rs.getString(6));
-					run.setCostcenter(cc);
-				}
-				if (rs.getDate(7) != null) {
-					run.setEffectiveDate(rs.getDate(7).toLocalDate());
-				} else {
-					run.setEffectiveDate(null);
-				}
-				if (rs.getDate(8) != null) {
-					run.setClosingDate(rs.getDate(8).toLocalDate());
-				} else {
-					run.setClosingDate(null);
-				}
+					if (rs.getString(4) != null) {
+						run.setType(rs.getString(4));
+					} else {
+						run.setType("N/A");
+					}
+					if (rs.getString(5) != null) {
+						run.setResponsible(rs.getString(5));
+					} else {
+						run.setResponsible("blank");
+					}
+					
+					if (costcenters.containsKey(rs.getString(6))) {
+						run.setCostcenter(costcenters.get(rs.getString(6)));
+					} else {
+						CostCenter cc = new CostCenter();
+						cc.setId(rs.getString(6));
+						run.setCostcenter(cc);
+					}
+					if (rs.getDate(7) != null) {
+						run.setEffectiveDate(rs.getDate(7).toLocalDate());
+					} else {
+						run.setEffectiveDate(null);
+					}
+					if (rs.getDate(8) != null) {
+						run.setClosingDate(rs.getDate(8).toLocalDate());
+					} else {
+						run.setClosingDate(null);
+					}
 
-				run.setReplacedBy(rs.getString(9));
-				
-				switch (rs.getString(10)) {
-				case "Active":
-					run.setStatus(Run.ACTIVE);
-					break;
-				case "Closed":
-					run.setStatus(Run.CLOSED);
-					break;
-				case "Unreleased":
-					run.setStatus(Run.UNRELEASED);
-					break;
-				default:
-					run.setStatus(Run.ACTIVE);
-					break;
+					run.setReplacedBy(rs.getString(9));
+					
+					switch (rs.getString(10)) {
+					case "Active":
+						run.setStatus(Run.ACTIVE);
+						break;
+					case "Closed":
+						run.setStatus(Run.CLOSED);
+						break;
+					case "Unreleased":
+						run.setStatus(Run.UNRELEASED);
+						break;
+					default:
+						run.setStatus(Run.ACTIVE);
+						break;
+					}
+					//Other fields to be added
+					
+					runs.put(run.getId(), run);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				//Other fields to be added
 				
-				runs.put(run.getId(), run);
 			}
 
 		} catch (SQLException e) {

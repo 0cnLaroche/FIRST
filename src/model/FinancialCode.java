@@ -3,6 +3,9 @@ package model;
 import java.time.LocalDate;
 import java.util.HashMap;
 
+/**Base class for all type of financial coding
+ * @author samuel.laroche
+ */
 public abstract class FinancialCode {
 	
 	private String id, nameEN, nameFR;
