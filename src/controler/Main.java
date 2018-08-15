@@ -2,23 +2,10 @@ package controler;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-
-import view.ProjectModule;
-
-import java.util.ArrayList;
-
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
-import model.Run;
 
 public class Main {
 	
-
 
 	public static void main(String[] args) {
 		/*
@@ -28,7 +15,7 @@ public class Main {
 			
 			manager.disconnect();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}*/
 		

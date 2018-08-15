@@ -6,8 +6,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.DropShadow;
@@ -22,9 +20,6 @@ public class Network extends Sprite {
 	
 	private model.Network nw;
 	private Label name, id, cc, approver, status;
-	private Canvas canvas;
-	private GraphicsContext gc;
-	
 	private Label pjmngt, analyse, plan, design, build, test, deploy, stabilize;
 	
 	String nwStyle = "-fx-border-radius:20;-fx-border-width:5;-fx-background-radius:15;-fx-background-color:white;";

@@ -2,6 +2,7 @@ package view;
 
 import java.util.ArrayList;
 import controler.DataLayer;
+import controler.NotFoundException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -59,6 +60,7 @@ public class CostCenterModule extends BorderPane {
 				highlightCostCenter(treeView.getRoot());
 			}
 		});
+		
 
 		gSearch.add(btn, 2, 0);
 		this.setBottom(gSearch);
@@ -82,7 +84,9 @@ public class CostCenterModule extends BorderPane {
 			});
 
 			this.setLeft(treeView);
-
+			
+		} catch (NotFoundException e) {
+			e.showDialog();
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -94,7 +98,7 @@ public class CostCenterModule extends BorderPane {
 		ArrayList<TreeItem<CostCenter>> children = new ArrayList<TreeItem<CostCenter>>();
 
 		for (CostCenter cc : pcc.getChildren()) {
-			if (cc.getStatus() != CostCenter.CLOSED) {
+			if (cc.getClosingDate() == null) {
 				TreeItem<CostCenter> item = new TreeItem<CostCenter>();
 				item.setValue(cc);
 				item.getChildren().addAll(populate(item, cc));
@@ -108,7 +112,9 @@ public class CostCenterModule extends BorderPane {
 		// For now this just select the treeItem with cost center matching the keyword
 		// May do something fancier one day
 		String keyword = tfKeyword.getText().toLowerCase();
-		if (root.getValue().getId().contains(keyword) || root.getValue().getNameEN().toLowerCase().contains(keyword)) {
+		CostCenter cc = root.getValue();
+		if (cc.getId().contains(keyword) || cc.getNameEN().toLowerCase().contains(keyword)
+				|| cc.getManager().toLowerCase().contains(keyword)) {
 			
 			treeView.getSelectionModel().select(root);
 			

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import controler.DataLayer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +18,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -231,6 +229,8 @@ public class RUNModule extends BorderPane {
 				cbSrv.setSelected(true);
 				cbBmt.setSelected(true);
 				cbInv.setSelected(true);
+				tfId.clear();
+				tfDesc.clear();
 				cbCostCenter.getSelectionModel().clearSelection();
 				cbManager.getSelectionModel().clearSelection();
 				
@@ -278,6 +278,7 @@ public class RUNModule extends BorderPane {
 		this.setScene(scene);*/
 	}
 	public ArrayList<Run> filter() {
+		@SuppressWarnings("unchecked")
 		ArrayList<Run> filtered = (ArrayList<Run>) source.clone();
 
 		for (Run r : source) {
@@ -290,8 +291,7 @@ public class RUNModule extends BorderPane {
 					}
 				}
 				if(tfDesc.getText() != null && tfDesc.getText().length() > 0) {
-					if (!r.getNameEN().toLowerCase().contains(tfDesc.getCharacters()) 
-							/*|| !r.getNameFR().contains(tfDesc.getCharacters())*/) {
+					if (!r.getNameEN().toLowerCase().contains(tfDesc.getCharacters())) {
 						filtered.remove(r);
 					}
 				}
@@ -331,21 +331,20 @@ public class RUNModule extends BorderPane {
 					}
 				}
 				if (cbManager.getValue() != null) {
-					try {
+					//try {
 						if (!r.getResponsible().equals(cbManager.getValue())) {
 							filtered.remove(r);
 						}
-					} catch (NullPointerException e) {
-						System.out.println(r.toString());
-					}
+					//} catch (NullPointerException e) {
+
+					//}
 
 				}
 				
 			} catch (NullPointerException e) {
-				
+				System.err.println("Problem filtering RUN " + r.toString());
 			}
-			
-			// TODO: Add filters for cost centers
+
 		}
 		return filtered;
 		
@@ -363,7 +362,7 @@ public class RUNModule extends BorderPane {
         	Text type = new Text(r.getType());
         	Text resp = new Text(r.getResponsible());
         	Text cc = new Text(r.getCostcenter().getId());
-        	Text status = new Text("" + r.getStatusString()); // TODO: Ajouter un if pour mettre le status en textuel
+        	Text status = new Text("" + r.getStatusString()); 
         	hb.getChildren().addAll(id,descEN,type,resp,cc,status);*/
         	list.getChildren().add(line);
         	

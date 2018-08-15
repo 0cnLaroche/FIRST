@@ -21,12 +21,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
+/**This view includes the features to export data from the database to excel
+ * @author samuel.laroche
+ *
+ */
 public class QueryModule extends StackPane {
 
 	StackPane me = this;
@@ -104,9 +107,9 @@ public class QueryModule extends StackPane {
 						}
 
 					} catch (NullPointerException e) {
-						System.out.println("Export cancelled by User");
-						e.printStackTrace();
+						System.err.println("Export cancelled by User");
 					} catch (IOException e) {
+						System.err.println("Export : Error with file");
 						e.printStackTrace();
 					}
 					break;

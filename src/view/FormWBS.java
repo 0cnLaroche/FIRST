@@ -1,8 +1,6 @@
 package view;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-
 import controler.Admin;
 import controler.DataLayer;
 import controler.NotFoundException;
@@ -11,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -20,9 +17,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import model.*;
 
+/** Form to view, update or create WBS and Networks . Info from both are combined. 
+ * By default the constructor creates a blank form in "Create" mode. Pressing the button will insert a new code into
+ * the database. 
+ * @author samuel.laroche
+ *
+ */
 public class FormWBS extends GridPane {
 	
 	TextField tfNetwork, tfWbsID, tfDescEN, tfDescFR, tfCostCenter, tfApprover;
@@ -32,7 +34,6 @@ public class FormWBS extends GridPane {
 	FormWBS me = this;
 	Network nw;
 	
-
 	public FormWBS() {
 
 		super();
@@ -75,7 +76,7 @@ public class FormWBS extends GridPane {
 		
 		this.add(new Label("Status"),0,6);
 		cbStatus = new ChoiceBox<String>(); // TODO: Replace with a dropdown list
-		cbStatus.setItems(FXCollections.observableArrayList("Unreleased", "Active", "Closed"));
+		cbStatus.setItems(FXCollections.observableArrayList(Network.getStatusList()));
 		this.add(cbStatus, 1, 6);
 		
 		this.add(new Label("Closing Date"),0,7);
@@ -87,6 +88,10 @@ public class FormWBS extends GridPane {
 
 	}
 	
+	/**Sets the form into "Edit" mode. However a user cannot edit unless signed in as Administrator. The form is 
+	 * open as "Read Only" in this event.
+	 * @param Network to be loaded into the form.
+	 */
 	public void edit(Network nw) {
 		this.nw = nw;
 		tfNetwork.setText(nw.getId());
@@ -130,8 +135,8 @@ public class FormWBS extends GridPane {
 						try {
 							wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
 						} catch (NotFoundException e1) {
-							// TODO Auto-generated catch block
-							System.err.println(e);
+
+							System.err.println("Didn't find the cost center");
 						}
 						
 						nw.setWbs(wbs);
@@ -144,9 +149,8 @@ public class FormWBS extends GridPane {
 							System.err.println(e);
 						}
 						
-						DataLayer.updateProject(nw);
-
-						System.out.println("Update Project Success");
+						DataLayer.updateNetwork(nw);
+						
 					}
 					
 				} else {

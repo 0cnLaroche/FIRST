@@ -1,10 +1,8 @@
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -12,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import view.*;
@@ -46,13 +43,6 @@ public class FIRST  extends Application {
 			this.stop();
 		}
 		
-		// Search Grids
-		// Project
-		//gridProjets = new GridProjets();
-		//AnchorPane projectAnchor = new AnchorPane();
-		//projectAnchor.getChildren().addAll(gridProjets);
-		//AnchorPane.setTopAnchor(gridProjets, 10.0);
-		//gridProjets.prefWidthProperty().bind(projectAnchor.widthProperty());
 		
 		
 		
@@ -68,6 +58,34 @@ public class FIRST  extends Application {
 		HBox hbox = new HBox();
 		hbox.setSpacing(2);
 		
+		Button btnNew = createButton("new.png");
+		btnNew.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent e) {
+				switch (tabPane.getSelectionModel().getSelectedIndex()) {
+				case 0: // Project
+					
+
+					break;
+				case 1: // RUN
+					FormRun form = new FormRun();
+					Scene scene = new Scene(form,600,600);
+					Stage stage = new Stage();
+					stage.setScene(scene);
+					stage.setTitle("Run form");
+					stage.show();
+					break;
+				case 2: // CostCenter
+					break;
+					
+				}
+				
+			}
+			
+		});
+		
+		
 		Button btnCopy = createButton("copy.png");
 		// Copy Action
 		btnCopy.setOnAction(new EventHandler<ActionEvent>() {
@@ -77,7 +95,7 @@ public class FIRST  extends Application {
 				
 				switch (tabPane.getSelectionModel().getSelectedIndex()) {
 				case 1: // Project
-					Node pm = tabPane.getSelectionModel().getSelectedItem().getContent();
+					
 
 					break;
 				case 2: // RUN
@@ -133,12 +151,15 @@ public class FIRST  extends Application {
 				        ImageView imageView = new ImageView(new Image(getClass().getResource("res/unlock.png").toExternalForm(),
 				                40, 40, false, true));
 				        btnLock.setGraphic(imageView);
+				        hbox.getChildren().add(btnNew);
+				        
 					}
 				} else {
 					Admin.logoff();
 			        ImageView imageView = new ImageView(new Image(getClass().getResource("res/lock.png").toExternalForm(),
 			                40, 40, false, true));
 			        btnLock.setGraphic(imageView);
+			        hbox.getChildren().remove(btnNew);
 				}
 			}
 		});
@@ -222,7 +243,7 @@ public class FIRST  extends Application {
         ImageView imageView = new ImageView(new Image(getClass().getResource("res/" + iconName).toExternalForm(),
                 40, 40, false, true));
         button.setGraphic(imageView);
-        button.getStyleClass().add("main-button");
+        button.getStyleClass().add("main");
         return button;
     }
 }

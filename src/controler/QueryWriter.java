@@ -12,8 +12,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import model.CostCenter;
 
+/**Provides methods to format data and write them into excel files 
+ * @author samuel.laroche
+ *
+ */
 public class QueryWriter {
 	
+	/** Creates an excel file from the result of a given SQL query to FIRST database. This shouldn't be used directly 
+	 * in the UI.
+	 * @param file where to export
+	 * @param queryLocation text file where is contained the SQL.
+	 * @param title to give the export. Will be used to name the excel sheet.
+	 */
 	public void export(File file, String queryLocation, String title) {
 		
 		ArrayList<String[]> data = new ArrayList<String[]>();
@@ -48,6 +58,10 @@ public class QueryWriter {
 		}
 
 	}
+	/**Exports Network codes list with their parent project
+	 * @param file where to export excel
+	 * @throws NullPointerException
+	 */
 	public void exportNetworkList(File file) throws NullPointerException {
 		
 		if (file != null) {
@@ -57,14 +71,23 @@ public class QueryWriter {
 		}
 
 	}
+	/** Exports RUN list as excel
+	 * @param file where to export
+	 * @throws NullPointerException
+	 */
 	public void exportRunList(File file) throws NullPointerException {
 		if (file != null) {
+			//TODO : add GCIT Attributes for Luc
 			this.export(file, "/sql/run.sql", "RUN");
 		} else {
 			throw new NullPointerException();
 		}
 
 	}
+	/**Exports cost centers in the format :
+	 * 	[ID, Description, Manager, Parent Level 1; Level 2; Level 3; ... ; Level 6].
+	 * @param file where to export
+	 */
 	public void exportCostCenterByLevel(File file) {
 
 		
@@ -105,6 +128,12 @@ public class QueryWriter {
 		}
 		
 	}
+	/**Function to create an array of the cost center parents. The first element is root followed by every child
+	 * down the cost center given in parameter. The other elements of the array will be filled with the cost center
+	 * 
+	 * @param costcenter
+	 * @return cost center parents
+	 */
 	private String[] familyToArray(CostCenter cc) {
 		
 		CostCenter parent = cc;
@@ -134,8 +163,6 @@ public class QueryWriter {
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println(family.toString());
 		}
-
-		// TODO: Add manager; description; col headers
 		return line;
 		
 	}

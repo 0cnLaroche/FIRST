@@ -1,5 +1,7 @@
 package view;
 
+import java.time.LocalDate;
+
 import controler.Admin;
 import controler.DataLayer;
 import javafx.collections.FXCollections;
@@ -9,6 +11,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
@@ -56,9 +60,8 @@ public class FormRun extends GridPane {
 		this.add(tfDescFR, 1, 2);
 		
 		this.add(new Label("Type"), 0, 3);
-		cbType = new ChoiceBox<String>(); // TODO: Replace with a dropdown list
-		cbType.setItems(FXCollections.observableArrayList(Run.MAINTENANCE,Run.SERVICE,Run.BUSINESSMANAGEMENT,
-				Run.INVESTMENT));
+		cbType = new ChoiceBox<String>(); 
+		cbType.setItems(FXCollections.observableArrayList(Run.getTypeList()));
 		this.add(cbType, 1, 3);
 		
 		this.add(new Label("Cost Center"), 0, 4);
@@ -74,8 +77,8 @@ public class FormRun extends GridPane {
 		this.add(tfReplacedBy, 1, 6);
 		
 		this.add(new Label("Status"), 0, 7);
-		cbStatus = new ChoiceBox<String>(); // TODO: Replace with a dropdown list
-		cbStatus.setItems(FXCollections.observableArrayList("Unreleased", "Active", "Closed"));
+		cbStatus = new ChoiceBox<String>(); 
+		cbStatus.setItems(FXCollections.observableArrayList(Run.getStatusList()));
 		this.add(cbStatus, 1, 7);
 		
 		
@@ -85,7 +88,9 @@ public class FormRun extends GridPane {
 		
 		// TODO : Add CSD and Service ID
 		
-		submit = new Button("Go");
+		submit = new Button();
+		submit.setGraphic(new ImageView(new Image(FormRun.class.getResourceAsStream("/res/save.png"), 40, 40, false, true)));
+		this.add(submit, 1, 9);
 				
 		editHandler = new EventHandler<ActionEvent>() {
 			// Action to change data
@@ -135,17 +140,34 @@ public class FormRun extends GridPane {
 			}
 		};
 		
-		newHandler = new EventHandler<ActionEvent>() { // TODO: Implement handler for creating a new RUN code
+		newHandler = new EventHandler<ActionEvent>() { 
 
 			@Override
 			public void handle(ActionEvent event) {
 				
+				Run run = new Run();
+				
+				run.setId(me.tfRunID.getText());
+				run.setNameEN(me.tfDescEN.getText());
+				run.setNameFR(me.tfDescFR.getText());
+				CostCenter cc = new CostCenter();
+				cc.setId(me.tfCostCenter.getText());
+				run.setCostcenter(cc);
+				run.setResponsible(me.tfApprover.getText());
+				run.setStatus(me.cbStatus.getValue()); 
+				run.setType(me.cbType.getValue()); // this should be changed once we switch to choice box instead
+				run.setReplacedBy(me.tfReplacedBy.getText());
+				run.setClosingDate(datePicker.getValue());
+				run.setEffectiveDate(LocalDate.now());
+				
+				DataLayer.insertRun(run);
+				System.out.println("Create new run success");
 				
 			}
 			
 		};
-
-		this.add(submit, 1, 9);
+		
+		submit.setOnAction(newHandler);
 
 	}
 	/**A run object is passed to this method to switch to edit mode. Admin authentification is required in order to 

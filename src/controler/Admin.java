@@ -10,10 +10,18 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 
+/** Manage user permissions. Passwords are encrypted with SHA-1
+ * @author samuel.laroche
+ *
+ */
 public class Admin {
 	
 	private static boolean adminUsr = false;
@@ -31,7 +39,7 @@ public class Admin {
 				System.out.println(user + " : Administrator login failed");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return adminUsr;
@@ -43,11 +51,16 @@ public class Admin {
 	public static void logoff() {
 		adminUsr = false;
 	}
+	/**Creates a dialog for the user to login. Check if the credentials match an administrator username and password
+	 * in the database. Informs the user if login is successful or not.
+	 * @return true if the user is logged in as admin false if not
+	 */
 	public static boolean showLoginDialog() {
 		
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("Login Dialog");
-		dialog.setHeaderText("Need access to change my data? I will need some identification please");
+		dialog.setHeaderText("Need access to change my data?\nI will need some identification please");
+		dialog.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/res/user.png"))));
 		
 		GridPane grid = new GridPane();
 
@@ -55,9 +68,9 @@ public class Admin {
 		grid.setHgap(5);
 		grid.setVgap(5);
 
-		Label lblUserName = new Label("Username");
+		Label lblUserName = new Label("UserName");
 		final TextField txtUserName = new TextField();
-		txtUserName.setPromptText("Username");
+		txtUserName.setPromptText("UserName");
 		Label lblPassword = new Label("Password");
 		final PasswordField pf = new PasswordField();
 		pf.setPromptText("Password");
@@ -93,7 +106,21 @@ public class Admin {
 		// Optional<Pair<String, String>> result = new LoginForm().showAndWait();
 		
 		result.ifPresent(usernamePassword -> {
-			Admin.login(usernamePassword.getKey(), usernamePassword.getValue());
+			
+			if (Admin.login(usernamePassword.getKey(), usernamePassword.getValue())) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Login Confirmation");
+				alert.setHeaderText("Administrator access granted!");
+				alert.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/res/check.png"))));
+				alert.show();
+				
+			} else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Login failed");
+				alert.setContentText("UserName and/or password incorrect, please try again");
+				alert.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/res/block.png"))));
+				alert.showAndWait();
+			}
 		});
 		return adminUsr;
 	}

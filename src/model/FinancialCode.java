@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 
 /**Base class for all type of financial coding
  * @author samuel.laroche
@@ -19,11 +18,13 @@ public abstract class FinancialCode {
 	public String getStatus() {
 		return status;
 	}
-	public Status[] getStatusList() {
+	/*public static Status[] getStatusList() {
 		Status[] values = {new Status((byte) 0,"Unreleased"), new Status((byte) 1,"Active"), new Status((byte) 3,"Closed")};
 		return values;
+	}*/
+	public static String[] getStatusList() {
+		return new String[]{UNRELEASED, ACTIVE, CLOSED};
 	}
-
 
 	public void setStatus(String status) {
 		this.status = status;

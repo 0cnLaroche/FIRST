@@ -2,9 +2,13 @@ package model;
 
 import java.util.ArrayList;
 
+/**Project Class is a representation of a project Definition in SAP. It also contains the wbs and network childs.
+ * @author samuel.laroche
+ *
+ */
 public class Project extends FinancialCode {
 	
-	private String type, proposal, model;
+	private String proposal, model, lead;
 	private ArrayList<Wbs> wbs;
 	public static final String STAGEGATED = "Stage-Gated";
 	public static final String NONSTAGEGATED = "Non Stage Gated";
@@ -14,18 +18,15 @@ public class Project extends FinancialCode {
 	public Project() {
 		this.wbs = new ArrayList<Wbs>();
 	}
+	public static String[] getModelList() {
+		return new String[]{STAGEGATED, NONSTAGEGATED, LITE, BRANCHINITIATIVE};
+	}
 	public String getModel() {
 		return model;
 	}
 	public void setModel(String model) {
 		this.model = model;
 	}
-	/*public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}*/
 	public String getProposal() {
 		return proposal;
 	}
@@ -38,6 +39,9 @@ public class Project extends FinancialCode {
 	public ArrayList<Wbs> getWbs(){
 		return this.wbs;
 	}
+	/**
+	 * @return String formatted as JSON representing the Project Definition and its WBS elements.
+	 */
 	public String toJSON() {
 		String str = "{Id: '" + this.getId() + "', Name :'" + this.getNameEN() + "'";
 		if (!this.wbs.isEmpty()) {
@@ -57,8 +61,12 @@ public class Project extends FinancialCode {
 	public String toString() {
 		return this.getId() + " | " + this.getNameEN();
 	}
-	
-	//TODO: Get WBS list 
+	public String getLead() {
+		return lead;
+	}
+	public void setLead(String lead) {
+		this.lead = lead;
+	}
 
 
 }

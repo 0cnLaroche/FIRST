@@ -1,21 +1,16 @@
 package element;
 
-
-
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import view.FormProject;
 
@@ -23,20 +18,13 @@ public class Project extends Sprite {
 	
 	private model.Project prj;
 	private Text name, model, proposal, id;
-	private Canvas canvas;
-	private GraphicsContext gc;
-	
 	private String paneStyle = "-fx-padding:10;";
 	private String textStyle = "-fx-fill: black; -fx-font: 35px Tahoma;";
 	
 	public Project() {
 		super();
 		padding = 15;
-		this.setDimension(200, 100);
-		//this.setMinHeight(150);
-		canvas = new Canvas(this.getWidth() + padding, this.getHeight() + padding);
-		gc = canvas.getGraphicsContext2D();
-		
+		this.setDimension(200, 100);		
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
@@ -57,7 +45,6 @@ public class Project extends Sprite {
 	public void render() {
 		
 		GridPane grid = new GridPane();
-		DropShadow shadow = new DropShadow();
 		
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(25);
@@ -70,19 +57,20 @@ public class Project extends Sprite {
 		
 		name = new Text(prj.getNameEN());
 		name.setStyle(textStyle);
+		GridPane.setHgrow(name, Priority.ALWAYS);
 		grid.add(name, 1, 0);
 		
 		model = new Text(prj.getModel());
 		model.setStyle(textStyle);
-		grid.add(model, 0, 1);
+		grid.add(model, 2, 0);
 		
 		proposal = new Text(prj.getProposal());
 		proposal.setStyle(textStyle);
-		grid.add(proposal, 1, 1);
+		grid.add(proposal, 3, 0);
 		
 		// grid.setStyle("-fx-border-color:purple;-fx-border-style:solid;-fx-border-radius:20;");
 		
-		grid.setMinHeight(125);
+		//grid.setMinHeight(125);
 		
 		grid.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 

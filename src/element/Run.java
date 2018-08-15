@@ -11,7 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import view.FormRun;
-import view.FormWBS;
 
 public class Run extends HBox {
 	
@@ -67,12 +66,12 @@ public class Run extends HBox {
 			}
 			
 		});
-		
+		// The RUN is highlighted when the user move the mouse on it
 		this.setOnMouseEntered(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				// TODO Auto-generated method stub
+				
 				me.setStyle(hoverStyle);
 			}
 			
@@ -81,18 +80,17 @@ public class Run extends HBox {
 
 			@Override
 			public void handle(MouseEvent event) {
-				// TODO Auto-generated method stub
 				me.setStyle(defaultStyle);
 			}
 			
 		});
 		
-		//this.addEventHandler(MouseDragEvent., new EventHandler<MouseEvent>() {
+
 		this.setOnDragDetected(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				// TODO Auto-generated method stub
+				// TODO : Something to selection a region
 				
 			}
 			
@@ -101,7 +99,6 @@ public class Run extends HBox {
 
 			@Override
 			public void handle(DragEvent event) {
-				// TODO Auto-generated method stub
 				selected = !selected;
 				if (selected) {
 					me.setStyle("-fx-border-style: solid; -fx-border-width: 0 0 2 0; -fx-border-color: #003459;"

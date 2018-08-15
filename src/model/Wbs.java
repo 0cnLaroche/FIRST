@@ -52,7 +52,7 @@ public class Wbs extends FinancialCode {
 	public void addNetwork(Network network) {
 		this.networks.add(network);
 	}
-	public String toString() {
+	public String toJSON() {
 		String str = "{Id: '" + this.getId() + "', Name :'" + this.getNameEN() + "', CostCenter: '" + this.costcenter.getId() + "'";
 		if (!this.networks.isEmpty()) {
 			int i = 1;
@@ -67,6 +67,9 @@ public class Wbs extends FinancialCode {
 		}
 		str += "}";
 		return str;
+	}
+	public String toString() {
+		return this.getId() + " | " + this.getNameEN();
 	}
 	
 

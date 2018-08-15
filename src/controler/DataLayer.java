@@ -63,7 +63,6 @@ public class DataLayer {
 	 */
 	public static ArrayList<String[]> queryFromFile(String path) { // Tested 04/07/2018 SL
 		
-		ClassLoader classLoader = DataLayer.class.getClassLoader();
 		InputStream is = DataLayer.class.getResourceAsStream(path);
 		
 		ResultSet rs = null;
@@ -120,41 +119,67 @@ public class DataLayer {
 			throw new NotFoundException();
 		}
 	}
-	/**
-	 * Inserts a new RUN code into the database.
-	 * @param run
-	 */
-	public static void addRun(Run run) {
-		
+	
+	public static void insertProject(Project project) {
 		PreparedStatement insert = null;
-		String query = "INSERT INTO RUN (ID, Name, NameFR, Type, Responsible, "
-				+ "CostCenter_Responsible, CostCenter_Requesting, EffectiveDate, ClosingDate, ReplacedBy, Status) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+		String query = "INSERT INTO ProjectDefinition (ID, Name, NameFR, Model, Status, "
+				+ "Proposal, ClosingDate, ProjectManager) "
+				+ "VALUES (?,?,?,?,?,?,?,?);";
 		try {
 			insert = con.prepareStatement(query);
 			
-			insert.setInt(1, Integer.parseInt(run.getId()));
-			insert.setString(2, run.getNameEN());
-			insert.setString(3, run.getNameFR());
-			insert.setString(4, run.getType());
-			insert.setString(5, run.getResponsible());
+			insert.setString(1, project.getId());
+			insert.setString(2, project.getNameEN());
+			insert.setString(3, project.getNameFR());
+			insert.setString(4, project.getModel());
+			insert.setString(5, project.getStatus());
+			insert.setString(6, project.getProposal());
+			insert.setObject(7, Date.valueOf(project.getClosingDate()));
+			insert.setString(8, project.getLead());
 			
-			insert.setInt(6, Integer.parseInt(run.getCostcenter().getId()));
-			insert.setInt(7, Integer.parseInt(run.getCostcenter().getId()));
-			insert.setObject(8, run.getEffectiveDate());
-			insert.setObject(9, run.getClosingDate());
-			insert.setString(10, run.getReplacedBy());
-			insert.setString(11, run.getStatus().toString());
-			
-			insert.execute();
+			insert.executeUpdate();
 	
-			runs.put(run.getId(), run);
+			projects.put(project.getId(), project);
+			System.out.println("Update for project " + project.toString() + ": SUCCESS");
 
 		} catch (SQLException e) {
-			
+			System.err.println("Insert for project " + project.toString() + ": FAILED");
 		}
 	}
-	public static void updateProject(Network nw) {
+	public static void updateProject(Project project) {
+		PreparedStatement update = null;
+		String query = "UPDATE ProjectDefinition SET Name = ?, NameFR = ?, Model = ?, Status = ?, "
+				+ "Proposal = ?, ClosingDate = ?, ProjectManager = ? "
+				+ "WHERE ID = ?;";
+		try {
+			update = con.prepareStatement(query);
+			
+
+			update.setString(1, project.getNameEN());
+			update.setString(2, project.getNameFR());
+			update.setString(3, project.getModel());
+			update.setString(4, project.getStatus());
+			update.setString(5, project.getProposal());
+			update.setObject(6, Date.valueOf(project.getClosingDate()));
+			update.setString(7, project.getLead());
+			
+			update.setString(8, project.getId());
+			
+			update.executeUpdate();
+	
+			projects.put(project.getId(), project);
+			
+			loadProjects();
+			
+			System.out.println("Update for project " + project.toString() + ": SUCCESS");
+
+		} catch (SQLException e) {
+			System.err.println("Update for project " + project.toString() + ": FAILED");
+		}
+		
+	}
+		
+	public static void updateNetwork(Network nw) {
 		PreparedStatement update = null;
 		String queryNw = "UPDATE Network SET Name = ?, NameFR = ?, EffectiveDate = ?, "
 				+ "ClosingDate = ?, ReplacedBy = ?, Status = ?, Stage = ? "
@@ -187,7 +212,7 @@ public class DataLayer {
 			networks.put(nw.getId(), nw);
 		
 		} catch (SQLException e) {
-			
+			System.err.println("Update for Network " + nw.toString() + ": FAILED");
 		}
 		String queryWbs = "UPDATE WBS SET Name = ?, NameFR = ?, ResponsibleCostCenter = ?, "
 				+ "RequestingCostCenter = ?, "
@@ -212,18 +237,64 @@ public class DataLayer {
 			
 			update.executeUpdate();
 			
-			System.out.println("Update to database sucessful for WBS : " + nw.getWbs().toString());
+			System.out.println("Update to database for WBS : " + nw.getWbs().toString() + ": SUCCESS");
 			
-			loadProjects();
-			// wbs.put(nw.getWbs().getId(), nw.getWbs());
-			// projects.get(nw.getWbs().getProject().getId()).addWbs(nw.getWbs()); // Ajouter le WBS au projet
+			loadProjects(); 
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			System.err.println("Update for WBS " + nw.getWbs().toString() + ": FAILED");
 		}
 		
 
+		
+	}
+	/**
+	 * Inserts a new RUN code into the database.
+	 * @param run
+	 */
+	public static void insertRun(Run run) {
+		PreparedStatement insert;
+		String query = "INSERT INTO RUN (Name, NameFR, CostCenter_Responsible, CostCenter_Requesting, "
+				+ "Responsible, Type, ClosingDate, EffectiveDate, Status, ReplacedBy, ID) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+		
+		try {
+			insert = con.prepareStatement(query);
+			
+			insert.setString(1, run.getNameEN());
+			insert.setString(2, run.getNameFR());
+			int cc = Integer.parseInt(run.getCostcenter().getId());
+			insert.setInt(3, cc);
+			insert.setInt(4, cc);
+			insert.setString(5, run.getResponsible());
+			insert.setString(6, run.getType());
+			if (run.getClosingDate() != null) {
+				insert.setDate(7, Date.valueOf(run.getClosingDate()));
+			} else {
+				insert.setNull(7, java.sql.Types.DATE);
+			}
+			if (run.getEffectiveDate() != null) {
+				insert.setDate(8, Date.valueOf(run.getEffectiveDate()));
+			} else {
+				insert.setNull(8, java.sql.Types.DATE);
+			}
+			insert.setString(9, run.getStatus());
+			insert.setString(10, run.getReplacedBy());
+			insert.setString(11, run.getId());
+			
+			insert.executeUpdate();
+			
+			loadRuns();
+			
+			System.out.println("Update for WBS " + run.toString() + ": SUCCESS");
+			
+			
+		} catch (SQLException e) {
+			System.err.println("Insert for RUN " + run.toString() + ": FAILED");
+		}
+		
+		
 		
 	}
 	/**
@@ -315,8 +386,10 @@ public class DataLayer {
 			
 			loadCostCenters();
 			
+			System.out.println("Update cost Center : SUCCESS");
+			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println("Update Cost Center : FAILED");
 			
 		}
 		
@@ -750,7 +823,6 @@ public class DataLayer {
 			
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return hash;
@@ -864,19 +936,16 @@ public class DataLayer {
 			e.printStackTrace();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("At line : " + eIndex);
+			System.err.println("At line : " + eIndex);
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("At line : " + eIndex);
+			System.err.println("At line : " + eIndex);
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			System.out.println("At line : " + eIndex);
+			System.err.println("At line : " + eIndex);
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("At line : " + eIndex);
+			System.err.println("At line : " + eIndex);
 			e.printStackTrace();
 		}
 		
@@ -887,8 +956,8 @@ public class DataLayer {
 			con.close();
 			System.out.println("Connection closed");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			System.err.println("Error while closing the connection with MySql");
 		}
 	}
 

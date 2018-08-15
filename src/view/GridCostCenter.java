@@ -11,9 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import controler.DataLayer;
-import controler.NotFoundException;
-
 public class GridCostCenter extends GridPane {
 	
 	public GridCostCenter() {
@@ -51,7 +48,7 @@ public class GridCostCenter extends GridPane {
 					report.setTitle("Cost Center");
 					report.show();
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
+
 					e1.printStackTrace();
 				}
 

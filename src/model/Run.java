@@ -10,7 +10,9 @@ public class Run extends FinancialCode {
 	public static final String BUSINESSMANAGEMENT = "BMT-Business Management";
 	public static final String INVESTMENT = "INV-Investment";
 	
-
+	public static String[] getTypeList() {
+		return new String[]{MAINTENANCE, SERVICE, BUSINESSMANAGEMENT, INVESTMENT};
+	}
 	public CostCenter getCostcenter() {
 		return costcenter;
 	}

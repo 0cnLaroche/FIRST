@@ -2,15 +2,23 @@
  * FIRST custom style 
  *******************************************************************/
  
- .main-button {
+ .button.main {
     -fx-border-width: 0;
     -fx-background-radius: 0;
     -fx-background-color: transparent;
     -fx-content-display: graphic-only;
 }
 
-.main-button:hover {
+.button.main:hover {
     -fx-background-color: white;
+}
+.button.main:focused {
+	-fx-effect: none;
+}
+.button.main:pressed {
+	-fx-background-color: #e6e6e6;
+	-fx-border-color: #acacac;
+	-fx-effect: innershadow(gaussian, #adadad, 10, 0, 0, 3);
 }
  
  /*****************************************************************

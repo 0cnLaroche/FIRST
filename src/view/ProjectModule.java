@@ -1,7 +1,6 @@
 package view;
 
 import java.util.Optional;
-
 import controler.DataLayer;
 import controler.NotFoundException;
 import javafx.collections.FXCollections;
@@ -10,12 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -29,9 +23,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.*;
@@ -69,7 +61,7 @@ public class ProjectModule extends BorderPane {
         
         vb = new VBox(5);
 		sp = new ScrollPane();
-        pdef = new element.Project();
+
         
         vb.setPadding(new Insets(10));
         sp = new ScrollPane(vb);
@@ -252,6 +244,7 @@ public class ProjectModule extends BorderPane {
 
 				} catch (NotFoundException e1) {
 					System.err.println(e1);
+					e1.showDialog();
 				}
 			}
 		});

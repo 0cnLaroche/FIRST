@@ -11,7 +11,10 @@ public class NotFoundException extends Exception {
 
 	// Will open a new window that says not found 
 	public NotFoundException() {
-		System.out.println("oups nothing found");
+		System.err.println("oups not found");
+
+	}
+	public void showDialog() {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Search Dialog");
 		alert.setHeaderText("Oups..");

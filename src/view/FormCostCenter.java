@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import controler.Admin;
 import controler.DataLayer;
+import controler.NotFoundException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -20,8 +21,9 @@ import model.CostCenter;
 
 public class FormCostCenter extends GridPane {
 	
-	TextField tfID, tfDescEN, tfDescFR, tfManager, tfDirectorate;
+	TextField tfID, tfDescEN, tfDescFR, tfManager, tfDirectorate, tfReportTo;
 	DatePicker datePicker;
+	Label lbReportTo, lbParent;
 	CostCenter cc;
 	FormCostCenter me = this;
 	
@@ -56,12 +58,16 @@ public class FormCostCenter extends GridPane {
 		tfDirectorate = new TextField();
 		this.add(tfDirectorate, 1, 4);
 		
-		this.add(new Label("Closing Date"), 0, 5);
-		datePicker = new DatePicker();
-		this.add(datePicker, 1, 5);
+		this.add(new Label("Reporting Cost Center"), 0, 5);
+		tfReportTo = new TextField();
+		this.add(tfReportTo, 1, 5);
 		
-		// TODO : - Add CSD and Service ID
-		//	- Add status indication after successful update
+		this.add(new Label("Closing Date"), 0, 6);
+		datePicker = new DatePicker();
+		this.add(datePicker, 1, 6);
+		
+		lbParent = new Label();
+		this.add(lbParent, 2, 5);
 
 
 		Button btn = new Button("Update");
@@ -86,20 +92,33 @@ public class FormCostCenter extends GridPane {
 					Optional<ButtonType> result = alert.showAndWait();
 					
 					if (result.get() == ButtonType.OK) {
-						CostCenter newcc = new CostCenter();
-						newcc.setId(tfID.getText());
-						newcc.setNameEN(tfDescEN.getText());
-						newcc.setNameFR(tfDescFR.getText());
-						newcc.setManager(tfManager.getText());
-						newcc.setClosingDate(datePicker.getValue());
-						newcc.setDirectorate(cc.getDirectorate()); // TODO : Create a choiceBox
-						newcc.setParent(cc.getParent());
-						newcc.setEffectiveDate(cc.getEffectiveDate());
+
+						try {
+							CostCenter newcc = new CostCenter();
+							newcc.setId(tfID.getText());
+							newcc.setNameEN(tfDescEN.getText());
+							newcc.setNameFR(tfDescFR.getText());
+							newcc.setManager(tfManager.getText());
+							newcc.setClosingDate(datePicker.getValue());
+							newcc.setDirectorate(tfDirectorate.getText()); // TODO : Create a choiceBox
+							CostCenter parent = DataLayer.getCostCenter(tfReportTo.getText());
+							newcc.setParent(parent);
+							lbParent.setText(parent.getNameEN() + " - " + parent.getManager());
+							newcc.setEffectiveDate(cc.getEffectiveDate());
+							
+							DataLayer.updateCostCenter(newcc);
+							
+							CostCenterModule module = (CostCenterModule) me.getParent();
+							module.load(); // to refresh
+
+							
+						} catch (NotFoundException e1) { // Will never get triggered since it is checked alrready
+							lbParent.setText("Invalid");
+							lbParent.setStyle("-fx-text-fill: red;");
+						}
+
 						
-						DataLayer.updateCostCenter(newcc);
-						
-						CostCenterModule parent = (CostCenterModule) me.getParent();
-						parent.load(); // to refresh
+
 						
 					} else {
 						
@@ -118,7 +137,7 @@ public class FormCostCenter extends GridPane {
 			}
 		});
 		
-		this.add(btn, 1, 6);
+		this.add(btn, 1, 7);
 	}
 	public void edit(CostCenter cc) {
 		
@@ -138,7 +157,25 @@ public class FormCostCenter extends GridPane {
 		tfDescFR.setText(cc.getNameFR());
 		tfManager.setText(cc.getManager());
 		tfDirectorate.setText(cc.getDirectorate());
+		if (cc.getParent() != null) {
+			tfReportTo.setText(cc.getParent().getId());
+			lbParent.setText(cc.getParent().getNameEN() + " - " + cc.getParent().getManager());
+		}
+
 		datePicker.setValue(cc.getClosingDate());
+
+	}
+	private boolean checkParent() {
+		try {
+			CostCenter parent = DataLayer.getCostCenter(tfReportTo.getText());
+			lbParent.setText(parent.getNameEN() + " - " + parent.getManager());
+			return true;
+		} catch (NotFoundException e){
+			lbParent.setText("Invalid");
+			lbParent.setStyle("-fx-text-fill: red;");
+			return false;
+		}
+		
 
 	}
 }
