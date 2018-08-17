@@ -2,6 +2,7 @@ package view;
 
 import controler.Admin;
 import controler.DataLayer;
+import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,7 +28,7 @@ public class FormProject extends GridPane {
 	public Project project;
 	FormProject me = this;
 
-	public FormProject() {
+	public FormProject(FIRST main) {
 
 		super();
 
@@ -142,6 +143,8 @@ public class FormProject extends GridPane {
 				//project.setClosingDate(datePicker.getValue());
 				
 				DataLayer.insertProject(project);
+				main.pMod.clear();
+				main.pMod.load();
 				
 			}
 			

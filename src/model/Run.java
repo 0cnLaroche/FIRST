@@ -48,4 +48,8 @@ public class Run extends FinancialCode {
 	public void setReplacedBy(String replacedBy) {
 		this.replacedBy = replacedBy;
 	}
+	public String[] toArray() {
+		return new String[] {this.getId(), this.getNameEN(), this.getType(), this.getCostcenter().getId(), 
+				this.getResponsible(), this.getStatus()};
+	}
 }

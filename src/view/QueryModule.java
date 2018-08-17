@@ -28,6 +28,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 /**This view includes the features to export data from the database to excel
  * @author samuel.laroche
+ * 
  *
  */
 public class QueryModule extends StackPane {
@@ -35,7 +36,7 @@ public class QueryModule extends StackPane {
 	StackPane me = this;
 	GridPane grid;
 
-	public QueryModule() {
+	public <FIRST>QueryModule(FIRST main) {
 		
 		Loading loadAnim = new Loading();
 

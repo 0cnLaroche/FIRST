@@ -1,5 +1,6 @@
 package element;
 
+import first.FIRST;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,10 +15,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.FinancialCode;
-import view.FormWBS;
+import view.FormNetwork;
 
 public class Network extends Sprite {
 	
+	public FIRST main;
 	private model.Network nw;
 	private Label name, id, cc, approver, status;
 	private Label pjmngt, analyse, plan, design, build, test, deploy, stabilize;
@@ -27,8 +29,9 @@ public class Network extends Sprite {
 	
 	private ToggleButton showAct;
 	
-	public Network() {
+	public Network(FIRST main) {
 		super();
+		this.main = main;
 		padding = 10;
 		this.setDimension(200, 100);
 		
@@ -122,7 +125,7 @@ public class Network extends Sprite {
 
 			@Override
 			public void handle(MouseEvent event) {
-				FormWBS form = new FormWBS();
+				FormNetwork form = new FormNetwork(main);
 				form.edit(nw);
 				Scene scene = new Scene(form,600,600);
 				Stage stage = new Stage();

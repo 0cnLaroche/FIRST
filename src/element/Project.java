@@ -1,5 +1,6 @@
 package element;
 
+import first.FIRST;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,16 +14,18 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import view.FormProject;
+import view.ProjectModule;
 
 public class Project extends Sprite {
-	
+	private FIRST main;
 	private model.Project prj;
 	private Text name, model, proposal, id;
 	private String paneStyle = "-fx-padding:10;";
 	private String textStyle = "-fx-fill: black; -fx-font: 35px Tahoma;";
 	
-	public Project() {
+	public Project(FIRST main) {
 		super();
+		this.main = main;
 		padding = 15;
 		this.setDimension(200, 100);		
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -98,7 +101,7 @@ public class Project extends Sprite {
 
 			@Override
 			public void handle(MouseEvent event) {
-				FormProject form = new FormProject();
+				FormProject form = new FormProject(main);
 				form.edit(prj);
 				Scene scene = new Scene(form,600,600);
 				Stage stage = new Stage();

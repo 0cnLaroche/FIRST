@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 public class GridCostCenter extends GridPane {
 	
-	public GridCostCenter() {
+	public <FIRST> GridCostCenter(FIRST main) {
 		super();
 
 		// SECTION COST CENTER
@@ -42,7 +42,7 @@ public class GridCostCenter extends GridPane {
 				System.out.println("Find cost center ");
 				try {
 					//System.out.println(DataLayer.getCostCenter(tfCostCenter.getText()).toString());
-					Scene scene = new Scene(new CostCenterModule());
+					Scene scene = new Scene(new CostCenterModule(main));
 					Stage report = new Stage();
 					report.setScene(scene);
 					report.setTitle("Cost Center");

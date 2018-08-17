@@ -30,7 +30,7 @@ public class CostCenterModule extends BorderPane {
 	private TextField tfKeyword;
 	protected TreeView<CostCenter> treeView;
 
-	public CostCenterModule() {
+	public <FIRST> CostCenterModule(FIRST main) {
 		load();
 	}
 

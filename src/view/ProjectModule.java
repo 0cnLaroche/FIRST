@@ -3,6 +3,7 @@ package view;
 import java.util.Optional;
 import controler.DataLayer;
 import controler.NotFoundException;
+import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,10 +32,108 @@ import model.*;
 
 public class ProjectModule extends BorderPane {
 	
+	public FIRST main;
 	private Project project;
 	private GridPane gSearch;
 	private Label label;
     private String txtStageStyle = "-fx-font:40px Tahoma;-fx-fill:white;";
+	
+
+	public ProjectModule(FIRST main) {
+		
+		this.main = main;
+		
+        gSearch = new GridPane();
+        gSearch.setAlignment(Pos.CENTER);
+		gSearch.setHgap(10);
+		gSearch.setVgap(10);
+		gSearch.setPadding(new Insets(25, 25, 25, 25));
+	
+		Label lbKeyword = new Label("Keyword");
+		gSearch.add(lbKeyword, 0, 0);
+		
+		TextField tfKeyword = new TextField();
+		//tfKeyword.prefWidthProperty().bind(this.widthProperty());
+		gSearch.add(tfKeyword, 1, 0);
+		GridPane.setHgrow(tfKeyword, Priority.ALWAYS);
+		
+		label = new Label("Projects are found here\nUse any keyword related to this project and FIRST will"
+				+ " return you a list of results you can pick from.\nTry any keyword such as the name of the project, a proposal"
+				+ " number, project manager, costcenter, network code, SAP code...");
+		label.setTextAlignment(TextAlignment.CENTER);
+		this.setCenter(label);
+		
+		Button btn = new Button("Go");
+		btn.getStyleClass().add("primary");
+
+		btn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+
+				Dialog<Project> dialog = new Dialog<Project>();
+				dialog.setTitle("Project Selection Dialog");
+				dialog.setHeaderText("Please select your project");
+				ButtonType selectButtonType = new ButtonType("Select", ButtonData.OK_DONE);
+				dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
+
+				ListView<Project> lv = new ListView<Project>();
+				lv.setPrefSize(500, 300);
+
+
+				try {
+
+					ObservableList<Project> items = FXCollections
+							.observableArrayList(DataLayer.queryProjects(tfKeyword.getText()));
+					lv.setItems(items);
+					MultipleSelectionModel<Project> lvSelModel = lv.getSelectionModel();
+					dialog.getDialogPane().setContent(lv);
+					
+					lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					    @Override
+					    public void handle(MouseEvent mouseEvent) {
+					        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+					            if(mouseEvent.getClickCount() == 2){
+					            	dialog.setResult(lvSelModel.selectedItemProperty().getValue());
+					            	dialog.close();
+					            }
+					        }
+					    }
+					});
+					
+					dialog.setResultConverter(dialogButton -> {
+					    if (dialogButton == selectButtonType) {
+					        return lvSelModel.selectedItemProperty().getValue();
+					    }
+					    return null;
+					});
+					
+					if (items.size() == 1) {
+						setProject(items.get(0));
+						clear();
+						load();
+					} else {
+						Optional<Project> result = dialog.showAndWait();
+
+						result.ifPresent(selection -> {
+							setProject(selection);
+							clear();
+							load();
+
+						});
+						
+					}
+
+
+				} catch (NotFoundException e1) {
+					System.err.println(e1);
+					e1.showDialog();
+				}
+			}
+		});
+		
+		gSearch.add(btn, 2, 0);
+		this.setBottom(gSearch);
+	}
 	
 	private class selectorTreeCellImpl extends TreeCell<Project>{
 		
@@ -55,7 +154,7 @@ public class ProjectModule extends BorderPane {
 		element.Project pdef;
 		
 		// setting source for project definition header
-		pdef = new element.Project();
+		pdef = new element.Project(main);
 		pdef.setSource(project);
         pdef.render();
         
@@ -133,7 +232,7 @@ public class ProjectModule extends BorderPane {
             }
         	
         	for (Network n : w.getNetworks()) {
-        		element.Network gn = new element.Network();
+        		element.Network gn = new element.Network(main);
         		gn.setSource(n);
         		gn.render();
         		flow.getChildren().add(gn);
@@ -167,91 +266,6 @@ public class ProjectModule extends BorderPane {
 		this.setCenter(label);
 	}
 
-	public ProjectModule() {
-
-        gSearch = new GridPane();
-        gSearch.setAlignment(Pos.CENTER);
-		gSearch.setHgap(10);
-		gSearch.setVgap(10);
-		gSearch.setPadding(new Insets(25, 25, 25, 25));
-	
-		Label lbKeyword = new Label("Keyword");
-		gSearch.add(lbKeyword, 0, 0);
-		
-		TextField tfKeyword = new TextField();
-		//tfKeyword.prefWidthProperty().bind(this.widthProperty());
-		gSearch.add(tfKeyword, 1, 0);
-		GridPane.setHgrow(tfKeyword, Priority.ALWAYS);
-		
-		label = new Label("Projects are found here\nUse any keyword related to this project and FIRST will"
-				+ " return you a list of results you can pick from.\nTry any keyword such as the name of the project, a proposal"
-				+ " number, project manager, costcenter, network code, SAP code...");
-		label.setTextAlignment(TextAlignment.CENTER);
-		this.setCenter(label);
-		
-		Button btn = new Button("Go");
-		btn.getStyleClass().add("primary");
-
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-
-				Dialog<Project> dialog = new Dialog<Project>();
-				dialog.setTitle("Project Selection Dialog");
-				dialog.setHeaderText("Please select your project");
-				ButtonType selectButtonType = new ButtonType("Select", ButtonData.OK_DONE);
-				dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
-
-				ListView<Project> lv = new ListView<Project>();
-				lv.setPrefSize(500, 300);
-
-
-				try {
-
-					ObservableList<Project> items = FXCollections
-							.observableArrayList(DataLayer.queryProjects(tfKeyword.getText()));
-					lv.setItems(items);
-					MultipleSelectionModel<Project> lvSelModel = lv.getSelectionModel();
-					dialog.getDialogPane().setContent(lv);
-					
-					lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					    @Override
-					    public void handle(MouseEvent mouseEvent) {
-					        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-					            if(mouseEvent.getClickCount() == 2){
-					            	dialog.setResult(lvSelModel.selectedItemProperty().getValue());
-					            	dialog.close();
-					            }
-					        }
-					    }
-					});
-					
-					dialog.setResultConverter(dialogButton -> {
-					    if (dialogButton == selectButtonType) {
-					        return lvSelModel.selectedItemProperty().getValue();
-					    }
-					    return null;
-					});
-
-					Optional<Project> result = dialog.showAndWait();
-
-					result.ifPresent(selection -> {
-						setProject(selection);
-						clear();
-						load();
-
-					});
-
-				} catch (NotFoundException e1) {
-					System.err.println(e1);
-					e1.showDialog();
-				}
-			}
-		});
-		
-		gSearch.add(btn, 2, 0);
-		this.setBottom(gSearch);
-	}
 	
 }
 

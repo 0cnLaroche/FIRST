@@ -1,10 +1,19 @@
 package view;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.swing.table.DefaultTableModel;
+
 import controler.DataLayer;
+import controler.TableTransferable;
+import first.FIRST;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -27,24 +36,23 @@ import model.*;
 
 public class RUNModule extends BorderPane {
 	
-	protected ArrayList<Run> source;
-	protected BorderPane root;
-	protected HBox hbLegend;
-	protected VBox filtersBox, resultBox, list;
-	protected ScrollPane spFilters, spList;	
-	protected GridPane grid;
-	protected CheckBox cbActive, cbClosed, cbMnt, cbSrv, cbBmt, cbInv;
-	protected ComboBox<String> cbCostCenter, cbManager;
-	protected TextField tfId, tfDesc;
-	protected Button filterReset;
+	public FIRST main;
+	private ArrayList<Run> source;
+	private BorderPane root;
+	private HBox hbLegend;
+	private VBox filtersBox, resultBox, list;
+	private ScrollPane spFilters, spList;	
+	private GridPane grid;
+	private CheckBox cbActive, cbClosed, cbMnt, cbSrv, cbBmt, cbInv;
+	private ComboBox<String> cbCostCenter, cbManager;
+	private TextField tfId, tfDesc;
+	private Button filterReset;
 	private String labelStyle = "-fx-text-fill: #ffffff;-fx-font: 16 Geneva; -fx-font-weight:bold;";
 	private String filterStyle = "-fx-text-fill: #ffffff;-fx-font: 14 Geneva;-fx-text-weight:bold;";
 	
-	public RUNModule() {
-		this.load();
-	}
-	public void load() {
+	public RUNModule(FIRST main) {
 		
+		this.main = main;
 		source = DataLayer.getRunList();
 
         root = new BorderPane();
@@ -270,8 +278,13 @@ public class RUNModule extends BorderPane {
         this.setLeft(spFilters);
         
         this.setCenter(resultBox);
+		this.load();
+	}
+	public void load() {
+		
+		
         
-        generateList(source);
+        generateList(DataLayer.getRunList());
 
 		/*Scene scene = new Scene(root, 1440, 900);
 		this.setTitle("RUN");
@@ -279,9 +292,9 @@ public class RUNModule extends BorderPane {
 	}
 	public ArrayList<Run> filter() {
 		@SuppressWarnings("unchecked")
-		ArrayList<Run> filtered = (ArrayList<Run>) source.clone();
+		ArrayList<Run> filtered = (ArrayList<Run>) DataLayer.getRunList().clone();
 
-		for (Run r : source) {
+		for (Run r : DataLayer.getRunList()) {
 			
 			try {
 				
@@ -346,6 +359,7 @@ public class RUNModule extends BorderPane {
 			}
 
 		}
+		this.source = filtered;
 		return filtered;
 		
 	}
@@ -354,7 +368,7 @@ public class RUNModule extends BorderPane {
 		
         for (Run r : run) {
 
-        	element.Run line = new element.Run(r);
+        	element.Run line = new element.Run(r,main);
         	
 /*        	HBox hb = new HBox(5);
         	Text id = new Text(r.getId());
@@ -414,6 +428,31 @@ public class RUNModule extends BorderPane {
 		ObservableList<String> options = FXCollections.observableArrayList(array);
 		cbManager.setItems(options);
 		
+	}
+	public void toClipboard() {
+		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+		Object[][] table = new Object[getSource().size()][];
+		
+		for (int i = 0; i < getSource().size(); i++) {
+			
+			Run run = source.get(i);
+			table[i] = run.toArray();
+			
+		}
+		DefaultTableModel model = new DefaultTableModel(table, new Object[] {"#", "Description", "Type", "Cost Center", 
+                "Responsible", "Status"});
+		cb.setContents(new TableTransferable(model), new ClipboardOwner() {
+            @Override
+            public void lostOwnership(Clipboard clipboard, Transferable contents) {
+                System.out.println("You lose :(");
+            }
+        });
+		                                                                  
+	
+	}
+	public ArrayList<Run> getSource() {
+		return source;
 	}
 	
 

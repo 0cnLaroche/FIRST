@@ -73,6 +73,8 @@ public abstract class FinancialCode {
 	public void setNameFR(String nameFR) {
 		this.nameFR = nameFR;
 	}
+	public abstract String[] toArray();
+	
 	public class Status {
 		private Byte value;
 		private String text;

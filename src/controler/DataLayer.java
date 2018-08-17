@@ -134,7 +134,11 @@ public class DataLayer {
 			insert.setString(4, project.getModel());
 			insert.setString(5, project.getStatus());
 			insert.setString(6, project.getProposal());
-			insert.setObject(7, Date.valueOf(project.getClosingDate()));
+			if (project.getClosingDate() != null) {
+				insert.setDate(7, Date.valueOf(project.getClosingDate()));
+			} else {
+				insert.setNull(7, java.sql.Types.DATE);
+			}
 			insert.setString(8, project.getLead());
 			
 			insert.executeUpdate();
@@ -160,9 +164,12 @@ public class DataLayer {
 			update.setString(3, project.getModel());
 			update.setString(4, project.getStatus());
 			update.setString(5, project.getProposal());
-			update.setObject(6, Date.valueOf(project.getClosingDate()));
+			if (project.getClosingDate() != null) {
+				update.setDate(6, Date.valueOf(project.getClosingDate()));
+			} else {
+				update.setNull(6, java.sql.Types.DATE);
+			}
 			update.setString(7, project.getLead());
-			
 			update.setString(8, project.getId());
 			
 			update.executeUpdate();
@@ -177,6 +184,13 @@ public class DataLayer {
 			System.err.println("Update for project " + project.toString() + ": FAILED");
 		}
 		
+	}
+	public static void insertNetwork(Network nw) {
+		PreparedStatement insert = null;
+		String queryNw = "INSERT INTO Network (ID, Name, NameFR, WBS, Project, Status, ClosingDate, EffectiveDate, Stage) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?);";
+		
+		//TODO : Finish the stateement and add insert wbs
 	}
 		
 	public static void updateNetwork(Network nw) {

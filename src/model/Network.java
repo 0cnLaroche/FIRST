@@ -40,6 +40,12 @@ public class Network extends FinancialCode {
 	public void setReplacedBy(String replacedBy) {
 		this.replacedBy = replacedBy;
 	}
+	@Override
+	public String[] toArray() {
+		
+		return new String[] {this.getId(), this.getNameEN(), this.getWbs().getCostcenter().getId(), 
+				this.getWbs().getApprover(), this.getStatus()};
+		};
+	}
 	
 	
-}

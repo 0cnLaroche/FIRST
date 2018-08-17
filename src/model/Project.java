@@ -67,6 +67,11 @@ public class Project extends FinancialCode {
 	public void setLead(String lead) {
 		this.lead = lead;
 	}
-
-
+	@Override
+	public String[] toArray() {
+		
+		return new String[] {this.getId(), this.getNameEN(), this.getModel(), this.getProposal(), this.getLead(),
+				this.getStatus()};
+		};
 }
+

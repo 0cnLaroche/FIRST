@@ -71,6 +71,12 @@ public class Wbs extends FinancialCode {
 	public String toString() {
 		return this.getId() + " | " + this.getNameEN();
 	}
+	@Override
+	public String[] toArray() {
+		
+		return new String[] {this.getId(), this.getNameEN(), this.getCostcenter().getId(), 
+			this.getApprover(), this.getStatus()};
+	}
 	
 
 }

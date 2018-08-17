@@ -1,3 +1,5 @@
+package first;
+
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,32 +27,32 @@ import controler.*;
 
 public class FIRST  extends Application {
 	
-	GridProjets gridProjets;
-	RUNModule runMod;
-	CostCenterModule ccMod;
-	QueryModule queryMod;
+
+	public GridProjets gridProjets;
+	public RUNModule runMod;
+	public CostCenterModule ccMod;
+	public QueryModule queryMod;
+	public ProjectModule pMod;
+	public FIRST me = this;
 	
-	DataLayer manager;
+	public DataLayer manager;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
 		
-		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("res/raccoon.png")));
+		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
 
 		try {
 			manager = new DataLayer();
 		} catch (controler.DatabaseCommunicationsException e) {
 			this.stop();
 		}
-		
-		
-		
-		
+
 		// Modules
-		runMod = new RUNModule();
-		ccMod = new CostCenterModule();
-		queryMod = new QueryModule();
-		ProjectModule pMod = new ProjectModule();
+		runMod = new RUNModule(this);
+		ccMod = new CostCenterModule(this);
+		queryMod = new QueryModule(this);
+		pMod = new ProjectModule(this);
 			
 		//Tabulation
 		TabPane tabPane = new TabPane();
@@ -63,22 +65,32 @@ public class FIRST  extends Application {
 
 			@Override
 			public void handle(ActionEvent e) {
+				Scene scene;
+				Stage stage;
 				switch (tabPane.getSelectionModel().getSelectedIndex()) {
 				case 0: // Project
-					
-
+					FormProject formProject = new FormProject(me);
+					scene = new Scene(formProject, 600, 600);
+					stage = new Stage();
+					stage.setScene(scene);
+					stage.setTitle("New Project");
+					stage.showAndWait();
+					stage = null;
+					scene = null;
 					break;
 				case 1: // RUN
-					FormRun form = new FormRun();
-					Scene scene = new Scene(form,600,600);
-					Stage stage = new Stage();
+					FormRun formRun = new FormRun(me);
+					scene = new Scene(formRun, 600, 600);
+					stage = new Stage();
 					stage.setScene(scene);
-					stage.setTitle("Run form");
-					stage.show();
+					stage.setTitle("New RUN");
+					stage.showAndWait();
+					stage = null;
+					scene = null;
 					break;
 				case 2: // CostCenter
 					break;
-					
+				
 				}
 				
 			}
@@ -93,20 +105,24 @@ public class FIRST  extends Application {
 			@Override
 			public void handle(ActionEvent e) {
 				
+
+				
 				switch (tabPane.getSelectionModel().getSelectedIndex()) {
-				case 1: // Project
+				case 0: // Project
 					
 
 					break;
-				case 2: // RUN
+				case 1: // RUN
+					getRunModule().toClipboard();
+
 					break;
-				case 3: // CostCenter
+				case 2: // CostCenter
 					break;
 					
 				}
 				
-		        Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-		        
+
+				/*Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 				DefaultTableModel model = new DefaultTableModel(
 		                new Object[][]{
 		            {"A1", "A2", "A3", "A4", "A5"},
@@ -117,12 +133,14 @@ public class FIRST  extends Application {
 		            {"F1", "F2", "F3", "F4", "F5"}
 		        },
 		                new Object[]{"1", "2", "3", "4", "5"});
+				
 				cb.setContents(new TableTransferable(model), new ClipboardOwner() {
 		            @Override
 		            public void lostOwnership(Clipboard clipboard, Transferable contents) {
 		                System.out.println("You lose :(");
 		            }
-		        });
+		        });*/
+				
 				
 			}
 			
@@ -148,7 +166,7 @@ public class FIRST  extends Application {
 			public void handle(ActionEvent event) {
 				if (!Admin.isAdmin()) {
 					if(Admin.showLoginDialog()) {
-				        ImageView imageView = new ImageView(new Image(getClass().getResource("res/unlock.png").toExternalForm(),
+				        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/unlock.png").toExternalForm(),
 				                40, 40, false, true));
 				        btnLock.setGraphic(imageView);
 				        hbox.getChildren().add(btnNew);
@@ -156,7 +174,7 @@ public class FIRST  extends Application {
 					}
 				} else {
 					Admin.logoff();
-			        ImageView imageView = new ImageView(new Image(getClass().getResource("res/lock.png").toExternalForm(),
+			        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/lock.png").toExternalForm(),
 			                40, 40, false, true));
 			        btnLock.setGraphic(imageView);
 			        hbox.getChildren().remove(btnNew);
@@ -219,7 +237,7 @@ public class FIRST  extends Application {
 		
 		stage.setScene(scene);
 		
-		String css = FIRST.class.getResource("bootstrap3.css").toExternalForm();
+		String css = FIRST.class.getResource("/bootstrap3.css").toExternalForm();
 		
 		scene.getStylesheets().clear();
 		scene.getStylesheets().add(css);
@@ -233,17 +251,30 @@ public class FIRST  extends Application {
 		
 
 	}
-	public static void main(String[] args) {
-		
-		launch(args);
-
-	}
     private Button createButton(String iconName) {
         Button button = new Button();
-        ImageView imageView = new ImageView(new Image(getClass().getResource("res/" + iconName).toExternalForm(),
+        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/" + iconName).toExternalForm(),
                 40, 40, false, true));
         button.setGraphic(imageView);
         button.getStyleClass().add("main");
         return button;
     }
+	public RUNModule getRunModule() {
+		return runMod;
+	}
+	public CostCenterModule getCostCenterModule() {
+		return ccMod;
+	}
+	public QueryModule getQueryModule() {
+		return queryMod;
+	}
+	public ProjectModule getProjectModule() {
+		return pMod;
+	}
+	
+	public static void main(String[] args) {
+		
+		launch(args);
+
+	}
 }

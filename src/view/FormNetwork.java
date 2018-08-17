@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import controler.Admin;
 import controler.DataLayer;
 import controler.NotFoundException;
+import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,16 +26,16 @@ import model.*;
  * @author samuel.laroche
  *
  */
-public class FormWBS extends GridPane {
+public class FormNetwork extends GridPane {
 	
 	TextField tfNetwork, tfWbsID, tfDescEN, tfDescFR, tfCostCenter, tfApprover;
 	ChoiceBox<Byte> cbStage;
 	ChoiceBox<String> cbStatus;
 	DatePicker datePicker;
-	FormWBS me = this;
+	FormNetwork me = this;
 	Network nw;
 	
-	public FormWBS() {
+	public FormNetwork(FIRST main) {
 
 		super();
 

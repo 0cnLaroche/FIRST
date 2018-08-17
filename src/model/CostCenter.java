@@ -69,5 +69,11 @@ public class CostCenter extends FinancialCode {
 	public void setDirectorate(String directorate) {
 		this.directorate = directorate;
 	}
+
+	@Override
+	public String[] toArray() {
+		
+		return new String[] {this.getId(), this.getNameEN(), this.getManager(), this.getStatus()};
+	}
 	
 }

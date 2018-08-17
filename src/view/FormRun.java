@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import controler.Admin;
 import controler.DataLayer;
+import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,7 +37,7 @@ public class FormRun extends GridPane {
 	EventHandler<ActionEvent> editHandler, newHandler;
 	private FormRun me = this;
 	
-	public FormRun() {
+	public FormRun(FIRST main) {
 
 		super();
 

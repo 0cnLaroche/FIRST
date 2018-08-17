@@ -1,5 +1,6 @@
 package element;
 
+import first.FIRST;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import view.FormRun;
+import view.RUNModule;
 
 public class Run extends HBox {
 	
@@ -22,7 +24,7 @@ public class Run extends HBox {
 	private String textStyle = "-fx-text-fill: #2d3142;";
 	private Run me = this;
 	
-	public Run(model.Run r) {
+	public Run(model.Run r, FIRST main) {
 		
 		id = new Label(r.getId());
 		desc = new Label(r.getNameEN());
@@ -55,7 +57,7 @@ public class Run extends HBox {
 
 			@Override
 			public void handle(MouseEvent event) {
-				FormRun form = new FormRun();
+				FormRun form = new FormRun(main);
 				form.edit(r);
 				Scene scene = new Scene(form,600,600);
 				Stage stage = new Stage();
