@@ -1,5 +1,6 @@
 package view;
 
+import first.FIRST;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,7 +14,7 @@ import javafx.stage.Stage;
 
 public class GridCostCenter extends GridPane {
 	
-	public <FIRST> GridCostCenter(FIRST main) {
+	public GridCostCenter(FIRST main) {
 		super();
 
 		// SECTION COST CENTER

@@ -1,8 +1,17 @@
 package view;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
+
+import javax.swing.table.DefaultTableModel;
+
 import controler.DataLayer;
 import controler.NotFoundException;
+import controler.TableTransferable;
+import first.FIRST;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -29,8 +38,13 @@ public class CostCenterModule extends BorderPane {
 	private GridPane gSearch;
 	private TextField tfKeyword;
 	protected TreeView<CostCenter> treeView;
+	private FormCostCenter form;
 
-	public <FIRST> CostCenterModule(FIRST main) {
+	public FormCostCenter getForm() {
+		return form;
+	}
+
+	public CostCenterModule(FIRST main) {
 		load();
 	}
 
@@ -107,6 +121,21 @@ public class CostCenterModule extends BorderPane {
 		}
 		return children;
 	}
+	public void toClipboard() {
+		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+		Object[][] table = new Object[][] {form.getCostCenter().toArray()};
+		
+
+		DefaultTableModel model = new DefaultTableModel(table, 
+				new Object[] {"CostCenter #", "Description", "Manager", "Status"});
+		cb.setContents(new TableTransferable(model), new ClipboardOwner() {
+            @Override
+            public void lostOwnership(Clipboard clipboard, Transferable contents) {
+                System.out.println("You lose :(");
+            }
+        });
+	}
 
 	private void highlightCostCenter(TreeItem<CostCenter> root) {
 		// For now this just select the treeItem with cost center matching the keyword
@@ -147,7 +176,7 @@ public class CostCenterModule extends BorderPane {
 				@Override
 				public void handle(MouseEvent e) {
 					// ccSelector.setCC(getTreeItem().getValue().getId());
-					FormCostCenter form = new FormCostCenter();
+					form = new FormCostCenter();
 					form.edit(getTreeItem().getValue());
 					me.setCenter(null);
 					me.setCenter(form);
@@ -155,6 +184,7 @@ public class CostCenterModule extends BorderPane {
 
 			});
 		}
+		
 
 	}
 
@@ -184,5 +214,6 @@ public class CostCenterModule extends BorderPane {
 				}
 			});
 		}
+		
 	}
 }

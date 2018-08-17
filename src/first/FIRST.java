@@ -109,14 +109,13 @@ public class FIRST  extends Application {
 				
 				switch (tabPane.getSelectionModel().getSelectedIndex()) {
 				case 0: // Project
-					
-
+					getProjectModule().toClipboard();
 					break;
 				case 1: // RUN
 					getRunModule().toClipboard();
-
 					break;
 				case 2: // CostCenter
+					getCostCenterModule().toClipboard();
 					break;
 					
 				}

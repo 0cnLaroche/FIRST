@@ -1,8 +1,16 @@
 package view;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
 import java.util.Optional;
+
+import javax.swing.table.DefaultTableModel;
+
 import controler.DataLayer;
 import controler.NotFoundException;
+import controler.TableTransferable;
 import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -264,6 +272,28 @@ public class ProjectModule extends BorderPane {
 	public void clear() {
 		this.setTop(null);
 		this.setCenter(label);
+	}
+	public void toClipboard() {
+		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+		Object[][] table = new Object[project.getWbs().size()][];
+		
+		for (int i = 0; i < project.getWbs().size(); i++) {
+			for (int j = 0; j < project.getWbs().get(i).getNetworks().size(); j++) {
+				Network nw = project.getWbs().get(i).getNetworks().get(j);
+				table[i] = nw.toArray();
+			}
+
+			
+		}
+		DefaultTableModel model = new DefaultTableModel(table, new Object[] {"Network #", "Description", "Cost Center", 
+				"Approver", "Status"});
+		cb.setContents(new TableTransferable(model), new ClipboardOwner() {
+            @Override
+            public void lostOwnership(Clipboard clipboard, Transferable contents) {
+                System.out.println("You lose :(");
+            }
+        });
 	}
 
 	

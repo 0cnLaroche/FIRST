@@ -178,4 +178,7 @@ public class FormCostCenter extends GridPane {
 		
 
 	}
+	public CostCenter getCostCenter() {
+		return cc;
+	}
 }
