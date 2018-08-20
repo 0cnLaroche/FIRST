@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -15,13 +16,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import view.*;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
-
-import javax.swing.table.DefaultTableModel;
 
 import controler.*;
 
@@ -97,9 +91,9 @@ public class FIRST  extends Application {
 			
 		});
 		
-		
-		Button btnCopy = createButton("copy.png");
 		// Copy Action
+		Button btnCopy = createButton("copy.png");
+		btnCopy.setTooltip(new Tooltip("Copy to clipboard"));
 		btnCopy.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -118,34 +112,14 @@ public class FIRST  extends Application {
 					getCostCenterModule().toClipboard();
 					break;
 					
-				}
-				
-
-				/*Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-				DefaultTableModel model = new DefaultTableModel(
-		                new Object[][]{
-		            {"A1", "A2", "A3", "A4", "A5"},
-		            {"B1", "B2", "B3", "B4", "B5"},
-		            {"C1", "C2", "C3", "C4", "C5"},
-		            {"D1", "D2", "D3", "D4", "D5"},
-		            {"E1", "E2", "E3", "E4", "E5"},
-		            {"F1", "F2", "F3", "F4", "F5"}
-		        },
-		                new Object[]{"1", "2", "3", "4", "5"});
-				
-				cb.setContents(new TableTransferable(model), new ClipboardOwner() {
-		            @Override
-		            public void lostOwnership(Clipboard clipboard, Transferable contents) {
-		                System.out.println("You lose :(");
-		            }
-		        });*/
-				
+				}				
 				
 			}
 			
 		});
 		
 		Button btnExport = createButton("export.png");
+		btnExport.setTooltip(new Tooltip("Export to PDF"));
 		btnExport.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -158,6 +132,7 @@ public class FIRST  extends Application {
 		
 
 		Button btnLock = createButton("lock.png");
+		btnLock.setTooltip(new Tooltip("Administrator Access"));
 		
 		btnLock.setOnAction(new EventHandler<ActionEvent>() {
 			// Just switch the image whether or not the user is logged as admin
@@ -183,6 +158,7 @@ public class FIRST  extends Application {
 		
 		
 		Button btnRefresh = createButton("refresh.png");
+		btnRefresh.setTooltip(new Tooltip("Refresh"));
 		btnRefresh.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override

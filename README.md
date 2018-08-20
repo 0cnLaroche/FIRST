@@ -1,24 +1,20 @@
 # FIRST 2
  *Financial Information Reporting and Search Tool Version 2*
 
-## Modules
-3 modules allow users to navigate and find financial coding for :
-* **Cost Centers**
-* **Projects**
-* **RUN**
+## User Guide
 
-With **administrator credentials**, users can update or add new codes.
+[Complete user guide](/doc/guide.md)
 
-## Exporting data
-Users can export data from the export module in excel format. Eventually, we want to be able to extract report from the cost model.
-
-## IT Cost Model Integration
+#### IT Cost Model Integration
 
 The application is made to integrate the IT Cost Model with an import functionality and index management.
 
-### Trello
+### Follow Project
 
-https://trello.com/b/eHTpWd8K/first-2
+* [Trello](https://trello.com/b/eHTpWd8K/first-2)
+* [GitHub](https://github.com/0cnLaroche/FIRST)
+* [gcgcode](https://gccode.ssc-spc.gc.ca/0cnLaroche/FIRST)
+
 
 ### Contact
 
