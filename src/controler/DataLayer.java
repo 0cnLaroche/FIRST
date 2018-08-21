@@ -187,8 +187,36 @@ public class DataLayer {
 	}
 	public static void insertNetwork(Network nw) {
 		PreparedStatement insert = null;
-		String queryNw = "INSERT INTO Network (ID, Name, NameFR, WBS, Project, Status, ClosingDate, EffectiveDate, Stage) "
+		String query = "INSERT INTO Network (ID, Name, NameFR, WBS, Project, Status, ClosingDate, EffectiveDate, Stage) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?);";
+		try {
+			insert = con.prepareStatement(query);
+			
+			insert.setString(1, nw.getId());
+			insert.setString(2, nw.getNameEN());
+			insert.setString(3, nw.getWbs().getId());
+			insert.setString(4, nw.getWbs().getProject().getId());
+			insert.setString(5, nw.getStatus());
+			if (nw.getClosingDate() != null) {
+				insert.setDate(6, Date.valueOf(nw.getClosingDate()));
+			} else {
+				insert.setNull(6, java.sql.Types.DATE);
+			}
+			if (nw.getEffectiveDate() != null) {
+				insert.setDate(7, Date.valueOf(nw.getEffectiveDate()));
+			} else {
+				insert.setNull(7, java.sql.Types.DATE);
+			}
+			insert.setByte(8, nw.getWbs().getStage());
+			
+			insert.executeUpdate();
+			
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		
 		
 		//TODO : Finish the stateement and add insert wbs
 	}
@@ -361,6 +389,37 @@ public class DataLayer {
 			
 		}
 		
+	}
+	public void insertCostCenter(CostCenter cc) {
+		PreparedStatement insert;
+		String query = "INSERT INTO CostCenter (ID, ReportsTo, Name, Manager, Directorate, EffectiveDate, ClosingDate);";
+		
+		try {
+			insert = con.prepareStatement(query);
+			insert.setInt(1, Integer.parseInt(cc.getId()));
+			insert.setInt(2, Integer.parseInt(cc.getParent().getId()));
+			insert.setString(3, cc.getNameEN());
+			insert.setString(4, cc.getManager());
+			insert.setString(5, cc.getManager());
+			insert.setString(6, cc.getDirectorate());
+			if (cc.getEffectiveDate() != null) {
+				insert.setDate(7, Date.valueOf(cc.getEffectiveDate()));
+			} else {
+				insert.setNull(7, java.sql.Types.DATE);
+			}
+			if (cc.getClosingDate() != null) {
+				insert.setDate(8, Date.valueOf(cc.getClosingDate()));
+			} else {
+				insert.setNull(8, java.sql.Types.DATE);
+			}
+			insert.executeUpdate();
+			System.out.println("Insert Cost Center : SUCCESS");
+			
+		} catch (SQLException e) {
+			System.err.println("Insert Cost Center : FAILED");
+		}
+
+
 	}
 	public static void updateCostCenter(CostCenter cc) {
 		PreparedStatement update;

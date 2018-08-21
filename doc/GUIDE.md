@@ -1,39 +1,30 @@
 # FIRST2
- *Financial Information Reporting and Search Tool Version 2*
- 
+
+### Introduction
 This guide has for objective to help you learn how to use FIRST2. You should be able to get the ropes very easily.
 
 **This guide is composed of 7 sections:**
 
 1. Introduction
-1. Main controls
 1. Projects
 1. Run
 1. Cost Centers
 1. Exports
+1. Main controls
 1. Administration
+1. About
+
+#### What is FIRST ?
+FIRST stands for  *Financial Information Reference and Search Tool Version 2*. It's data management system for Financial coding in a context of IT Activity Based Costing (ABC). In the past lists of codes where kept on excel spreadsheets that required tremendous effort to maintain and lacked of consistency and readability. FIRST was developed in an attempt to merge data into a single tool that will be precise, easy to maintain and use. FIRST2 is written in JAVA and uses a MySQL database.
+
+#### Access FIRST
+1. Go to [ITCAR SharePoint](http://dialogue/grp/SFI-IFS/SitePages/Home.aspx) site or [CATS Intranet page](http://esdc.prv/en/iitb/corporate/CATS/index.shtml) and click on the link for FIRST.
+1. FIRST will lunch on your desktop
 
 ### Tabs
 ![Image of tabs](http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/images/tabs.PNG)
 
 Each modules (except Administration) can be accessed via a tab on the left. You can switch between the modules just by clicking on them. You won't loose what you were viewing while going on other tabs.
-
-### Main controls
-![Image of main controls](http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/images/controls.PNG)
-
-#### Copy/Paste
-Click on the camera button to copy to your clipboard. Data will be copied as a table that you will be able to edit after you paste it in any kind of Office document. Data will be copied from the current tab with information you have selected. For projects, the project that you have opened will be copied as a whole. For Run, the selection after applying filters will be copied. For cost centers, only the selected cost center will be copied.
-
-#### Export to PDF
-This functionality has not been implemented yet, but will allow you to export the current view as a PDF document.
-
-#### Lock/Unlock
-This button allows to unlock/lock FIRST for modifications. You won't use that unless you have an administrator* access.
-
-_*Please refer to the Administration Section for more details._
-
-#### Refresh
-Refreshing FIRST will download the latest modifications to the database and reload them into the app.
 
 ## Projects
 After switching to the Project tab, you should see a blank space and a the Keyword field at the bottom.
@@ -41,16 +32,16 @@ After switching to the Project tab, you should see a blank space and a the Keywo
 #### Finding a project
 You can retrieve a project by using any keyword related to it.
 1. Type any of the keywords listed below
-2. Click **Go**
-3. A dialog box will open if there is more then one project matching your search. **Double-Click** on a project or **select one** than click **OK** to open it.
+1. Click **Go**
+1. A dialog box will open if there is more then one project matching your search. **Double-Click** on a project or **select one** than click **OK** to open it.
 
 ##### Keywords
 - Project Name
-- Proposal Number
+- Proposal Number (ie: 15-9007-003 )
 - Project Manager
-- Cost Center
-- Network code
-- SAP code
+- Cost Center (ie: 205460)
+- Network code (ie: (64378)
+- SAP code (ie: I-0090)
 
 #### Viewing a project
 The **top** section will show the **project description** with relevant information such as its proposal number and governance.
@@ -92,7 +83,7 @@ This module allows you to export data from FIRST's database as excel files. Thes
 #### How to
 1. Select a query
 1. Click **open**
-1. **Select location** on your computer where the file will be saved.
+1. **Select a location** on your computer where the file will be saved.
 1. Click yes if you want to open the file after saving it.
 
 They are 4 queries that you can export :
@@ -101,6 +92,23 @@ They are 4 queries that you can export :
 - **RUN Codes** : List of all RUN Codes (ID, Description, Type, Cost Center, Status, CSD/Service ID).
 - **Cost Center by Level** : A list of cost centers followed by their reporting cost center (parents) on 6 levels.
 - Project List : (soon)
+
+### Main controls
+![Image of main controls](http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/images/controls.PNG)
+
+#### Copy/Paste
+Click on the camera button to copy to your clipboard. Data will be copied as a table that you will be able to edit after you paste it in any kind of Office document. Data will be copied from the current tab with information you have selected. For projects, the project that you have opened will be copied as a whole. For Run, the selection after applying filters will be copied. For cost centers, only the selected cost center will be copied.
+
+#### Export to PDF
+This functionality has not been implemented yet, but will allow you to export the current view as a PDF document.
+
+#### Lock/Unlock
+This button allows to unlock/lock FIRST for modifications. You won't use that unless you have an administrator* access.
+
+_*Please refer to the Administration Section for more details._
+
+#### Refresh
+Refreshing FIRST will download the latest modifications to the database and reload them into the app.
 
 ## Administration
 The admin module lets you modify information or create any financial coding in FIRST database. Note that this won't apply the changes in SAP. **You will have to make them manually**. You should make sure the information is close as possible as of SAP.

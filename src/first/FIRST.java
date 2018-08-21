@@ -83,6 +83,15 @@ public class FIRST  extends Application {
 					scene = null;
 					break;
 				case 2: // CostCenter
+					FormCostCenter formcc = new FormCostCenter();
+					scene = new Scene(formcc, 600, 600);
+					stage = new Stage();
+					stage.setScene(scene);
+					stage.setTitle("New Cost Center");
+					stage.showAndWait();
+					stage = null;
+					scene = null;
+					
 					break;
 				
 				}
@@ -98,9 +107,7 @@ public class FIRST  extends Application {
 
 			@Override
 			public void handle(ActionEvent e) {
-				
-
-				
+					
 				switch (tabPane.getSelectionModel().getSelectedIndex()) {
 				case 0: // Project
 					getProjectModule().toClipboard();

@@ -3,7 +3,7 @@
 
 ## User Guide
 
-[Complete user guide](/doc/GUIDE.md)
+[Complete user guide](doc/GUIDE.md)
 
 #### IT Cost Model Integration
 
