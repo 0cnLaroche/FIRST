@@ -91,7 +91,7 @@ They are 4 queries that you can export :
 - **Networks by Approvers** : A list of all network codes (ID, Description, Approver, Status, Stage, Project ID).
 - **RUN Codes** : List of all RUN Codes (ID, Description, Type, Cost Center, Status, CSD/Service ID).
 - **Cost Center by Level** : A list of cost centers followed by their reporting cost center (parents) on 6 levels.
-- Project List : (soon)
+- **Project List** : A list of all projects including Stage-Gated, Branch Initiatives and Lite. Fields include Project SAP code, Project Name, Model, Proposal #, Project Manager, Status, Closing Date and GCIT Attributes.
 
 ### Main controls
 ![Image of main controls](http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/images/controls.PNG)

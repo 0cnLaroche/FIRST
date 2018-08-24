@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -17,6 +18,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.Project;
 
 public class FormProject extends GridPane {
@@ -25,7 +27,7 @@ public class FormProject extends GridPane {
 	private ChoiceBox<String> cbModel, cbStatus;
 	private EventHandler<ActionEvent> newHandler, editHandler;
 	private Button submit, btnWbs;
-	public Project project;
+	private Project project;
 	FormProject me = this;
 
 	public FormProject(FIRST main) {
@@ -78,6 +80,28 @@ public class FormProject extends GridPane {
 		btnWbs.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
+				
+				if(getProject() == null) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setHeaderText("You need to save the project before adding Networks");
+					alert.showAndWait();
+					
+					
+				} else {
+					
+					FormNetwork form = new FormNetwork(main);
+					form.add(project);
+
+					Scene scene = new Scene(form, 600, 600);
+					Stage stage = new Stage();
+					stage.setScene(scene);
+					stage.setTitle("New Network");
+					stage.show();
+					
+				}
+				
+
+				
 			}
 		});
 		this.add(btnWbs, 1, 7);
@@ -110,10 +134,8 @@ public class FormProject extends GridPane {
 						//project.setStatus(me.cbStatus.getValue()); 
 						project.setModel(me.cbModel.getValue());
 						project.setProposal(me.tfProposal.getText());
-
-	
+ 
 						DataLayer.updateProject(project);
-						System.out.println("Update Run Success");
 					}
 					
 				} else {
@@ -143,8 +165,10 @@ public class FormProject extends GridPane {
 				//project.setClosingDate(datePicker.getValue());
 				
 				DataLayer.insertProject(project);
+				me.setProject(project);
 				main.pMod.clear();
 				main.pMod.load();
+				
 				
 			}
 			
@@ -168,4 +192,11 @@ public class FormProject extends GridPane {
 		tfLead.setText(pj.getLead());
 		
 	}
+	public Project getProject() {
+		return project;
+	}
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	
 }

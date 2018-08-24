@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.GridPane;
@@ -35,37 +36,61 @@ public class QueryModule extends StackPane {
 
 	StackPane me = this;
 	GridPane grid;
+	TextArea text;
+	private String[] names = {"Networks by Approvers", "Project List", "RUN codes", 
+			"Cost Centers by level"};
 
 	public <FIRST>QueryModule(FIRST main) {
 		
 		Loading loadAnim = new Loading();
+		
+		grid = new GridPane();
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(10);
+		
+		// This is where will be displayed the descriptions of queries
+		text = new TextArea();
+		text.setEditable(false);
+		grid.add(text, 1, 0);
 
 		// Queries Elements
-		ObservableList<String> queryList = FXCollections.observableArrayList("Networks by Approvers", "RUN codes", 
-				"Cost Centers by level"); // Add other queries here
+		ObservableList<String> queryList = FXCollections.observableArrayList(names); // Add other queries here
 
 		ListView<String> lvQueries = new ListView<String>(queryList);
 		lvQueries.setPrefSize(250, 120);
 
 		MultipleSelectionModel<String> lvSelModel = lvQueries.getSelectionModel();
 
+		// Show a description when an element is selected
 		lvSelModel.selectedItemProperty().addListener(new ChangeListener<String>() {
 
 			@Override
 			public void changed(ObservableValue<? extends String> changed, String oldVal, String newVal) {
-				// TODO: add description of queries in a label
+				switch (newVal) {
+				case "Networks by Approvers":
+					text.setText("A list of all network codes with the following fields :\n"
+							+ "ID, Description, Approver, Status, Stage, Project ID, GCIT Attributes");
+					break;
+				case "Project List":
+					text.setText("A list of all projects including Stage-Gated, Branch Initiatives and Lite.\n"
+							+ " Included fields are Project SAP code, Project Name, Model, Proposal #, "
+							+ "\nProject Manager, Status, Closing Date and GCIT Attributes.");
+					break;
+				case "RUN codes":
+					text.setText("A list of all RUN Codes including fields :\n"
+							+ "ID, Description, Type, Cost Center, Status, Solution (CSD) and Service ID");
+					break;
+				case "Cost Centers by level":
+					text.setText("A list of cost centers followed by their reporting cost center (parents) on 6 levels.");
+					break;
+				}
 			}
 		});
-		Button btnQuery = new Button("Open");
-
-		grid = new GridPane();
 		grid.add(lvQueries, 0, 0);
-		grid.add(btnQuery, 0, 1);
-		grid.setAlignment(Pos.CENTER);
-		grid.setHgap(10);
-		grid.setVgap(10);
-		this.getChildren().add(grid);
-
+		
+		Button btnQuery = new Button("Open");
+		btnQuery.getStyleClass().add("primary");
 		btnQuery.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -163,12 +188,40 @@ public class QueryModule extends StackPane {
 					}
 
 					break;
+				case "Project List":
+					fChooser.setInitialFileName("ProjectList");
+					selectedFile = fChooser.showSaveDialog(null);
+
+					try {
+						qw.exportProjectList(selectedFile);
+
+						Optional<ButtonType> result = alert.showAndWait();
+
+						if (result.get() == btnYes) {
+							desktop.open(selectedFile);
+						} else {
+							// ... user chose CANCEL or closed the dialog
+						}
+
+					} catch (NullPointerException e) {
+						System.out.println("Export cancelled by User");
+						e.printStackTrace();
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+
+					break;
+					
 				}
 
 				me.getChildren().remove(loadAnim);
 			}
 
 		});
+		grid.add(btnQuery, 0, 1);
+
+		this.getChildren().add(grid);
 
 	}
 }

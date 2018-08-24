@@ -3,39 +3,73 @@ package first;
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import javafx.stage.StageStyle;
 import view.*;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import controler.*;
 
 public class FIRST  extends Application {
 	
-
+	public Stage console;
 	public GridProjets gridProjets;
 	public RUNModule runMod;
 	public CostCenterModule ccMod;
 	public QueryModule queryMod;
 	public ProjectModule pMod;
+	public About about;
 	public FIRST me = this;
 	
 	public DataLayer manager;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		
-		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
 
+		//This is an opening message while FIRST is loading
+		Stage opening = new Stage();
+		VBox vb = new VBox();
+		vb.setAlignment(Pos.CENTER);
+		vb.getChildren().addAll(
+				new ImageView(new Image( FIRST.class.getResourceAsStream("/res/raccoon.png"))),
+				new Label("Please wait while FIRST 2 is loading ..."));
+		vb.setSpacing(10.0);
+		opening.setScene(new Scene (vb,300,300));
+		opening.initStyle(StageStyle.UTILITY);
+		opening.setAlwaysOnTop(true);
+		opening.show();
+		
+		//Show the console
+		//redirectSystemStreams();
+		
+		console = new Stage();
+		TextArea cout = new TextArea();
+		console.setScene(new Scene(cout));
+		console.initStyle(StageStyle.UTILITY);
+		//console.toBack();
+		console.show();	
+		
+		//Application icon
+		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
+		
+		//Loading the data layer
 		try {
 			manager = new DataLayer();
 		} catch (controler.DatabaseCommunicationsException e) {
@@ -47,6 +81,8 @@ public class FIRST  extends Application {
 		ccMod = new CostCenterModule(this);
 		queryMod = new QueryModule(this);
 		pMod = new ProjectModule(this);
+		about = new About(this);
+		
 			
 		//Tabulation
 		TabPane tabPane = new TabPane();
@@ -163,7 +199,6 @@ public class FIRST  extends Application {
 			}
 		});
 		
-		
 		Button btnRefresh = createButton("refresh.png");
 		btnRefresh.setTooltip(new Tooltip("Refresh"));
 		btnRefresh.setOnAction(new EventHandler<ActionEvent>() {
@@ -178,6 +213,8 @@ public class FIRST  extends Application {
 			}
 		});
 		hbox.getChildren().addAll(btnCopy,btnExport,btnLock,btnRefresh);
+
+		
         // Anchor the controls
         AnchorPane mainAnchor = new AnchorPane();
         mainAnchor.getChildren().addAll(tabPane, hbox);
@@ -208,6 +245,8 @@ public class FIRST  extends Application {
 		
 		Tab tabAbout = new Tab();
 		tabAbout.setText("About");
+		tabAbout.setContent(about);
+		
 		
 		tabPane.getTabs().addAll(tabProjet,tabRun,tabCC,tabQueries,tabAbout);
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -225,6 +264,7 @@ public class FIRST  extends Application {
 		scene.getStylesheets().add(css);
 		
 		stage.show();
+		opening.close();
 		
 		stage.setOnCloseRequest(e -> {
 			manager.disconnect();
@@ -253,6 +293,39 @@ public class FIRST  extends Application {
 	public ProjectModule getProjectModule() {
 		return pMod;
 	}
+	private void updateTextArea(final String text) {
+		Platform.runLater( new Runnable() {
+
+			@Override
+			public void run() {
+				TextArea cout = (TextArea) console.getScene().getRoot();
+				cout.appendText(text);
+				
+			}
+			
+		});
+	}
+	private void redirectSystemStreams() {
+		  OutputStream out = new OutputStream() {
+		    @Override
+		    public void write(int b) throws IOException {
+		      updateTextArea(String.valueOf((char) b));
+		    }
+		 
+		    @Override
+		    public void write(byte[] b, int off, int len) throws IOException {
+		      updateTextArea(new String(b, off, len));
+		    }
+		 
+		    @Override
+		    public void write(byte[] b) throws IOException {
+		      write(b, 0, b.length);
+		    }
+		  };
+		 
+		  System.setOut(new PrintStream(out, true));
+		  System.setErr(new PrintStream(out, true));
+		}
 	
 	public static void main(String[] args) {
 		

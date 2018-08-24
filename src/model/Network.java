@@ -43,7 +43,7 @@ public class Network extends FinancialCode {
 	@Override
 	public String[] toArray() {
 		
-		return new String[] {this.getId(), this.getNameEN(), this.getWbs().getCostcenter().getId(), 
+		return new String[] {this.getId(), this.getNameEN(), String.valueOf(this.getWbs().getStage()), this.getWbs().getCostcenter().getId(), 
 				this.getWbs().getApprover(), this.getStatus()};
 		};
 	}

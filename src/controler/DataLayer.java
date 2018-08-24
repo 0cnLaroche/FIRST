@@ -52,7 +52,7 @@ public class DataLayer {
 		loadCostCenters();
 		loadRuns();
 		loadProjects();
-		
+
 	}
 	public static HashMap<String, CostCenter> getCostCenterList() {
 		return costcenters;
@@ -194,26 +194,74 @@ public class DataLayer {
 			
 			insert.setString(1, nw.getId());
 			insert.setString(2, nw.getNameEN());
-			insert.setString(3, nw.getWbs().getId());
-			insert.setString(4, nw.getWbs().getProject().getId());
-			insert.setString(5, nw.getStatus());
+			insert.setString(3, nw.getNameFR());
+			insert.setString(4, nw.getWbs().getId());
+			insert.setString(5, nw.getWbs().getProject().getId());
+			insert.setString(6, nw.getStatus());
 			if (nw.getClosingDate() != null) {
-				insert.setDate(6, Date.valueOf(nw.getClosingDate()));
-			} else {
-				insert.setNull(6, java.sql.Types.DATE);
-			}
-			if (nw.getEffectiveDate() != null) {
-				insert.setDate(7, Date.valueOf(nw.getEffectiveDate()));
+				insert.setDate(7, Date.valueOf(nw.getClosingDate()));
 			} else {
 				insert.setNull(7, java.sql.Types.DATE);
 			}
-			insert.setByte(8, nw.getWbs().getStage());
+			if (nw.getEffectiveDate() != null) {
+				insert.setDate(8, Date.valueOf(nw.getEffectiveDate()));
+			} else {
+				insert.setNull(8, java.sql.Types.DATE);
+			}
+			insert.setByte(9, nw.getWbs().getStage());
 			
 			insert.executeUpdate();
+			
+			System.out.println("INSERT Network " + nw.toString() + " : SUCCCESS");
 			
 			
 		} catch (SQLException e) {
 
+			System.err.println("INSERT Network " + nw.toString() + " : FAILED");
+		}
+		
+		
+		//TODO : Finish the statement and add insert wbs
+	}
+	
+	public static void insertWbs(Wbs wbs) {
+		PreparedStatement insert = null;
+		String query = "INSERT INTO WBS (ID, Name, NameFR, ResponsibleCostCenter, RequestingCostCenter, Approver, "
+				+ "ProjectDefinition, Status, Stage, ClosingDate, EffectiveDate, ParentWBS) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+		try {
+			insert = con.prepareStatement(query);
+			
+			insert.setString(1, wbs.getId());
+			insert.setString(2, wbs.getNameEN());
+			insert.setString(3, wbs.getNameFR());
+			int cc = Integer.parseInt(wbs.getCostcenter().getId());
+			insert.setInt(4, cc);
+			insert.setInt(5, cc);
+			insert.setString(6, wbs.getApprover());
+			insert.setString(7, wbs.getProject().getId());
+			insert.setString(8, wbs.getStatus());
+			insert.setByte(9, wbs.getStage());
+			if (wbs.getClosingDate() != null) {
+				insert.setDate(10, Date.valueOf(wbs.getClosingDate()));
+			} else {
+				insert.setNull(10, java.sql.Types.DATE);
+			}
+			if (wbs.getEffectiveDate() != null) {
+				insert.setDate(11, Date.valueOf(wbs.getEffectiveDate()));
+			} else {
+				insert.setNull(11, java.sql.Types.DATE);
+			}
+			insert.setString(12, wbs.getProject().getId());
+			
+			insert.executeUpdate();
+			
+			System.out.println("Insert WBS " + wbs.toString() + " : SUCCCESS");
+			
+			
+		} catch (SQLException e) {
+
+			System.err.println("INSERT WBS " + wbs.toString() + " : FAILED");
 			e.printStackTrace();
 		}
 		

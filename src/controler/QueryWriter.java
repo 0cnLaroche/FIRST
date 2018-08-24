@@ -77,12 +77,19 @@ public class QueryWriter {
 	 */
 	public void exportRunList(File file) throws NullPointerException {
 		if (file != null) {
-			//TODO : add GCIT Attributes for Luc
 			this.export(file, "/sql/run.sql", "RUN");
 		} else {
 			throw new NullPointerException();
 		}
 
+	}
+	public void exportProjectList(File file) throws NullPointerException {
+		if (file != null) {
+
+			this.export(file, "/sql/projects.sql", "Projects");
+		} else {
+			throw new NullPointerException();
+		}
 	}
 	/**Exports cost centers in the format :
 	 * 	[ID, Description, Manager, Parent Level 1; Level 2; Level 3; ... ; Level 6].

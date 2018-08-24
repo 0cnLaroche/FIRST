@@ -1,0 +1,1 @@
+SELECT ID,Name,NameFR,Model,Proposal,ProjectManager,`Status`,ClosingDate,ITServicesGroups,DistributedComputingEnvironment,ADDMByApp,ADDMByOutcome FROM ProjectDefinition ORDER BY ID ASC;

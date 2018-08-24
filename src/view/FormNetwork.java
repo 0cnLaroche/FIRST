@@ -28,12 +28,13 @@ import model.*;
  */
 public class FormNetwork extends GridPane {
 	
-	TextField tfNetwork, tfWbsID, tfDescEN, tfDescFR, tfCostCenter, tfApprover;
-	ChoiceBox<Byte> cbStage;
-	ChoiceBox<String> cbStatus;
-	DatePicker datePicker;
-	FormNetwork me = this;
-	Network nw;
+	private TextField tfNetwork, tfWbsID, tfDescEN, tfDescFR, tfCostCenter, tfApprover;
+	private ChoiceBox<Byte> cbStage;
+	private ChoiceBox<String> cbStatus;
+	private DatePicker datePicker;
+	private FormNetwork me = this;
+	private Network nw;
+	private Button btn;
 	
 	public FormNetwork(FIRST main) {
 
@@ -84,9 +85,67 @@ public class FormNetwork extends GridPane {
 		datePicker = new DatePicker();
 		this.add(datePicker, 1, 7);
 		
+		btn = new Button("Save");
+		this.add(btn, 1, 8);
 		
 		// TODO : Add CSD and Service ID
 
+	}
+	public void add(Project project) {
+		
+		Network nw = new Network();
+		Wbs wbs = new Wbs();		
+		
+		btn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				
+				if (Admin.isAdmin()) {
+
+					nw.setId(tfNetwork.getText());
+					nw.setNameEN(tfDescEN.getText());
+					nw.setNameFR(tfDescFR.getText());
+					nw.setClosingDate(datePicker.getValue());
+					nw.setEffectiveDate(LocalDate.now());
+					nw.setStatus(cbStatus.getValue());
+
+					wbs.setId(tfWbsID.getText());
+					wbs.setNameEN(tfDescEN.getText());
+					wbs.setNameFR(tfDescFR.getText());
+					wbs.setApprover(tfApprover.getText());
+					wbs.setEffectiveDate(LocalDate.now());
+					wbs.setClosingDate(datePicker.getValue());
+					wbs.setStage(cbStage.getValue());
+					wbs.setStatus(cbStatus.getValue());
+					
+					try {
+						wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
+					} catch (NotFoundException e1) {
+
+						System.err.println("Didn't find the cost center");
+					}
+					
+					nw.setWbs(wbs);
+					wbs.setProject(project);
+					DataLayer.insertWbs(wbs);
+					DataLayer.insertNetwork(nw);
+
+				} else {
+					
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Admin Dialog");
+					alert.setHeaderText("Hey, seems like you don't have access to change that");
+					alert.setContentText("You can contact your CATS Administration Team to request a change. "
+							+ "For Admins, click on the lock button to enter your credentials.");
+					alert.showAndWait();
+					
+				}
+
+			}
+		});
+		
+		
+		
 	}
 	
 	/**Sets the form into "Edit" mode. However a user cannot edit unless signed in as Administrator. The form is 
@@ -105,7 +164,7 @@ public class FormNetwork extends GridPane {
 		datePicker.setValue(nw.getClosingDate());
 		cbStatus.setValue(nw.getStatus().toString());
 		
-		Button btn = new Button("Save");
+
 		btn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -167,9 +226,6 @@ public class FormNetwork extends GridPane {
 
 			}
 		});
-		
-		this.add(btn, 1, 8);
 
-		
 	}
 }

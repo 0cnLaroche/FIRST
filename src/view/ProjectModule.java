@@ -286,7 +286,7 @@ public class ProjectModule extends BorderPane {
 
 			
 		}
-		DefaultTableModel model = new DefaultTableModel(table, new Object[] {"Network #", "Description", "Cost Center", 
+		DefaultTableModel model = new DefaultTableModel(table, new Object[] {"Network #", "Description", "Stage", "Cost Center", 
 				"Approver", "Status"});
 		cb.setContents(new TableTransferable(model), new ClipboardOwner() {
             @Override

@@ -4,3 +4,5 @@
 /view/
 /res/
 /first/
+/.gitignore
+/sql/

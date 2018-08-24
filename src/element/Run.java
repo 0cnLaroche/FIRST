@@ -15,7 +15,7 @@ import view.FormRun;
 import view.RUNModule;
 
 public class Run extends HBox {
-	
+	// Should change this into an anchorPane
 	private boolean selected = false;
 	public Label id, desc, type, resp, cc, status;
 	private String defaultStyle = "-fx-background-color:#FFFFFF;-fx-border-style: solid; -fx-border-width: 0 0 2 0; -fx-border-color: #4f5d75;";
