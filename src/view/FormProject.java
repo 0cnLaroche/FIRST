@@ -29,10 +29,12 @@ public class FormProject extends GridPane {
 	private Button submit, btnWbs;
 	private Project project;
 	FormProject me = this;
+	FIRST main;
 
 	public FormProject(FIRST main) {
 
 		super();
+		this.main = main;
 
 		this.setAlignment(Pos.CENTER);
 		this.setHgap(10);
@@ -112,7 +114,7 @@ public class FormProject extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Edit project");
 				
-				if (Admin.isAdmin()) {
+				if (main.getAdministrationModule().isAdmin()) {
 					
 					if (me.project != null ) {
 						
@@ -166,9 +168,9 @@ public class FormProject extends GridPane {
 				
 				DataLayer.insertProject(project);
 				me.setProject(project);
-				main.pMod.clear();
-				main.pMod.load();
-				
+				main.getProjectModule().clear();
+				main.getProjectModule().load();
+		
 				
 			}
 			

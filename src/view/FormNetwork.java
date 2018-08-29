@@ -35,10 +35,12 @@ public class FormNetwork extends GridPane {
 	private FormNetwork me = this;
 	private Network nw;
 	private Button btn;
+	public FIRST main;
 	
 	public FormNetwork(FIRST main) {
 
 		super();
+		this.main = main;
 
 		// SECTION WBS and Network
 
@@ -100,7 +102,7 @@ public class FormNetwork extends GridPane {
 			@Override
 			public void handle(ActionEvent e) {
 				
-				if (Admin.isAdmin()) {
+				if (main.getAdministrationModule().isAdmin()) {
 
 					nw.setId(tfNetwork.getText());
 					nw.setNameEN(tfDescEN.getText());
@@ -169,7 +171,7 @@ public class FormNetwork extends GridPane {
 			@Override
 			public void handle(ActionEvent e) {
 				
-				if (Admin.isAdmin()) {
+				if (main.getAdministrationModule().isAdmin()) {
 					
 					if (me.nw != null ) {
 						

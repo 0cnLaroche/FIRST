@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import controler.Admin;
 import controler.DataLayer;
+import controler.Main;
 import controler.NotFoundException;
+import first.FIRST;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -27,7 +29,7 @@ public class FormCostCenter extends GridPane {
 	CostCenter cc;
 	FormCostCenter me = this;
 	
-	public FormCostCenter() {
+	public FormCostCenter(FIRST main) {
 
 		super();
 
@@ -75,7 +77,7 @@ public class FormCostCenter extends GridPane {
 			@Override
 			public void handle(ActionEvent e) {
 				
-				if (Admin.isAdmin()) {
+				if (main.getAdministrationModule().isAdmin()) {
 					
 					tfID.setEditable(true);
 					tfDescEN.setEditable(true);

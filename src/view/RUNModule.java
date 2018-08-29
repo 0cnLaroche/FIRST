@@ -304,7 +304,7 @@ public class RUNModule extends BorderPane {
 					}
 				}
 				if(tfDesc.getText() != null && tfDesc.getText().length() > 0) {
-					if (!r.getNameEN().toLowerCase().contains(tfDesc.getCharacters())) {
+					if (!r.getNameEN().toLowerCase().contains(tfDesc.getText().toLowerCase())) {
 						filtered.remove(r);
 					}
 				}

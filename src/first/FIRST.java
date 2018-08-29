@@ -30,11 +30,13 @@ import controler.*;
 public class FIRST  extends Application {
 	
 	public Stage console;
-	public GridProjets gridProjets;
-	public RUNModule runMod;
-	public CostCenterModule ccMod;
-	public QueryModule queryMod;
-	public ProjectModule pMod;
+	private GridProjets gridProjets;
+	private RUNModule runMod;
+	private CostCenterModule ccMod;
+	private QueryModule queryMod;
+	private ProjectModule projectMod;
+	private Admin adminMod;
+	
 	public About about;
 	public FIRST me = this;
 	
@@ -69,6 +71,9 @@ public class FIRST  extends Application {
 		//Application icon
 		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
 		
+		//Loading Admin module
+		adminMod = new Admin(this);
+		
 		//Loading the data layer
 		try {
 			manager = new DataLayer();
@@ -80,7 +85,7 @@ public class FIRST  extends Application {
 		runMod = new RUNModule(this);
 		ccMod = new CostCenterModule(this);
 		queryMod = new QueryModule(this);
-		pMod = new ProjectModule(this);
+		projectMod = new ProjectModule(this);
 		about = new About(this);
 		
 			
@@ -119,7 +124,7 @@ public class FIRST  extends Application {
 					scene = null;
 					break;
 				case 2: // CostCenter
-					FormCostCenter formcc = new FormCostCenter();
+					FormCostCenter formcc = new FormCostCenter(me);
 					scene = new Scene(formcc, 600, 600);
 					stage = new Stage();
 					stage.setScene(scene);
@@ -181,8 +186,8 @@ public class FIRST  extends Application {
 			// Just switch the image whether or not the user is logged as admin
 			@Override
 			public void handle(ActionEvent event) {
-				if (!Admin.isAdmin()) {
-					if(Admin.showLoginDialog()) {
+				if (!adminMod.isAdmin()) {
+					if(adminMod.showLoginDialog()) {
 				        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/unlock.png").toExternalForm(),
 				                40, 40, false, true));
 				        btnLock.setGraphic(imageView);
@@ -190,7 +195,7 @@ public class FIRST  extends Application {
 				        
 					}
 				} else {
-					Admin.logoff();
+					adminMod.logoff();
 			        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/lock.png").toExternalForm(),
 			                40, 40, false, true));
 			        btnLock.setGraphic(imageView);
@@ -229,7 +234,7 @@ public class FIRST  extends Application {
 		Tab tabProjet = new Tab();
 		tabProjet.setText("Projects");
 		//tabProjet.setContent(projectAnchor);
-		tabProjet.setContent(pMod);
+		tabProjet.setContent(projectMod);
 		
 		Tab tabRun = new Tab();
 		tabRun.setText("RUN");
@@ -281,6 +286,9 @@ public class FIRST  extends Application {
         button.getStyleClass().add("main");
         return button;
     }
+	public Admin getAdministrationModule() {
+		return adminMod;
+	}
 	public RUNModule getRunModule() {
 		return runMod;
 	}
@@ -291,7 +299,10 @@ public class FIRST  extends Application {
 		return queryMod;
 	}
 	public ProjectModule getProjectModule() {
-		return pMod;
+		return projectMod;
+	}
+	public DataLayer getManager() {
+		return manager;
 	}
 	private void updateTextArea(final String text) {
 		Platform.runLater( new Runnable() {

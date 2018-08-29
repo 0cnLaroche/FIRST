@@ -39,13 +39,14 @@ public class CostCenterModule extends BorderPane {
 	private TextField tfKeyword;
 	protected TreeView<CostCenter> treeView;
 	private FormCostCenter form;
-
-	public FormCostCenter getForm() {
-		return form;
-	}
+	public FIRST main;
 
 	public CostCenterModule(FIRST main) {
+		this.main = main;
 		load();
+	}
+	public FormCostCenter getForm() {
+		return form;
 	}
 
 	public void load() {
@@ -176,7 +177,7 @@ public class CostCenterModule extends BorderPane {
 				@Override
 				public void handle(MouseEvent e) {
 					// ccSelector.setCC(getTreeItem().getValue().getId());
-					form = new FormCostCenter();
+					form = new FormCostCenter(main);
 					form.edit(getTreeItem().getValue());
 					me.setCenter(null);
 					me.setCenter(form);
@@ -207,7 +208,7 @@ public class CostCenterModule extends BorderPane {
 				@Override
 				public void handle(MouseEvent e) {
 					// ccSelector.setCC(getTreeItem().getValue().getId());
-					FormCostCenter form = new FormCostCenter();
+					FormCostCenter form = new FormCostCenter(main);
 					form.edit(getTreeItem().getValue());
 					me.setCenter(null);
 					me.setCenter(form);

@@ -99,7 +99,7 @@ public class FormRun extends GridPane {
 			public void handle(ActionEvent e) {
 				System.out.println("Edit run");
 				
-				if (Admin.isAdmin()) {
+				if (main.getAdministrationModule().isAdmin()) {
 					
 					if (me.run != null ) {
 						

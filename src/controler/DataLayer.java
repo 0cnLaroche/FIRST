@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
@@ -25,11 +26,11 @@ import model.*;
 
 public class DataLayer {
 	
+	private Properties prop;
 	private static Connection con = null;
-	private final String user = "webadmin";
+	private final String user = "firstusr";
 	private final String password = "Pa$$w0rd";
 	private final String url = "jdbc:mysql://10.54.223.154:3306/costing";
-	private final String stuff = "useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	
 	private static HashMap<String,Run> runs;
 	private static HashMap<String, Project> projects;
@@ -84,8 +85,8 @@ public class DataLayer {
 			e.printStackTrace();
 		}
 	
-		try {
-			Statement statement = con.createStatement();
+		try (Statement statement = con.createStatement()){
+			;
 			rs = statement.executeQuery(query);
 			ResultSetMetaData rsmd = rs.getMetaData();
 			final int columnCount = rsmd.getColumnCount();
@@ -103,10 +104,12 @@ public class DataLayer {
 				}
 				result.add(line);
 			}
-			
+
 			
 		} catch (SQLException e) {
 			System.err.println("SQL Exception for query : " + query);
+		} finally {
+			
 		}
 		
 		return result;
@@ -121,12 +124,12 @@ public class DataLayer {
 	}
 	
 	public static void insertProject(Project project) {
-		PreparedStatement insert = null;
+
 		String query = "INSERT INTO ProjectDefinition (ID, Name, NameFR, Model, Status, "
 				+ "Proposal, ClosingDate, ProjectManager) "
 				+ "VALUES (?,?,?,?,?,?,?,?);";
-		try {
-			insert = con.prepareStatement(query);
+		try (PreparedStatement insert = con.prepareStatement(query)){
+			
 			
 			insert.setString(1, project.getId());
 			insert.setString(2, project.getNameEN());
@@ -146,17 +149,18 @@ public class DataLayer {
 			projects.put(project.getId(), project);
 			System.out.println("Update for project " + project.toString() + ": SUCCESS");
 
+
 		} catch (SQLException e) {
 			System.err.println("Insert for project " + project.toString() + ": FAILED");
 		}
 	}
 	public static void updateProject(Project project) {
-		PreparedStatement update = null;
+		// PreparedStatement update = null;
 		String query = "UPDATE ProjectDefinition SET Name = ?, NameFR = ?, Model = ?, Status = ?, "
 				+ "Proposal = ?, ClosingDate = ?, ProjectManager = ? "
 				+ "WHERE ID = ?;";
-		try {
-			update = con.prepareStatement(query);
+		try (PreparedStatement update = con.prepareStatement(query)){
+			
 			
 
 			update.setString(1, project.getNameEN());
@@ -186,11 +190,11 @@ public class DataLayer {
 		
 	}
 	public static void insertNetwork(Network nw) {
-		PreparedStatement insert = null;
+		//PreparedStatement insert = null;
 		String query = "INSERT INTO Network (ID, Name, NameFR, WBS, Project, Status, ClosingDate, EffectiveDate, Stage) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?);";
-		try {
-			insert = con.prepareStatement(query);
+		try (PreparedStatement insert = con.prepareStatement(query)){
+			
 			
 			insert.setString(1, nw.getId());
 			insert.setString(2, nw.getNameEN());
@@ -225,12 +229,11 @@ public class DataLayer {
 	}
 	
 	public static void insertWbs(Wbs wbs) {
-		PreparedStatement insert = null;
+
 		String query = "INSERT INTO WBS (ID, Name, NameFR, ResponsibleCostCenter, RequestingCostCenter, Approver, "
 				+ "ProjectDefinition, Status, Stage, ClosingDate, EffectiveDate, ParentWBS) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
-		try {
-			insert = con.prepareStatement(query);
+		try (PreparedStatement insert = con.prepareStatement(query)) {
 			
 			insert.setString(1, wbs.getId());
 			insert.setString(2, wbs.getNameEN());
@@ -270,14 +273,11 @@ public class DataLayer {
 	}
 		
 	public static void updateNetwork(Network nw) {
-		PreparedStatement update = null;
 		String queryNw = "UPDATE Network SET Name = ?, NameFR = ?, EffectiveDate = ?, "
 				+ "ClosingDate = ?, ReplacedBy = ?, Status = ?, Stage = ? "
 				+ "WHERE ID = ?;";
 		
-		try {
-			
-			update = con.prepareStatement(queryNw);
+		try (PreparedStatement update = con.prepareStatement(queryNw)){
 			
 			update.setString(1, nw.getNameEN());
 			update.setString(2, nw.getNameFR());
@@ -312,8 +312,7 @@ public class DataLayer {
 				+ "Stage = ? "
 				+ "WHERE ID = ?";
 		
-		try {
-			update = con.prepareStatement(queryWbs);
+		try (PreparedStatement update = con.prepareStatement(queryWbs)) {
 			
 			update.setString(1, nw.getNameEN());
 			update.setString(2, nw.getNameFR());
@@ -344,13 +343,12 @@ public class DataLayer {
 	 * @param run
 	 */
 	public static void insertRun(Run run) {
-		PreparedStatement insert;
+		
 		String query = "INSERT INTO RUN (Name, NameFR, CostCenter_Responsible, CostCenter_Requesting, "
 				+ "Responsible, Type, ClosingDate, EffectiveDate, Status, ReplacedBy, ID) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 		
-		try {
-			insert = con.prepareStatement(query);
+		try (PreparedStatement insert = con.prepareStatement(query)) {
 			
 			insert.setString(1, run.getNameEN());
 			insert.setString(2, run.getNameFR());
@@ -392,7 +390,7 @@ public class DataLayer {
 	 * @param run Object
 	 */
 	public static void updateRun(Run run) {
-		PreparedStatement update;
+		
 		String query = "UPDATE RUN SET Name = ?, NameFR = ?, "
 				+ "CostCenter_Responsible = ?, CostCenter_Requesting = ?, "
 				+ "Responsible = ?, "
@@ -403,8 +401,7 @@ public class DataLayer {
 				+ "WHERE ID = ?;";
 
 		
-		try {
-			update = con.prepareStatement(query);
+		try (PreparedStatement update = con.prepareStatement(query)) {
 			
 			update.setString(1, run.getNameEN());
 			update.setString(2, run.getNameFR());
@@ -439,11 +436,11 @@ public class DataLayer {
 		
 	}
 	public void insertCostCenter(CostCenter cc) {
-		PreparedStatement insert;
+		
 		String query = "INSERT INTO CostCenter (ID, ReportsTo, Name, Manager, Directorate, EffectiveDate, ClosingDate);";
 		
-		try {
-			insert = con.prepareStatement(query);
+		try (PreparedStatement insert = con.prepareStatement(query)) {
+			
 			insert.setInt(1, Integer.parseInt(cc.getId()));
 			insert.setInt(2, Integer.parseInt(cc.getParent().getId()));
 			insert.setString(3, cc.getNameEN());
@@ -470,7 +467,7 @@ public class DataLayer {
 
 	}
 	public static void updateCostCenter(CostCenter cc) {
-		PreparedStatement update;
+		
 		String query = "UPDATE CostCenter SET Name = ?, "
 				+ "ReportsTo = ?, "
 				+ "Manager = ?, "
@@ -480,8 +477,7 @@ public class DataLayer {
 				+ "WHERE ID = ?;";
 
 		
-		try {
-			update = con.prepareStatement(query);
+		try (PreparedStatement update = con.prepareStatement(query)) {
 			
 			update.setString(1, cc.getNameEN());
 			update.setInt(2, Integer.parseInt(cc.getParent().getId()));		
@@ -555,7 +551,7 @@ public class DataLayer {
 	public static ArrayList<Project> queryProjects(String keyword) throws NotFoundException {
 		ArrayList<Project> list = new ArrayList<Project>();
 		ResultSet rs = null;
-		PreparedStatement statement = null;
+		
 		String query = "SELECT DISTINCT p.ID FROM ProjectDefinition p "
 				+ "INNER JOIN WBS w on w.ProjectDefinition = p.ID "
 				+ "INNER JOIN Network n ON w.ID = n.WBS "
@@ -563,8 +559,8 @@ public class DataLayer {
 				+ "OR n.ID = ? OR n.Name LIKE ? "
 				+ "OR w.ResponsibleCostCenter = ? OR w.Approver LIKE ?;";
 		
-		try {
-			statement = con.prepareStatement(query);
+		try (PreparedStatement statement = con.prepareStatement(query)){
+			
 			
 			statement.setString(1, keyword.toUpperCase()); //Project #
 			statement.setString(2, "%" + keyword + "%"); // Proposal
@@ -588,7 +584,7 @@ public class DataLayer {
 				} while (rs.next());
 			}
 
-			
+			rs.close();
 			
 		} catch (SQLException e) {
 
@@ -601,7 +597,7 @@ public class DataLayer {
 		// TODO : Find a way to sort results by description
 		ArrayList<Run> list = new ArrayList<Run>();
 		ResultSet rs = null;
-		PreparedStatement selectStatement = null;
+		
 		String querystring = "SELECT DISTINCT ID FROM RUN WHERE" + 
 				" Name LIKE ? OR NameFR LIKE ?" + 
 				" OR IF( ? = '',0, Responsible LIKE ? ) " +
@@ -614,9 +610,7 @@ public class DataLayer {
 			}
 		} else {
 			// fetch from db
-			try {
-				
-				selectStatement = con.prepareStatement(querystring);
+			try (PreparedStatement selectStatement = con.prepareStatement(querystring)) {
 
 				if (!keyword.equals("")) {
 					keyword = "%" + keyword + "%";
@@ -646,6 +640,8 @@ public class DataLayer {
 				if (list.isEmpty())
 					throw new NotFoundException();
 				
+				rs.close();
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -654,11 +650,49 @@ public class DataLayer {
 	
 	}
 	
+	/** Generic connection (read only)
+	 * @throws DatabaseCommunicationsException
+	 */
 	public void connect() throws DatabaseCommunicationsException {
-
+		
+		prop = new Properties();
+		prop.put("user", this.user);
+		prop.put("password", this.password);
+		prop.put("useUnicode", true);
+		prop.put("useJDBCCompliantTimezoneShift", true);
+		prop.put("useLegacyDatetimeCode", false);
+		prop.put("serverTimezone", "UTC");
+		prop.put("useSSL", false);
+		
 		try {
-			con = DriverManager.getConnection(url + "?" + stuff, user, password);
-			System.out.println("Connected to database");
+
+			con = DriverManager.getConnection(url, prop);
+			System.out.println("Connected to database as " + this.user);
+		} catch (CommunicationsException e) {
+			throw new DatabaseCommunicationsException();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+	/**For custom credentials
+	 * @param user
+	 * @param password
+	 * @throws DatabaseCommunicationsException
+	 */
+	public void connect(String user, String password) throws DatabaseCommunicationsException {
+		prop = new Properties();
+		prop.put("user", user);
+		prop.put("password", password);
+		prop.put("useUnicode", true);
+		prop.put("useJDBCCompliantTimezoneShift", true);
+		prop.put("useLegacyDatetimeCode", false);
+		prop.put("serverTimezone", "UTC");
+		
+		try {
+
+			con = DriverManager.getConnection(url, prop);
+			System.out.println("Connected to database as "  + user);
 		} catch (CommunicationsException e) {
 			throw new DatabaseCommunicationsException();
 		} catch (SQLException e) {
@@ -684,9 +718,8 @@ public class DataLayer {
 	}
 	private static void loadCostCenters() {
 
-		try {
+		try (Statement statement = con.createStatement()) {
 
-			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(
 					"SELECT ID, ReportsTo, Name, Manager, Directorate, EffectiveDate, ClosingDate, Comments, Level FROM CostCenter");
 			
@@ -718,6 +751,8 @@ public class DataLayer {
 			}
 			loadCostCenterRelationships(index, "103100");
 			
+			rs.close();
+			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -728,9 +763,8 @@ public class DataLayer {
 		
 		runs.clear();
 		
-		try {
+		try (Statement statement = con.createStatement()) {
 
-			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(
 					"SELECT ID, Name, NameFR, Type, Responsible, CostCenter_Responsible, EffectiveDate, ClosingDate, ReplacedBy, Status, Comments FROM RUN");
 
@@ -794,7 +828,9 @@ public class DataLayer {
 				}
 				
 			}
-
+			
+			rs.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -804,24 +840,23 @@ public class DataLayer {
 		ArrayList<String[]> wbsToProject = new ArrayList<String[]>();
 		ArrayList<String[]> networkToWbs = new ArrayList<String[]>();
 		
-		try {
-			
+		try (Statement statement = con.createStatement()){
 			
 			// NETWORKS
-
-			Statement statement = null;
+			
 			String queryString = "SELECT ID, Name, NameFR, WBS, Project, Stage, EffectiveDate, ClosingDate, Status, ReplacedBy, Comments FROM Network";
 
-			statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(queryString);
 
 			while (rs.next()) {
+				
 				String[] entry = { rs.getString(1), rs.getString(4) }; // {ID, WBS} pair
 				networkToWbs.add(entry);
 				Network nw = new Network();
 				nw.setId(rs.getString(1));
 				nw.setNameEN(rs.getString(2));
 				nw.setNameFR(rs.getString(3));
+				
 				if (rs.getDate(7) != null) {
 					nw.setEffectiveDate(rs.getDate(7).toLocalDate());
 				} else {
@@ -832,9 +867,7 @@ public class DataLayer {
 				} else {
 					nw.setClosingDate(null);
 				}
-				
 
-				
 				switch (rs.getString(9) ) {
 				case "Closed":
 					nw.setStatus(Network.CLOSED);
@@ -854,11 +887,12 @@ public class DataLayer {
 				// Other fields to be added
 				networks.put(nw.getId(), nw);
 			}
+			rs.close();
 			
 			// WBS
-		
+			
 			queryString = "SELECT ID, Name, NameFR, ResponsibleCostCenter, Approver, Stage, ParentWBS, ProjectDefinition, ClosingDate, Status, ReplacedBy, Comments FROM WBS";
-			statement = con.createStatement();
+			
 			rs = statement.executeQuery(queryString);
 
 			while (rs.next()) {
@@ -882,9 +916,10 @@ public class DataLayer {
 				mapNetwork(networkToWbs, wbsNew.getId());
 
 			}
+			rs.close();
 			
 			// PROJECT DEFINITION
-			statement = con.createStatement();
+			
 			rs = statement.executeQuery(
 					"SELECT ID, Name, NameFR, Model, Proposal, ProjectManager, ClosingDate, Status, Comments FROM ProjectDefinition");
 
@@ -899,10 +934,16 @@ public class DataLayer {
 				projects.put(project.getId(), project);
 				mapWbs(wbsToProject, project.getId());
 			}
+			
+			rs.close();
+			rs = null;
+
+
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	private static void mapWbs(ArrayList<String[]> wbsToProject, String parent) {
@@ -925,13 +966,12 @@ public class DataLayer {
 		}
 	}
 	public static String getUserHash(String id) {
-		PreparedStatement select = null;
+
 		String query = "SELECT Hash FROM Admin WHERE ID = ?;";
 		ResultSet rs = null;
-		String hash = "";
+		String hash = new String();
 		
-		try {
-			select = con.prepareStatement(query);
+		try (PreparedStatement select = con.prepareStatement(query)){
 			
 			select.setString(1, id);
 			
@@ -940,8 +980,6 @@ public class DataLayer {
 			while (rs.next()) {
 				hash = rs.getString(1);
 			}
-			
-			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1049,6 +1087,7 @@ public class DataLayer {
 			}
 			
 			insert.executeBatch();
+			insert.close();
 			
 			System.out.println("batch " + ((list.size() / batchSize) + 1) + " of " + ((list.size() / batchSize) + 1));
 			System.out.println("update successful");

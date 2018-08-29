@@ -1,8 +1,10 @@
 package controler;
 
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
+import first.FIRST;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.ButtonType;
@@ -24,15 +26,23 @@ import javafx.util.Pair;
  */
 public class Admin {
 	
-	private static boolean adminUsr = false;
+	private boolean adminUsr = false;
+	private FIRST main;
 	
-	public static boolean login(String user, String pwrd)  {
+	public Admin(FIRST main) {
+		this.main = main;
+	}
+	
+	public boolean login(String user, String pwrd)  {
 		
 		String hash = DataLayer.getUserHash(user);  // Get user hashcode from db
 		
 		try {
 			if (compareHash(pwrd,hash)) {
 				adminUsr = true;
+				// TODO : Connect as firstadmin
+				main.getManager().disconnect();
+				main.getManager().connect("firstadmin", "Pa$$w0rd");
 				System.out.println(user + " : Administrator access granted");
 			} else {
 				adminUsr = false;
@@ -48,14 +58,20 @@ public class Admin {
 
         
 	}
-	public static void logoff() {
+	public void logoff() {
+		main.getManager().disconnect();
+		try {
+			main.getManager().connect();
+		} catch (DatabaseCommunicationsException e) {
+
+		}
 		adminUsr = false;
 	}
 	/**Creates a dialog for the user to login. Check if the credentials match an administrator username and password
 	 * in the database. Informs the user if login is successful or not.
 	 * @return true if the user is logged in as admin false if not
 	 */
-	public static boolean showLoginDialog() {
+	public boolean showLoginDialog() {
 		
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("Login Dialog");
@@ -107,7 +123,7 @@ public class Admin {
 		
 		result.ifPresent(usernamePassword -> {
 			
-			if (Admin.login(usernamePassword.getKey(), usernamePassword.getValue())) {
+			if (this.login(usernamePassword.getKey(), usernamePassword.getValue())) {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Login Confirmation");
 				alert.setHeaderText("Administrator access granted!");
@@ -124,11 +140,34 @@ public class Admin {
 		});
 		return adminUsr;
 	}
-	public static boolean isAdmin() {
+	public boolean isAdmin() {
 		return adminUsr;
 	}
-	private static boolean compareHash(String text, String hash) throws Exception {
+	private boolean compareHash(String text, String hash) throws Exception {
 		boolean pass;
+		
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		md.update(text.getBytes());
+		
+		byte byteData[] = md.digest();
+		
+		// Converts to Hexadecimal
+		StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        
+        String hashedTxt = sb.toString();
+        
+        if (hashedTxt.equals(hash)) {
+        	pass = true;
+        } else {
+        	pass = false;
+        }
+        
+		return pass;
+	}
+	public static String hash(String text) throws NoSuchAlgorithmException {
 		
 		MessageDigest md = MessageDigest.getInstance("SHA-1");
 		md.update(text.getBytes());
@@ -144,12 +183,7 @@ public class Admin {
         String hashedTxt = sb.toString();
         System.out.println(hashedTxt);
         
-        if (hashedTxt.equals(hash)) {
-        	pass = true;
-        } else {
-        	pass = false;
-        }
-        
-		return pass;
+		return hashedTxt;
+		
 	}
 }
