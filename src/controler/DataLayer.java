@@ -16,6 +16,9 @@ import java.io.InputStreamReader;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -649,6 +652,24 @@ public class DataLayer {
 		return list;
 	
 	}
+	public void log(String event) {
+		
+		String query = "INSERT INTO Log(User, Event, Origin) VALUES (?,?,?)";
+		// mysql now() is the default value for Date
+		try (PreparedStatement insert = con.prepareStatement(query)){
+
+			insert.setString(1, System.getProperty("user.name"));
+			insert.setString(2, event);
+			insert.setString(3, "FIRST");
+			
+			insert.executeUpdate();
+			
+		} catch (SQLException e) {
+
+			System.err.println(("New log entry failed"));
+			e.printStackTrace();
+		}
+	}
 	
 	/** Generic connection (read only)
 	 * @throws DatabaseCommunicationsException
@@ -668,6 +689,8 @@ public class DataLayer {
 
 			con = DriverManager.getConnection(url, prop);
 			System.out.println("Connected to database as " + this.user);
+			this.log("Connected");
+			
 		} catch (CommunicationsException e) {
 			throw new DatabaseCommunicationsException();
 		} catch (SQLException e) {
@@ -693,6 +716,7 @@ public class DataLayer {
 
 			con = DriverManager.getConnection(url, prop);
 			System.out.println("Connected to database as "  + user);
+			this.log("Connected as Administrator");
 		} catch (CommunicationsException e) {
 			throw new DatabaseCommunicationsException();
 		} catch (SQLException e) {
