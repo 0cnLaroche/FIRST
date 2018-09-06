@@ -59,7 +59,7 @@ public class FIRST  extends Application {
 		opening.show();
 		
 		//Show the console
-		//redirectSystemStreams();
+		redirectSystemStreams();
 		
 		console = new Stage();
 		TextArea cout = new TextArea();
