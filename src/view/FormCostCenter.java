@@ -29,6 +29,8 @@ public class FormCostCenter extends GridPane {
 	Label lbReportTo, lbParent;
 	CostCenter cc;
 	FormCostCenter me = this;
+	EventHandler<ActionEvent> hnew, hedit;
+	Button btn;
 	
 	public FormCostCenter(FIRST main) {
 
@@ -71,10 +73,64 @@ public class FormCostCenter extends GridPane {
 		
 		lbParent = new Label();
 		this.add(lbParent, 2, 5);
+		
+		hnew = 	new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				
+				if (main.getAdministrationModule().isAdmin()) {
+					
+					tfID.setEditable(true);
+					tfDescEN.setEditable(true);
+					tfDescFR.setEditable(true);
+					tfManager.setEditable(true);
+					tfDirectorate.setEditable(true);
+					datePicker.setEditable(true);
+					
+
+						try {
+							CostCenter newcc = new CostCenter();
+							newcc.setId(tfID.getText());
+							newcc.setNameEN(tfDescEN.getText());
+							newcc.setNameFR(tfDescFR.getText());
+							newcc.setManager(tfManager.getText());
+							newcc.setClosingDate(datePicker.getValue());
+							newcc.setDirectorate(tfDirectorate.getText()); // TODO : Create a choiceBox
+							CostCenter parent = DataLayer.getCostCenter(tfReportTo.getText());
+							newcc.setParent(parent);
+							lbParent.setText(parent.getNameEN() + " - " + parent.getManager());
+							if (cc == null) {
+								newcc.setEffectiveDate(LocalDate.now());
+							} else {
+								newcc.setEffectiveDate(cc.getEffectiveDate());
+							}
+
+						
+							main.getManager().insertCostCenter(newcc);
+							
+							main.getCostCenterModule().load();
 
 
-		Button btn = new Button("Update");
-		btn.setOnAction(new EventHandler<ActionEvent>() {
+							
+						} catch (NotFoundException e1) { // Will never get triggered since it is checked already
+							lbParent.setText("Invalid");
+							lbParent.setStyle("-fx-text-fill: red;");
+						}
+				
+				} else {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Admin Dialog");
+					alert.setHeaderText("Hey, seems like you don't have access to change that");
+					alert.setContentText("You can contact your CATS Administration Team to request a change. "
+							+ "For Admins, click on the lock button to enter your credentials.");
+					alert.showAndWait();
+				}
+				
+
+			}
+		};
+				
+		hedit = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				
@@ -107,7 +163,7 @@ public class FormCostCenter extends GridPane {
 							CostCenter parent = DataLayer.getCostCenter(tfReportTo.getText());
 							newcc.setParent(parent);
 							lbParent.setText(parent.getNameEN() + " - " + parent.getManager());
-							if (cc.getEffectiveDate() == null) {
+							if (cc == null) {
 								newcc.setEffectiveDate(LocalDate.now());
 							} else {
 								newcc.setEffectiveDate(cc.getEffectiveDate());
@@ -116,8 +172,8 @@ public class FormCostCenter extends GridPane {
 							
 							DataLayer.updateCostCenter(newcc);
 							
-							CostCenterModule module = (CostCenterModule) me.getParent();
-							module.load(); // to refresh
+							main.getCostCenterModule().load();
+
 
 							
 						} catch (NotFoundException e1) { // Will never get triggered since it is checked already
@@ -143,8 +199,10 @@ public class FormCostCenter extends GridPane {
 				
 
 			}
-		});
-		
+		};
+
+		btn = new Button("Create");
+		btn.setOnAction(hnew);
 		this.add(btn, 1, 7);
 	}
 	public void edit(CostCenter cc) {
@@ -171,6 +229,7 @@ public class FormCostCenter extends GridPane {
 		}
 
 		datePicker.setValue(cc.getClosingDate());
+		btn.setOnAction(hedit);
 
 	}
 	private boolean checkParent() {

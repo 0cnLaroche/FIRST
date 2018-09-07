@@ -440,7 +440,8 @@ public class DataLayer {
 	}
 	public void insertCostCenter(CostCenter cc) {
 		
-		String query = "INSERT INTO CostCenter (ID, ReportsTo, Name, Manager, Directorate, EffectiveDate, ClosingDate);";
+		String query = "INSERT INTO CostCenter (ID, ReportsTo, Name, Manager, Directorate, EffectiveDate, ClosingDate) "
+				+ "VALUES(?,?,?,?,?,?,?);";
 		
 		try (PreparedStatement insert = con.prepareStatement(query)) {
 			
@@ -448,23 +449,23 @@ public class DataLayer {
 			insert.setInt(2, Integer.parseInt(cc.getParent().getId()));
 			insert.setString(3, cc.getNameEN());
 			insert.setString(4, cc.getManager());
-			insert.setString(5, cc.getManager());
-			insert.setString(6, cc.getDirectorate());
+			insert.setString(5, cc.getDirectorate());
 			if (cc.getEffectiveDate() != null) {
-				insert.setDate(7, Date.valueOf(cc.getEffectiveDate()));
+				insert.setDate(6, Date.valueOf(cc.getEffectiveDate()));
 			} else {
-				insert.setNull(7, java.sql.Types.DATE);
+				insert.setNull(6, java.sql.Types.DATE);
 			}
 			if (cc.getClosingDate() != null) {
-				insert.setDate(8, Date.valueOf(cc.getClosingDate()));
+				insert.setDate(7, Date.valueOf(cc.getClosingDate()));
 			} else {
-				insert.setNull(8, java.sql.Types.DATE);
+				insert.setNull(7, java.sql.Types.DATE);
 			}
 			insert.executeUpdate();
 			System.out.println("Insert Cost Center : SUCCESS");
 			
 		} catch (SQLException e) {
 			System.err.println("Insert Cost Center : FAILED");
+			e.printStackTrace();
 		}
 
 
