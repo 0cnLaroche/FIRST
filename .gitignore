@@ -4,6 +4,9 @@
 #binaries
 bin/*
 
+# Eclipse settings
+.settings
+
 # Log file
 *.log
 

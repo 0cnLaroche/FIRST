@@ -1,5 +1,5 @@
 package controler;
-
+/*
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.attach.impl.DefaultTagWorkerFactory;
@@ -13,7 +13,7 @@ import com.itextpdf.kernel.pdf.WriterProperties;
 import com.itextpdf.layout.font.FontProvider;
 //import com.itextpdf.licensekey.LicenseKey;
 //import com.itextpdf.samples.pdfHTML.AccessiblePDF.HeaderTagging.AccessibilityTagWorkerFactory;
- 
+ */
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ import java.io.IOException;
  
 
 public class PDF {
-	
+	/*
     //License key path
     public static final String LICENSE = "src/test/resources/pdfHTML/itextkey-html2pdf_typography.xml";
     
@@ -60,9 +60,9 @@ public class PDF {
             props.setFontProvider(fp);
             props.setBaseUri(resources);
             //Setup custom tagworker factory for better tagging of headers
-            /*
-            DefaultTagWorkerFactory tagWorkerFactory = new AccessibilityTagWorkerFactory();
-            props.setTagWorkerFactory(tagWorkerFactory);*/
+            
+            //DefaultTagWorkerFactory tagWorkerFactory = new AccessibilityTagWorkerFactory();
+            //props.setTagWorkerFactory(tagWorkerFactory);
  
             HtmlConverter.convertToPdf(new FileInputStream(src), pdfDoc, props);
             pdfDoc.close();
@@ -71,5 +71,5 @@ public class PDF {
             e.printStackTrace();
         }
     }
-
+*/
 }

@@ -1,5 +1,6 @@
 package view;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import controler.Admin;
@@ -106,7 +107,12 @@ public class FormCostCenter extends GridPane {
 							CostCenter parent = DataLayer.getCostCenter(tfReportTo.getText());
 							newcc.setParent(parent);
 							lbParent.setText(parent.getNameEN() + " - " + parent.getManager());
-							newcc.setEffectiveDate(cc.getEffectiveDate());
+							if (cc.getEffectiveDate() == null) {
+								newcc.setEffectiveDate(LocalDate.now());
+							} else {
+								newcc.setEffectiveDate(cc.getEffectiveDate());
+							}
+
 							
 							DataLayer.updateCostCenter(newcc);
 							
@@ -114,7 +120,7 @@ public class FormCostCenter extends GridPane {
 							module.load(); // to refresh
 
 							
-						} catch (NotFoundException e1) { // Will never get triggered since it is checked alrready
+						} catch (NotFoundException e1) { // Will never get triggered since it is checked already
 							lbParent.setText("Invalid");
 							lbParent.setStyle("-fx-text-fill: red;");
 						}
