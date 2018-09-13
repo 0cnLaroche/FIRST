@@ -23,13 +23,13 @@ dependencies {
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
-    
+
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
-	
+
 	// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
-	
+
     
 }
 
@@ -38,4 +38,9 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+}
+jar {
+    manifest {
+        attributes 'Main-Class': 'main.java.first.App'
+    }
 }
