@@ -77,7 +77,7 @@ public class Admin {
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("Login Dialog");
 		dialog.setHeaderText("Need access to change my data?\nI will need some identification please");
-		dialog.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/res/user.png"))));
+		dialog.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/user.png"))));
 		
 		GridPane grid = new GridPane();
 
@@ -128,14 +128,14 @@ public class Admin {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Login Confirmation");
 				alert.setHeaderText("Administrator access granted!");
-				alert.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/res/check.png"))));
+				alert.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/check.png"))));
 				alert.show();
 				
 			} else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Login failed");
 				alert.setContentText("UserName and/or password incorrect, please try again");
-				alert.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/res/block.png"))));
+				alert.setGraphic(new ImageView(new Image(Admin.class.getResourceAsStream("/block.png"))));
 				alert.showAndWait();
 			}
 		});
