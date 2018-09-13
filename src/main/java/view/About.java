@@ -18,7 +18,7 @@ public class About extends BorderPane {
 		guide = new WebView();
 		String html = new String();
 		
-		InputStream is = About.class.getResourceAsStream("/res/guide.html");
+		InputStream is = About.class.getResourceAsStream("/guide.html");
 		
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))){
 			String line;

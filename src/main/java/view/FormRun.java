@@ -90,7 +90,7 @@ public class FormRun extends GridPane {
 		// TODO : Add CSD and Service ID
 		
 		submit = new Button();
-		submit.setGraphic(new ImageView(new Image(FormRun.class.getResourceAsStream("/res/save.png"), 40, 40, false, true)));
+		submit.setGraphic(new ImageView(new Image(FormRun.class.getResourceAsStream("/save.png"), 40, 40, false, true)));
 		this.add(submit, 1, 9);
 				
 		editHandler = new EventHandler<ActionEvent>() {
