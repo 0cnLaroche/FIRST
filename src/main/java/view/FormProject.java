@@ -177,7 +177,7 @@ public class FormProject extends GridPane {
 		};
 		
 		submit = new Button();
-		submit.setGraphic(new ImageView(new Image(FormRun.class.getResourceAsStream("/res/save.png"), 40, 40, false, true)));
+		submit.setGraphic(new ImageView(new Image(FormRun.class.getResourceAsStream("/save.png"), 40, 40, false, true)));
 		submit.setOnAction(newHandler);
 		this.add(submit, 1, 8);
 		
