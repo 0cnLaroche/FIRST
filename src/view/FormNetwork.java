@@ -124,13 +124,16 @@ public class FormNetwork extends GridPane {
 						wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
 					} catch (NotFoundException e1) {
 
-						System.err.println("Didn't find the cost center");
+						main.notify("Didn't find the Cost Center");
 					}
 					
 					nw.setWbs(wbs);
 					wbs.setProject(project);
 					DataLayer.insertWbs(wbs);
 					DataLayer.insertNetwork(nw);
+					
+					main.notify("Creation of Network " + nw.getId() + ": SUCCESS");
+					main.notify("Creation of WBS " + wbs.getId() + ": SUCCESS");
 
 				} else {
 					
@@ -198,7 +201,7 @@ public class FormNetwork extends GridPane {
 							wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
 						} catch (NotFoundException e1) {
 
-							System.err.println("Didn't find the cost center");
+							main.notify("Didn't find the Cost Center");
 						}
 						
 						nw.setWbs(wbs);
@@ -212,6 +215,8 @@ public class FormNetwork extends GridPane {
 						}
 						
 						DataLayer.updateNetwork(nw);
+						
+						main.notify("Update of Network " + nw.getId() + ": SUCCESS");
 						
 					}
 					

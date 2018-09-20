@@ -138,6 +138,8 @@ public class FormProject extends GridPane {
 						project.setProposal(me.tfProposal.getText());
  
 						DataLayer.updateProject(project);
+						
+						main.notify("Update of Project " + project.getId() + ": SUCCESS");
 					}
 					
 				} else {
@@ -167,6 +169,9 @@ public class FormProject extends GridPane {
 				//project.setClosingDate(datePicker.getValue());
 				
 				DataLayer.insertProject(project);
+				
+				main.notify("Creation of Cost Center " + project.getId() + ": SUCCESS");
+				
 				me.setProject(project);
 				main.getProjectModule().clear();
 				main.getProjectModule().load();

@@ -2,7 +2,7 @@
 <jnlp spec="6.0+">
   <application-desc main-class="FIRST"></application-desc>
   <resources>
-    <jar href="http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/FIRST2.jar" main="true"/>
+    <jar href="http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/FIRST_2.jar" main="true"/>
     <java version="1.8+"/>
   </resources>
   <information>

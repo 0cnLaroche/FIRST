@@ -127,7 +127,8 @@ public class FormRun extends GridPane {
 						run.setClosingDate(datePicker.getValue());
 						
 						DataLayer.updateRun(run);
-						System.out.println("Update Run Success");
+
+						main.notify("Update of IO " + run.getId() + ": SUCCESS");
 					}
 					
 				} else {
@@ -162,7 +163,8 @@ public class FormRun extends GridPane {
 				run.setEffectiveDate(LocalDate.now());
 				
 				DataLayer.insertRun(run);
-				System.out.println("Create new run success");
+				
+				main.notify("Creation of IO " + run.getId() + ": SUCCESS");
 				
 			}
 			

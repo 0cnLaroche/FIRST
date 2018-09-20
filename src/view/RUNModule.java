@@ -443,11 +443,13 @@ public class RUNModule extends BorderPane {
 		DefaultTableModel model = new DefaultTableModel(table, new Object[] {"#", "Description", "Type", "Cost Center", 
                 "Responsible", "Status"});
 		cb.setContents(new TableTransferable(model), new ClipboardOwner() {
+			
             @Override
             public void lostOwnership(Clipboard clipboard, Transferable contents) {
                 System.out.println("You lose :(");
             }
         });
+		main.notify("Copied RUN to Clipboard");
 		                                                                  
 	
 	}

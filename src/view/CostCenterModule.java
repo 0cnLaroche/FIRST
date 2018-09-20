@@ -136,6 +136,7 @@ public class CostCenterModule extends BorderPane {
                 System.out.println("You lose :(");
             }
         });
+		main.notify("Copied Cost Center to Clipboard");
 	}
 
 	private void highlightCostCenter(TreeItem<CostCenter> root) {

@@ -43,9 +43,11 @@ public class Admin {
 				// TODO : Connect as firstadmin
 				main.getManager().disconnect();
 				main.getManager().connect("firstadmin", "Pa$$w0rd");
+				//main.notify("Administrator access granted to user " + user );
 				System.out.println(user + " : Administrator access granted");
 			} else {
 				adminUsr = false;
+				//main.notify("Administrator login failed for user " + user );
 				System.out.println(user + " : Administrator login failed");
 			}
 		} catch (Exception e) {
@@ -66,6 +68,7 @@ public class Admin {
 
 		}
 		adminUsr = false;
+		main.notify("Administrator loging out");
 	}
 	/**Creates a dialog for the user to login. Check if the credentials match an administrator username and password
 	 * in the database. Informs the user if login is successful or not.
@@ -124,6 +127,9 @@ public class Admin {
 		result.ifPresent(usernamePassword -> {
 			
 			if (this.login(usernamePassword.getKey(), usernamePassword.getValue())) {
+				
+				main.notify("Administrator access granted!");
+				
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Login Confirmation");
 				alert.setHeaderText("Administrator access granted!");
@@ -131,6 +137,9 @@ public class Admin {
 				alert.show();
 				
 			} else {
+				
+				main.notify("Login failed");
+				
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Login failed");
 				alert.setContentText("UserName and/or password incorrect, please try again");

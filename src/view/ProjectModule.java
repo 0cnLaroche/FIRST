@@ -294,6 +294,7 @@ public class ProjectModule extends BorderPane {
                 System.out.println("You lose :(");
             }
         });
+		main.notify("Copied Project to Clipboard");
 	}
 
 	

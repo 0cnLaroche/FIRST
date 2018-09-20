@@ -108,6 +108,8 @@ public class FormCostCenter extends GridPane {
 						
 							main.getManager().insertCostCenter(newcc);
 							
+							main.notify("Creation of Cost Center " + newcc.getId() + ": SUCCESS");
+							
 							main.getCostCenterModule().load();
 
 
@@ -171,6 +173,8 @@ public class FormCostCenter extends GridPane {
 
 							
 							DataLayer.updateCostCenter(newcc);
+							
+							main.notify("Update of Cost Center " + newcc.getId() + ": SUCCESS");
 							
 							main.getCostCenterModule().load();
 

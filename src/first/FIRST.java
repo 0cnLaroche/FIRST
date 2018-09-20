@@ -1,5 +1,6 @@
 package first;
 
+import javafx.animation.FadeTransition;
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,13 +20,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import view.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import controler.*;
+import element.Notification;
 
 public class FIRST  extends Application {
 	
@@ -36,6 +41,8 @@ public class FIRST  extends Application {
 	private QueryModule queryMod;
 	private ProjectModule projectMod;
 	private Admin adminMod;
+	private Notificator notificator;
+	VBox notbox;
 	
 	public About about;
 	public FIRST me = this;
@@ -59,7 +66,7 @@ public class FIRST  extends Application {
 		opening.show();
 		
 		//Show the console
-		redirectSystemStreams();
+		 redirectSystemStreams();
 		
 		console = new Stage();
 		TextArea cout = new TextArea();
@@ -87,6 +94,10 @@ public class FIRST  extends Application {
 		queryMod = new QueryModule(this);
 		projectMod = new ProjectModule(this);
 		about = new About(this);
+		
+		// Notificator
+		notbox = new VBox();
+		notificator = new Notificator(notbox);
 		
 			
 		//Tabulation
@@ -218,17 +229,19 @@ public class FIRST  extends Application {
 			}
 		});
 		hbox.getChildren().addAll(btnCopy,btnExport,btnLock,btnRefresh);
-
+		
 		
         // Anchor the controls
         AnchorPane mainAnchor = new AnchorPane();
-        mainAnchor.getChildren().addAll(tabPane, hbox);
+        mainAnchor.getChildren().addAll(tabPane, hbox,notbox);
         AnchorPane.setTopAnchor(hbox, 3.0);
         AnchorPane.setRightAnchor(hbox, 5.0);
         AnchorPane.setTopAnchor(tabPane, 1.0);
         AnchorPane.setRightAnchor(tabPane, 1.0);
         AnchorPane.setLeftAnchor(tabPane, 1.0);
         AnchorPane.setBottomAnchor(tabPane, 1.0);
+        AnchorPane.setBottomAnchor(notbox, 75.0);
+        AnchorPane.setRightAnchor(notbox, 30.0);
 		
 		
 		Tab tabProjet = new Tab();
@@ -270,6 +283,12 @@ public class FIRST  extends Application {
 		
 		stage.show();
 		opening.close();
+		
+		
+		/*FadeTransition ft = new FadeTransition(Duration.millis(5*1000), notbox);
+		ft.setFromValue(1.0);
+		ft.setToValue(0.0);
+		ft.play();*/
 		
 		stage.setOnCloseRequest(e -> {
 			manager.disconnect();
@@ -342,5 +361,10 @@ public class FIRST  extends Application {
 		
 		launch(args);
 
+	}
+	public void notify(String text) {
+		
+		notificator.add(new Notification(text));
+		
 	}
 }
