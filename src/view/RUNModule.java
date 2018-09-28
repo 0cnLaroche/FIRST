@@ -38,11 +38,9 @@ public class RUNModule extends BorderPane {
 	
 	public FIRST main;
 	private ArrayList<Run> source;
-	private BorderPane root;
 	private HBox hbLegend;
 	private VBox filtersBox, resultBox, list;
 	private ScrollPane spFilters, spList;	
-	private GridPane grid;
 	private CheckBox cbActive, cbClosed, cbMnt, cbSrv, cbBmt, cbInv;
 	private ComboBox<String> cbCostCenter, cbManager;
 	private TextField tfId, tfDesc;
@@ -55,7 +53,6 @@ public class RUNModule extends BorderPane {
 		this.main = main;
 		source = DataLayer.getRunList();
 
-        root = new BorderPane();
         hbLegend = new HBox();
         resultBox = new VBox();
         filtersBox = new VBox();
@@ -173,7 +170,7 @@ public class RUNModule extends BorderPane {
         filtersBox.getChildren().addAll(lbCostCenter, cbCostCenter);
         
         cbManager = new ComboBox<String>();
-        loadMangerFilter(source);
+        loadManagerFilter(source);
         cbManager.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -266,14 +263,10 @@ public class RUNModule extends BorderPane {
 		hbLegend.getChildren().addAll(hid,hdesc,htype,hresp,hcc,hstatus);
 		hbLegend.setPadding(new Insets(5,10,5,10));
 		hbLegend.setSpacing(10);
-		
-        
+       
         spList = new ScrollPane(list);
         
 		resultBox.getChildren().addAll(hbLegend, spList);
-        
-        // root.setLeft(spFilters);  
-        //root.setCenter(resultBox);
         
         this.setLeft(spFilters);
         
@@ -281,14 +274,9 @@ public class RUNModule extends BorderPane {
 		this.load();
 	}
 	public void load() {
-		
-		
         
-        generateList(DataLayer.getRunList());
+        generateList(filter());
 
-		/*Scene scene = new Scene(root, 1440, 900);
-		this.setTitle("RUN");
-		this.setScene(scene);*/
 	}
 	public ArrayList<Run> filter() {
 		@SuppressWarnings("unchecked")
@@ -344,14 +332,9 @@ public class RUNModule extends BorderPane {
 					}
 				}
 				if (cbManager.getValue() != null) {
-					//try {
 						if (!r.getResponsible().equals(cbManager.getValue())) {
 							filtered.remove(r);
 						}
-					//} catch (NullPointerException e) {
-
-					//}
-
 				}
 				
 			} catch (NullPointerException e) {
@@ -361,42 +344,26 @@ public class RUNModule extends BorderPane {
 		}
 		this.source = filtered;
 		return filtered;
-		
 	}
-	// public void generateList(ArrayList<String> run) {
+		
 	public void generateList(ArrayList<Run> run) {
 		
         for (Run r : run) {
-
         	element.Run line = new element.Run(r,main);
-        	
-/*        	HBox hb = new HBox(5);
-        	Text id = new Text(r.getId());
-        	Text descEN = new Text(r.getNameEN());
-        	Text type = new Text(r.getType());
-        	Text resp = new Text(r.getResponsible());
-        	Text cc = new Text(r.getCostcenter().getId());
-        	Text status = new Text("" + r.getStatusString()); 
-        	hb.getChildren().addAll(id,descEN,type,resp,cc,status);*/
         	list.getChildren().add(line);
-        	
         }
 	}
 	private void loadCCfilter(ArrayList<Run> run) {
 		
-		
 		Set<String>  set = new HashSet<String>();
 		String[] array;
-		
-		
+
 		for (int i = 0; i < run.size() -1; i++) {
 			
 			if (run.get(i).getCostcenter().getId().equals(null)) {
 				set.add("");
-				// array[i] = "";
 			} else {
 				set.add(run.get(i).getCostcenter().getId());
-				// array[i] = run.get(i).getCostcenter().getId();
 			}
 
 		}
@@ -406,7 +373,7 @@ public class RUNModule extends BorderPane {
 		ObservableList<String> options = FXCollections.observableArrayList(array);
 		cbCostCenter.setItems(options);
 	}
-	private void loadMangerFilter(ArrayList<Run> run) {
+	private void loadManagerFilter(ArrayList<Run> run) {
 		Set<String>  set = new HashSet<String>();
 		String[] array;
 		
@@ -415,12 +382,9 @@ public class RUNModule extends BorderPane {
 			
 			if (run.get(i).getResponsible() == null) {
 				set.add("");
-				// array[i] = "";
 			} else {
 				set.add(run.get(i).getResponsible());
-				// array[i] = run.get(i).getCostcenter().getId();
 			}
-
 		}
 		array = set.toArray(new String[set.size()]);
 		Arrays.sort(array);

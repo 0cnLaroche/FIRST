@@ -1,5 +1,7 @@
 package view;
 
+import java.sql.SQLException;
+
 import controler.Admin;
 import controler.DataLayer;
 import first.FIRST;
@@ -137,9 +139,14 @@ public class FormProject extends GridPane {
 						project.setModel(me.cbModel.getValue());
 						project.setProposal(me.tfProposal.getText());
  
-						DataLayer.updateProject(project);
+						try {
+							DataLayer.updateProject(project);
+							main.notify("Update of Project " + project.getId() + ": SUCCESS");
+						} catch (SQLException e1) {
+							main.notify("Update of Project " + project.getId() + ": FAILED");
+							System.err.println(e1.getSQLState());
+						}
 						
-						main.notify("Update of Project " + project.getId() + ": SUCCESS");
 					}
 					
 				} else {
@@ -168,15 +175,18 @@ public class FormProject extends GridPane {
 				project.setModel(me.cbModel.getValue());
 				//project.setClosingDate(datePicker.getValue());
 				
-				DataLayer.insertProject(project);
-				
-				main.notify("Creation of Cost Center " + project.getId() + ": SUCCESS");
-				
+				try {
+					DataLayer.insertProject(project);
+					main.notify("Creation of Cost Center " + project.getId() + ": SUCCESS");
+				} catch (SQLException e) {
+					main.notify("Creation of Cost Center " + project.getId() + ": FAILED");
+					System.err.println(e.getSQLState());
+				}
+
 				me.setProject(project);
 				main.getProjectModule().clear();
 				main.getProjectModule().load();
-		
-				
+
 			}
 			
 		};

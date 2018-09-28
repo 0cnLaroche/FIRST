@@ -1,5 +1,6 @@
 package view;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import controler.Admin;
@@ -126,7 +127,13 @@ public class FormRun extends GridPane {
 						run.setReplacedBy(me.tfReplacedBy.getText());
 						run.setClosingDate(datePicker.getValue());
 						
-						DataLayer.updateRun(run);
+						try {
+							DataLayer.updateRun(run);
+							main.notify("Update of IO " + run.getId() + ": SUCCESS");
+						} catch (SQLException e1) {
+							main.notify("Update of IO " + run.getId() + ": FAILED");
+							System.err.println(e1.getSQLState());
+						}
 
 						main.notify("Update of IO " + run.getId() + ": SUCCESS");
 					}
@@ -162,10 +169,13 @@ public class FormRun extends GridPane {
 				run.setClosingDate(datePicker.getValue());
 				run.setEffectiveDate(LocalDate.now());
 				
-				DataLayer.insertRun(run);
-				
-				main.notify("Creation of IO " + run.getId() + ": SUCCESS");
-				
+				try {
+					DataLayer.insertRun(run);
+					main.notify("Creation of IO " + run.getId() + ": SUCCESS");
+				} catch (SQLException e) {
+					main.notify("Creation of IO " + run.getId() + ": FAILED");
+					System.err.println(e.getSQLState());
+				}
 			}
 			
 		};

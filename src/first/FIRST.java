@@ -1,6 +1,5 @@
 package first;
 
-import javafx.animation.FadeTransition;
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,33 +19,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import view.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import controler.*;
 import element.Notification;
 
 public class FIRST  extends Application {
 	
 	public Stage console;
-	private GridProjets gridProjets;
 	private RUNModule runMod;
 	private CostCenterModule ccMod;
 	private QueryModule queryMod;
 	private ProjectModule projectMod;
 	private Admin adminMod;
 	private Notificator notificator;
-	VBox notbox;
-	
+	public VBox notbox;
 	public About about;
 	public FIRST me = this;
-	
 	public DataLayer manager;
 	
 	@Override
@@ -65,15 +57,13 @@ public class FIRST  extends Application {
 		opening.setAlwaysOnTop(true);
 		opening.show();
 		
-		//Show the console
-		 redirectSystemStreams();
-		
-		console = new Stage();
+		//Redirect system.out and system.err to a window 'console'
+		 //redirectSystemStreams();
+		/*console = new Stage();
 		TextArea cout = new TextArea();
 		console.setScene(new Scene(cout));
 		console.initStyle(StageStyle.UTILITY);
-		//console.toBack();
-		console.show();	
+		console.show();	*/
 		
 		//Application icon
 		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
@@ -284,18 +274,11 @@ public class FIRST  extends Application {
 		stage.show();
 		opening.close();
 		
-		
-		/*FadeTransition ft = new FadeTransition(Duration.millis(5*1000), notbox);
-		ft.setFromValue(1.0);
-		ft.setToValue(0.0);
-		ft.play();*/
-		
 		stage.setOnCloseRequest(e -> {
 			manager.disconnect();
 			Platform.exit();
 		});
 		
-
 	}
     private Button createButton(String iconName) {
         Button button = new Button();

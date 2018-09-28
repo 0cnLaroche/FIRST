@@ -1,5 +1,6 @@
 package view;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import controler.Admin;
 import controler.DataLayer;
@@ -129,11 +130,20 @@ public class FormNetwork extends GridPane {
 					
 					nw.setWbs(wbs);
 					wbs.setProject(project);
-					DataLayer.insertWbs(wbs);
-					DataLayer.insertNetwork(nw);
-					
-					main.notify("Creation of Network " + nw.getId() + ": SUCCESS");
-					main.notify("Creation of WBS " + wbs.getId() + ": SUCCESS");
+					try {
+						DataLayer.insertWbs(wbs);
+						main.notify("Creation of WBS " + wbs.getId() + ": SUCCESS");
+					} catch (SQLException e1) {
+						main.notify("Creation of WBS " + wbs.getId() + ": FAILED");
+						e1.getSQLState();
+					}
+					try {
+						DataLayer.insertNetwork(nw);
+						main.notify("Creation of Network " + nw.getId() + ": SUCCESS");
+					} catch (SQLException e1) {
+						main.notify("Creation of Network " + nw.getId() + ": FAILED");
+						e1.getSQLState();
+					}
 
 				} else {
 					
@@ -214,9 +224,15 @@ public class FormNetwork extends GridPane {
 							System.err.println(e);
 						}
 						
-						DataLayer.updateNetwork(nw);
+						try {
+							DataLayer.updateNetwork(nw);
+							main.notify("Update of Network " + nw.getId() + ": SUCCESS");
+						} catch (SQLException e1) {
+							main.notify("Update of Network " + nw.getId() + ": FAILED");
+							System.err.println(e1.getSQLState());
+						}
 						
-						main.notify("Update of Network " + nw.getId() + ": SUCCESS");
+
 						
 					}
 					

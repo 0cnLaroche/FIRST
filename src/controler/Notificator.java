@@ -5,9 +5,7 @@ import java.util.TimerTask;
 
 import element.Notification;
 import javafx.animation.FadeTransition;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.VBox;

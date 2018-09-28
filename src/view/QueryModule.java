@@ -183,11 +183,11 @@ public class QueryModule extends StackPane {
 						System.out.println("Export cancelled by User");
 						e.printStackTrace();
 					} catch (IOException e) {
-
 						e.printStackTrace();
 					}
 
 					break;
+					
 				case "Project List":
 					fChooser.setInitialFileName("ProjectList");
 					selectedFile = fChooser.showSaveDialog(null);
@@ -202,22 +202,16 @@ public class QueryModule extends StackPane {
 						} else {
 							// ... user chose CANCEL or closed the dialog
 						}
-
 					} catch (NullPointerException e) {
 						System.out.println("Export cancelled by User");
 						e.printStackTrace();
 					} catch (IOException e) {
-
 						e.printStackTrace();
 					}
-
-					break;
-					
+					break;					
 				}
-
 				me.getChildren().remove(loadAnim);
 			}
-
 		});
 		grid.add(btnQuery, 0, 1);
 

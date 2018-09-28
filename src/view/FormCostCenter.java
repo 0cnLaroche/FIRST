@@ -1,11 +1,10 @@
 package view;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import controler.Admin;
 import controler.DataLayer;
-import controler.Main;
 import controler.NotFoundException;
 import first.FIRST;
 import javafx.event.ActionEvent;
@@ -152,10 +151,12 @@ public class FormCostCenter extends GridPane {
 
 					Optional<ButtonType> result = alert.showAndWait();
 					
+					CostCenter newcc = new CostCenter();
+					
 					if (result.get() == ButtonType.OK) {
 
 						try {
-							CostCenter newcc = new CostCenter();
+							
 							newcc.setId(tfID.getText());
 							newcc.setNameEN(tfDescEN.getText());
 							newcc.setNameFR(tfDescFR.getText());
@@ -183,6 +184,9 @@ public class FormCostCenter extends GridPane {
 						} catch (NotFoundException e1) { // Will never get triggered since it is checked already
 							lbParent.setText("Invalid");
 							lbParent.setStyle("-fx-text-fill: red;");
+						} catch (SQLException e1) {
+							main.notify("Update of Cost Center " + newcc.getId() + ": FAILED");
+							System.out.println(e1.getSQLState());
 						}
 
 						
@@ -233,6 +237,7 @@ public class FormCostCenter extends GridPane {
 		}
 
 		datePicker.setValue(cc.getClosingDate());
+		btn.setText("Update");
 		btn.setOnAction(hedit);
 
 	}

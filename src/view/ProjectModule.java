@@ -61,7 +61,6 @@ public class ProjectModule extends BorderPane {
 		gSearch.add(lbKeyword, 0, 0);
 		
 		TextField tfKeyword = new TextField();
-		//tfKeyword.prefWidthProperty().bind(this.widthProperty());
 		gSearch.add(tfKeyword, 1, 0);
 		GridPane.setHgrow(tfKeyword, Priority.ALWAYS);
 		
@@ -126,11 +125,8 @@ public class ProjectModule extends BorderPane {
 							setProject(selection);
 							clear();
 							load();
-
-						});
-						
+						});					
 					}
-
 
 				} catch (NotFoundException e1) {
 					System.err.println(e1);

@@ -16,9 +16,6 @@ import java.io.InputStreamReader;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
@@ -126,273 +123,240 @@ public class DataLayer {
 		}
 	}
 	
-	public static void insertProject(Project project) {
+	public static void insertProject(Project project) throws SQLException {
 
 		String query = "INSERT INTO ProjectDefinition (ID, Name, NameFR, Model, Status, "
-				+ "Proposal, ClosingDate, ProjectManager) "
-				+ "VALUES (?,?,?,?,?,?,?,?);";
-		try (PreparedStatement insert = con.prepareStatement(query)){
-			
-			
-			insert.setString(1, project.getId());
-			insert.setString(2, project.getNameEN());
-			insert.setString(3, project.getNameFR());
-			insert.setString(4, project.getModel());
-			insert.setString(5, project.getStatus());
-			insert.setString(6, project.getProposal());
-			if (project.getClosingDate() != null) {
-				insert.setDate(7, Date.valueOf(project.getClosingDate()));
-			} else {
-				insert.setNull(7, java.sql.Types.DATE);
-			}
-			insert.setString(8, project.getLead());
-			
-			insert.executeUpdate();
-	
-			projects.put(project.getId(), project);
-			System.out.println("Update for project " + project.toString() + ": SUCCESS");
+				+ "Proposal, ClosingDate, ProjectManager) " + "VALUES (?,?,?,?,?,?,?,?);";
 
+		PreparedStatement insert = con.prepareStatement(query);
 
-		} catch (SQLException e) {
-			System.err.println("Insert for project " + project.toString() + ": FAILED");
+		insert.setString(1, project.getId());
+		insert.setString(2, project.getNameEN());
+		insert.setString(3, project.getNameFR());
+		insert.setString(4, project.getModel());
+		insert.setString(5, project.getStatus());
+		insert.setString(6, project.getProposal());
+		if (project.getClosingDate() != null) {
+			insert.setDate(7, Date.valueOf(project.getClosingDate()));
+		} else {
+			insert.setNull(7, java.sql.Types.DATE);
 		}
+		insert.setString(8, project.getLead());
+
+		insert.executeUpdate();
+
+		projects.put(project.getId(), project);
+		System.out.println("Update for project " + project.toString() + ": SUCCESS");
+
+		insert.close();
+
 	}
-	public static void updateProject(Project project) {
-		// PreparedStatement update = null;
+	public static void updateProject(Project project) throws SQLException {
+
 		String query = "UPDATE ProjectDefinition SET Name = ?, NameFR = ?, Model = ?, Status = ?, "
 				+ "Proposal = ?, ClosingDate = ?, ProjectManager = ? "
 				+ "WHERE ID = ?;";
-		try (PreparedStatement update = con.prepareStatement(query)){
-			
-			
+		PreparedStatement update = con.prepareStatement(query);
 
-			update.setString(1, project.getNameEN());
-			update.setString(2, project.getNameFR());
-			update.setString(3, project.getModel());
-			update.setString(4, project.getStatus());
-			update.setString(5, project.getProposal());
-			if (project.getClosingDate() != null) {
-				update.setDate(6, Date.valueOf(project.getClosingDate()));
-			} else {
-				update.setNull(6, java.sql.Types.DATE);
-			}
-			update.setString(7, project.getLead());
-			update.setString(8, project.getId());
-			
-			update.executeUpdate();
-	
-			projects.put(project.getId(), project);
-			
-			loadProjects();
-			
-			System.out.println("Update for project " + project.toString() + ": SUCCESS");
-
-		} catch (SQLException e) {
-			System.err.println("Update for project " + project.toString() + ": FAILED");
+		update.setString(1, project.getNameEN());
+		update.setString(2, project.getNameFR());
+		update.setString(3, project.getModel());
+		update.setString(4, project.getStatus());
+		update.setString(5, project.getProposal());
+		if (project.getClosingDate() != null) {
+			update.setDate(6, Date.valueOf(project.getClosingDate()));
+		} else {
+			update.setNull(6, java.sql.Types.DATE);
 		}
+		update.setString(7, project.getLead());
+		update.setString(8, project.getId());
+			
+		update.executeUpdate();
+	
+		projects.put(project.getId(), project);
+			
+		loadProjects();
+			
+		System.out.println("Update for project " + project.toString() + ": SUCCESS");
+		
+		update.close();
 		
 	}
-	public static void insertNetwork(Network nw) {
-		//PreparedStatement insert = null;
+	public static void insertNetwork(Network nw) throws SQLException {
+		
 		String query = "INSERT INTO Network (ID, Name, NameFR, WBS, Project, Status, ClosingDate, EffectiveDate, Stage) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?);";
-		try (PreparedStatement insert = con.prepareStatement(query)){
-			
-			
-			insert.setString(1, nw.getId());
-			insert.setString(2, nw.getNameEN());
-			insert.setString(3, nw.getNameFR());
-			insert.setString(4, nw.getWbs().getId());
-			insert.setString(5, nw.getWbs().getProject().getId());
-			insert.setString(6, nw.getStatus());
-			if (nw.getClosingDate() != null) {
-				insert.setDate(7, Date.valueOf(nw.getClosingDate()));
-			} else {
-				insert.setNull(7, java.sql.Types.DATE);
-			}
-			if (nw.getEffectiveDate() != null) {
-				insert.setDate(8, Date.valueOf(nw.getEffectiveDate()));
-			} else {
-				insert.setNull(8, java.sql.Types.DATE);
-			}
-			insert.setByte(9, nw.getWbs().getStage());
-			
-			insert.executeUpdate();
-			
-			System.out.println("INSERT Network " + nw.toString() + " : SUCCCESS");
-			
-			
-		} catch (SQLException e) {
 
-			System.err.println("INSERT Network " + nw.toString() + " : FAILED");
+		PreparedStatement insert = con.prepareStatement(query);
+
+		insert.setString(1, nw.getId());
+		insert.setString(2, nw.getNameEN());
+		insert.setString(3, nw.getNameFR());
+		insert.setString(4, nw.getWbs().getId());
+		insert.setString(5, nw.getWbs().getProject().getId());
+		insert.setString(6, nw.getStatus());
+		if (nw.getClosingDate() != null) {
+			insert.setDate(7, Date.valueOf(nw.getClosingDate()));
+		} else {
+			insert.setNull(7, java.sql.Types.DATE);
 		}
-		
-		
-		//TODO : Finish the statement and add insert wbs
+		if (nw.getEffectiveDate() != null) {
+			insert.setDate(8, Date.valueOf(nw.getEffectiveDate()));
+		} else {
+			insert.setNull(8, java.sql.Types.DATE);
+		}
+		insert.setByte(9, nw.getWbs().getStage());
+
+		insert.executeUpdate();
+
+		System.out.println("INSERT Network " + nw.toString() + " : SUCCCESS");
+
+		insert.close();
+
 	}
 	
-	public static void insertWbs(Wbs wbs) {
+	public static void insertWbs(Wbs wbs) throws SQLException {
 
 		String query = "INSERT INTO WBS (ID, Name, NameFR, ResponsibleCostCenter, RequestingCostCenter, Approver, "
 				+ "ProjectDefinition, Status, Stage, ClosingDate, EffectiveDate, ParentWBS) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
-		try (PreparedStatement insert = con.prepareStatement(query)) {
-			
-			insert.setString(1, wbs.getId());
-			insert.setString(2, wbs.getNameEN());
-			insert.setString(3, wbs.getNameFR());
-			int cc = Integer.parseInt(wbs.getCostcenter().getId());
-			insert.setInt(4, cc);
-			insert.setInt(5, cc);
-			insert.setString(6, wbs.getApprover());
-			insert.setString(7, wbs.getProject().getId());
-			insert.setString(8, wbs.getStatus());
-			insert.setByte(9, wbs.getStage());
-			if (wbs.getClosingDate() != null) {
-				insert.setDate(10, Date.valueOf(wbs.getClosingDate()));
-			} else {
-				insert.setNull(10, java.sql.Types.DATE);
-			}
-			if (wbs.getEffectiveDate() != null) {
-				insert.setDate(11, Date.valueOf(wbs.getEffectiveDate()));
-			} else {
-				insert.setNull(11, java.sql.Types.DATE);
-			}
-			insert.setString(12, wbs.getProject().getId());
-			
-			insert.executeUpdate();
-			
-			System.out.println("Insert WBS " + wbs.toString() + " : SUCCCESS");
-			
-			
-		} catch (SQLException e) {
+		PreparedStatement insert = con.prepareStatement(query);
 
-			System.err.println("INSERT WBS " + wbs.toString() + " : FAILED");
-			e.printStackTrace();
+		insert.setString(1, wbs.getId());
+		insert.setString(2, wbs.getNameEN());
+		insert.setString(3, wbs.getNameFR());
+		int cc = Integer.parseInt(wbs.getCostcenter().getId());
+		insert.setInt(4, cc);
+		insert.setInt(5, cc);
+		insert.setString(6, wbs.getApprover());
+		insert.setString(7, wbs.getProject().getId());
+		insert.setString(8, wbs.getStatus());
+		insert.setByte(9, wbs.getStage());
+		if (wbs.getClosingDate() != null) {
+			insert.setDate(10, Date.valueOf(wbs.getClosingDate()));
+		} else {
+			insert.setNull(10, java.sql.Types.DATE);
 		}
-		
-		
-		//TODO : Finish the stateement and add insert wbs
+		if (wbs.getEffectiveDate() != null) {
+			insert.setDate(11, Date.valueOf(wbs.getEffectiveDate()));
+		} else {
+			insert.setNull(11, java.sql.Types.DATE);
+		}
+		insert.setString(12, wbs.getProject().getId());
+
+		insert.executeUpdate();
+
+		System.out.println("Insert WBS " + wbs.toString() + " : SUCCCESS");
+
+		insert.close();
+
 	}
 		
-	public static void updateNetwork(Network nw) {
+	public static void updateNetwork(Network nw) throws SQLException {
+		
 		String queryNw = "UPDATE Network SET Name = ?, NameFR = ?, EffectiveDate = ?, "
-				+ "ClosingDate = ?, ReplacedBy = ?, Status = ?, Stage = ? "
-				+ "WHERE ID = ?;";
-		
-		try (PreparedStatement update = con.prepareStatement(queryNw)){
-			
-			update.setString(1, nw.getNameEN());
-			update.setString(2, nw.getNameFR());
-			if (nw.getEffectiveDate() != null) {
-				update.setDate(3, Date.valueOf(nw.getEffectiveDate()));
-			} else {
-				update.setNull(3, java.sql.Types.DATE);
-			}
-			if (nw.getClosingDate() != null) {
-				update.setDate(4, Date.valueOf(nw.getClosingDate()));
-			} else {
-				update.setNull(4, java.sql.Types.DATE);
-			}
-			update.setString(5, nw.getReplacedBy());
-			update.setString(6, nw.getStatus().toString());
-			update.setInt(7, nw.getWbs().getStage());
-			update.setString(8, nw.getId()); // WHERE
-			
-			update.execute();
-			System.out.println("Update to database sucessful for network : " + nw.toString());
-			
-			networks.put(nw.getId(), nw);
-		
-		} catch (SQLException e) {
-			System.err.println("Update for Network " + nw.toString() + ": FAILED");
+				+ "ClosingDate = ?, ReplacedBy = ?, Status = ?, Stage = ? " + "WHERE ID = ?;";
+
+		PreparedStatement update = con.prepareStatement(queryNw);
+
+		update.setString(1, nw.getNameEN());
+		update.setString(2, nw.getNameFR());
+		if (nw.getEffectiveDate() != null) {
+			update.setDate(3, Date.valueOf(nw.getEffectiveDate()));
+		} else {
+			update.setNull(3, java.sql.Types.DATE);
 		}
+		if (nw.getClosingDate() != null) {
+			update.setDate(4, Date.valueOf(nw.getClosingDate()));
+		} else {
+			update.setNull(4, java.sql.Types.DATE);
+		}
+		update.setString(5, nw.getReplacedBy());
+		update.setString(6, nw.getStatus().toString());
+		update.setInt(7, nw.getWbs().getStage());
+		update.setString(8, nw.getId()); // WHERE
+
+		update.execute();
+		System.out.println("Update to database sucessful for network : " + nw.toString());
+
+		networks.put(nw.getId(), nw);
+
+		update.close();
+
 		String queryWbs = "UPDATE WBS SET Name = ?, NameFR = ?, ResponsibleCostCenter = ?, "
-				+ "RequestingCostCenter = ?, "
-				+ "Approver = ?, "
-				+ "ProjectDefinition = ?, "
-				+ "Status = ?,  "
-				+ "Stage = ? "
-				+ "WHERE ID = ?";
-		
-		try (PreparedStatement update = con.prepareStatement(queryWbs)) {
-			
-			update.setString(1, nw.getNameEN());
-			update.setString(2, nw.getNameFR());
-			update.setInt(3, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
-			update.setInt(4, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
-			update.setString(5, nw.getWbs().getApprover());
-			update.setString(6, nw.getWbs().getProject().getId());
-			update.setString(7,nw.getStatus().toString());
-			update.setInt(8,nw.getWbs().getStage());
-			update.setString(9, nw.getWbs().getId());
-			
-			update.executeUpdate();
-			
-			System.out.println("Update to database for WBS : " + nw.getWbs().toString() + ": SUCCESS");
-			
-			loadProjects(); 
-			
-		} catch (SQLException e) {
+				+ "RequestingCostCenter = ?, " + "Approver = ?, " + "ProjectDefinition = ?, " + "Status = ?,  "
+				+ "Stage = ? " + "WHERE ID = ?";
 
-			System.err.println("Update for WBS " + nw.getWbs().toString() + ": FAILED");
-		}
-		
+		update = con.prepareStatement(queryWbs);
 
-		
+		update.setString(1, nw.getNameEN());
+		update.setString(2, nw.getNameFR());
+		update.setInt(3, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
+		update.setInt(4, Integer.parseInt(nw.getWbs().getCostcenter().getId()));
+		update.setString(5, nw.getWbs().getApprover());
+		update.setString(6, nw.getWbs().getProject().getId());
+		update.setString(7, nw.getStatus().toString());
+		update.setInt(8, nw.getWbs().getStage());
+		update.setString(9, nw.getWbs().getId());
+
+		update.executeUpdate();
+
+		System.out.println("Update to database for WBS : " + nw.getWbs().toString() + ": SUCCESS");
+
+		loadProjects();
+
+		update.close();
+
 	}
 	/**
 	 * Inserts a new RUN code into the database.
 	 * @param run
+	 * @throws SQLException 
 	 */
-	public static void insertRun(Run run) {
-		
+	public static void insertRun(Run run) throws SQLException {
+
 		String query = "INSERT INTO RUN (Name, NameFR, CostCenter_Responsible, CostCenter_Requesting, "
 				+ "Responsible, Type, ClosingDate, EffectiveDate, Status, ReplacedBy, ID) "
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?);";
-		
-		try (PreparedStatement insert = con.prepareStatement(query)) {
-			
-			insert.setString(1, run.getNameEN());
-			insert.setString(2, run.getNameFR());
-			int cc = Integer.parseInt(run.getCostcenter().getId());
-			insert.setInt(3, cc);
-			insert.setInt(4, cc);
-			insert.setString(5, run.getResponsible());
-			insert.setString(6, run.getType());
-			if (run.getClosingDate() != null) {
-				insert.setDate(7, Date.valueOf(run.getClosingDate()));
-			} else {
-				insert.setNull(7, java.sql.Types.DATE);
-			}
-			if (run.getEffectiveDate() != null) {
-				insert.setDate(8, Date.valueOf(run.getEffectiveDate()));
-			} else {
-				insert.setNull(8, java.sql.Types.DATE);
-			}
-			insert.setString(9, run.getStatus());
-			insert.setString(10, run.getReplacedBy());
-			insert.setString(11, run.getId());
-			
-			insert.executeUpdate();
-			
-			loadRuns();
-			
-			System.out.println("Update for WBS " + run.toString() + ": SUCCESS");
-			
-			
-		} catch (SQLException e) {
-			System.err.println("Insert for RUN " + run.toString() + ": FAILED");
+
+		PreparedStatement insert = con.prepareStatement(query);
+
+		insert.setString(1, run.getNameEN());
+		insert.setString(2, run.getNameFR());
+		int cc = Integer.parseInt(run.getCostcenter().getId());
+		insert.setInt(3, cc);
+		insert.setInt(4, cc);
+		insert.setString(5, run.getResponsible());
+		insert.setString(6, run.getType());
+		if (run.getClosingDate() != null) {
+			insert.setDate(7, Date.valueOf(run.getClosingDate()));
+		} else {
+			insert.setNull(7, java.sql.Types.DATE);
 		}
-		
-		
-		
+		if (run.getEffectiveDate() != null) {
+			insert.setDate(8, Date.valueOf(run.getEffectiveDate()));
+		} else {
+			insert.setNull(8, java.sql.Types.DATE);
+		}
+		insert.setString(9, run.getStatus());
+		insert.setString(10, run.getReplacedBy());
+		insert.setString(11, run.getId());
+
+		insert.executeUpdate();
+
+		loadRuns();
+
+		System.out.println("Update for WBS " + run.toString() + ": SUCCESS");
+
+		insert.close();
+
 	}
 	/**
 	 * Update a run element in the database.
 	 * @param run Object
+	 * @throws SQLException 
 	 */
-	public static void updateRun(Run run) {
+	public static void updateRun(Run run) throws SQLException {
 		
 		String query = "UPDATE RUN SET Name = ?, NameFR = ?, "
 				+ "CostCenter_Responsible = ?, CostCenter_Requesting = ?, "
@@ -404,7 +368,7 @@ public class DataLayer {
 				+ "WHERE ID = ?;";
 
 		
-		try (PreparedStatement update = con.prepareStatement(query)) {
+		PreparedStatement update = con.prepareStatement(query);
 			
 			update.setString(1, run.getNameEN());
 			update.setString(2, run.getNameFR());
@@ -432,10 +396,7 @@ public class DataLayer {
 			
 			loadRuns();
 			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			
-		}
+			update.close();
 		
 	}
 	public void insertCostCenter(CostCenter cc) {
@@ -470,50 +431,42 @@ public class DataLayer {
 
 
 	}
-	public static void updateCostCenter(CostCenter cc) {
-		
-		String query = "UPDATE CostCenter SET Name = ?, "
-				+ "ReportsTo = ?, "
-				+ "Manager = ?, "
-				+ "Directorate = ?, "
-				+ "EffectiveDate = ?, "
-				+ "ClosingDate = ? "
-				+ "WHERE ID = ?;";
 
-		
-		try (PreparedStatement update = con.prepareStatement(query)) {
-			
-			update.setString(1, cc.getNameEN());
-			update.setInt(2, Integer.parseInt(cc.getParent().getId()));		
-			update.setString(3, cc.getManager());
-			update.setString(4, cc.getDirectorate());
+	public static void updateCostCenter(CostCenter cc) throws SQLException {
 
-			if (cc.getEffectiveDate() != null) {
-				update.setDate(5, Date.valueOf(cc.getEffectiveDate()));
-			} else {
-				update.setNull(5, java.sql.Types.DATE);
-			}
-			
-			if (cc.getClosingDate() != null) {
-				update.setDate(6, Date.valueOf(cc.getClosingDate()));
-			} else {
-				update.setNull(6, java.sql.Types.DATE);
-			}
-	
-			// WHERE
-			update.setInt(7, Integer.parseInt(cc.getId()));
-			
-			update.executeUpdate();
-			
-			loadCostCenters();
-			
-			System.out.println("Update cost Center : SUCCESS");
-			
-		} catch (SQLException e) {
-			System.err.println("Update Cost Center : FAILED");
-			
+		String query = "UPDATE CostCenter SET Name = ?, " + "ReportsTo = ?, " + "Manager = ?, " + "Directorate = ?, "
+				+ "EffectiveDate = ?, " + "ClosingDate = ? " + "WHERE ID = ?;";
+
+		PreparedStatement update = con.prepareStatement(query);
+
+		update.setString(1, cc.getNameEN());
+		update.setInt(2, Integer.parseInt(cc.getParent().getId()));
+		update.setString(3, cc.getManager());
+		update.setString(4, cc.getDirectorate());
+
+		if (cc.getEffectiveDate() != null) {
+			update.setDate(5, Date.valueOf(cc.getEffectiveDate()));
+		} else {
+			update.setNull(5, java.sql.Types.DATE);
 		}
-		
+
+		if (cc.getClosingDate() != null) {
+			update.setDate(6, Date.valueOf(cc.getClosingDate()));
+		} else {
+			update.setNull(6, java.sql.Types.DATE);
+		}
+
+		// WHERE
+		update.setInt(7, Integer.parseInt(cc.getId()));
+
+		update.executeUpdate();
+
+		loadCostCenters();
+
+		System.out.println("Update cost Center : SUCCESS");
+
+		update.close();
+
 	}
 	public static Run getRun(String id) throws NotFoundException {
 		if (runs.containsKey(id)) {
