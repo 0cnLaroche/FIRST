@@ -13,7 +13,7 @@ The application is made to integrate the IT Cost Model with an import functional
 
 * [Trello](https://trello.com/b/eHTpWd8K/first-2)
 * [GitHub](https://github.com/0cnLaroche/FIRST)
-* [gcgcode](https://gccode.ssc-spc.gc.ca/0cnLaroche/FIRST)
+* [gccode](https://gccode.ssc-spc.gc.ca/0cnLaroche/FIRST)
 
 
 ### Contact
