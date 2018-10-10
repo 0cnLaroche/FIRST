@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
+import javafx.util.Pair;
 import model.*;
 
 public class DataLayer {
@@ -37,6 +38,7 @@ public class DataLayer {
 	private static HashMap<String, Wbs> wbs;
 	private static HashMap<String, Network> networks;
 	private static HashMap<String, CostCenter> costcenters;
+	private HashMap<Integer,Solution> solutions;
 	
 	/**All data for cost centers, Run, and projects are loaded by the constructor.
 	 * @throws DatabaseCommunicationsException
@@ -52,7 +54,9 @@ public class DataLayer {
 		this.connect();
 		loadCostCenters();
 		loadRuns();
+		mapCSD(getCSDMapping(),runs);
 		loadProjects();
+		
 
 	}
 	public static HashMap<String, CostCenter> getCostCenterList() {
@@ -505,6 +509,28 @@ public class DataLayer {
 		return list;
 		
 	}
+	public HashMap<String, Pair<Integer,Double>> getCSDMapping() {
+		
+		HashMap<String, Pair<Integer,Double>> map = new HashMap<String, Pair<Integer,Double>>();
+		String query = "SELECT RUN, Solution, Weight FROM RUN_Solution WHERE RUN IS NOT NULL;";
+		
+		try {
+			Statement select = con.createStatement();
+			ResultSet rs = select.executeQuery(query);
+			
+			while (rs.next()) {
+				String id = rs.getString(1);
+				Pair<Integer,Double> pair = new Pair<Integer,Double>(rs.getInt(2),rs.getDouble(3));
+				map.put(id, pair);
+			}
+	
+		} catch (SQLException e) {
+
+			System.err.println(e.getSQLState());
+		}
+		
+		return map;
+	}
 	public static ArrayList<Project> queryProjects(String keyword) throws NotFoundException {
 		ArrayList<Project> list = new ArrayList<Project>();
 		ResultSet rs = null;
@@ -923,7 +949,9 @@ public class DataLayer {
 		}
 
 	}
-
+	private static void loadSolutions() {
+		
+	}
 	private static void mapWbs(ArrayList<String[]> wbsToProject, String parent) {
 		
 		for (String[] entry : wbsToProject) {
@@ -941,6 +969,15 @@ public class DataLayer {
 				networks.get(entry[0]).setWbs(wbs.get(entry[1]));
 			}
 
+		}
+	}
+	private void mapCSD(HashMap<String, Pair<Integer,Double>> map, HashMap<String,Run> runs) {
+		for(String key: map.keySet()) {
+			try {
+				runs.get(key).getCsdMapping().put(map.get(key).getKey(), map.get(key).getValue());
+			} catch (NullPointerException e) {
+				System.err.println(" Error Mapping csd @ " + key);
+			}
 		}
 	}
 	public static String getUserHash(String id) {

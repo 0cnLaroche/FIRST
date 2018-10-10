@@ -148,7 +148,7 @@ public class ProjectModule extends BorderPane {
             setGraphic(null);
 		}
 	}
-	private void setProject(Project project) {
+	public void setProject(Project project) {
 		this.project = project;
 	}
 	public void load() {

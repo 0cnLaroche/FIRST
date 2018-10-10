@@ -129,14 +129,20 @@ public class FormNetwork extends GridPane {
 					}
 					
 					nw.setWbs(wbs);
+					wbs.addNetwork(nw);
 					wbs.setProject(project);
+					project.addWbs(wbs);
+										
 					try {
 						DataLayer.insertWbs(wbs);
 						main.notify("Creation of WBS " + wbs.getId() + ": SUCCESS");
+						main.getProjectModule().setProject(project);
+						main.getProjectModule().clear();
+						main.getProjectModule().load();
 					} catch (SQLException e1) {
 						main.notify("Creation of WBS " + wbs.getId() + ": FAILED");
 						e1.getSQLState();
-					}
+					} 
 					try {
 						DataLayer.insertNetwork(nw);
 						main.notify("Creation of Network " + nw.getId() + ": SUCCESS");
@@ -227,13 +233,18 @@ public class FormNetwork extends GridPane {
 						try {
 							DataLayer.updateNetwork(nw);
 							main.notify("Update of Network " + nw.getId() + ": SUCCESS");
+							main.getProjectModule().setProject(
+									main.getManager().getProject(wbs.getProject().getId()));
+							main.getProjectModule().clear();
+							main.getProjectModule().load();
 						} catch (SQLException e1) {
 							main.notify("Update of Network " + nw.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
+						} catch (NotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-						
 
-						
 					}
 					
 				} else {

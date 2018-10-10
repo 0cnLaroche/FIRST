@@ -1,15 +1,30 @@
 package model;
 
+import java.util.HashMap;
+
 public class Run extends FinancialCode {
+
 	private String type;
 	private String responsible;
 	private String replacedBy;
 	private CostCenter costcenter;
+	private HashMap<Integer, Double> csdMap ;
 	public static final String MAINTENANCE = "MNT-Maintenance";
 	public static final String SERVICE = "SRV-Service";
 	public static final String BUSINESSMANAGEMENT = "BMT-Business Management";
 	public static final String INVESTMENT = "INV-Investment";
+	//TODO : On veut qu'a chaque fois qu'il y a un update du mapping csd le weight soit updaté
 	
+	public Run() {
+		super();
+		csdMap = new HashMap<Integer, Double>();
+	}
+	public HashMap<Integer, Double> getCsdMapping() {
+		return csdMap;
+	}
+	public void setCsdMapping(HashMap<Integer, Double> csdMap) {
+		this.csdMap = csdMap;
+	}
 	public static String[] getTypeList() {
 		return new String[]{MAINTENANCE, SERVICE, BUSINESSMANAGEMENT, INVESTMENT};
 	}

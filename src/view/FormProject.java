@@ -2,8 +2,8 @@ package view;
 
 import java.sql.SQLException;
 
-import controler.Admin;
 import controler.DataLayer;
+import controler.NotFoundException;
 import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -90,7 +90,6 @@ public class FormProject extends GridPane {
 					alert.setHeaderText("You need to save the project before adding Networks");
 					alert.showAndWait();
 					
-					
 				} else {
 					
 					FormNetwork form = new FormNetwork(main);
@@ -103,8 +102,6 @@ public class FormProject extends GridPane {
 					stage.show();
 					
 				}
-				
-
 				
 			}
 		});
@@ -135,16 +132,22 @@ public class FormProject extends GridPane {
 						project.setNameEN(me.tfDescEN.getText());
 						project.setNameFR(me.tfDescFR.getText());
 						project.setLead(me.tfLead.getText());
-						//project.setStatus(me.cbStatus.getValue()); 
+						project.setStatus(me.cbStatus.getValue()); 
 						project.setModel(me.cbModel.getValue());
 						project.setProposal(me.tfProposal.getText());
  
 						try {
 							DataLayer.updateProject(project);
 							main.notify("Update of Project " + project.getId() + ": SUCCESS");
+							main.getProjectModule().setProject(main.getManager().getProject(project.getId()));
+							main.getProjectModule().clear();
+							main.getProjectModule().load();
 						} catch (SQLException e1) {
 							main.notify("Update of Project " + project.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
+						} catch (NotFoundException e1) {
+							
+							e1.printStackTrace();
 						}
 						
 					}
@@ -173,19 +176,27 @@ public class FormProject extends GridPane {
 				project.setLead(me.tfLead.getText());
 				project.setStatus(me.cbStatus.getValue()); 
 				project.setModel(me.cbModel.getValue());
+				project.setProposal(me.tfProposal.getText());
 				//project.setClosingDate(datePicker.getValue());
 				
 				try {
 					DataLayer.insertProject(project);
 					main.notify("Creation of Cost Center " + project.getId() + ": SUCCESS");
+					
+					me.setProject(
+							main.getManager().getProject(project.getId()));
+					main.getProjectModule().setProject(me.getProject());
+					main.getProjectModule().clear();
+					main.getProjectModule().load();
 				} catch (SQLException e) {
 					main.notify("Creation of Cost Center " + project.getId() + ": FAILED");
 					System.err.println(e.getSQLState());
+				} catch (NotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
-				me.setProject(project);
-				main.getProjectModule().clear();
-				main.getProjectModule().load();
+
 
 			}
 			
@@ -205,8 +216,10 @@ public class FormProject extends GridPane {
 		tfDescEN.setText(pj.getNameEN());
 		tfDescFR.setText(pj.getNameFR());
 		cbModel.setValue(pj.getModel());
+		cbStatus.setValue(pj.getStatus());
 		tfProposal.setText(pj.getProposal());
 		tfLead.setText(pj.getLead());
+		
 		
 	}
 	public Project getProject() {

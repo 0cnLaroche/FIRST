@@ -30,8 +30,6 @@ public class Notificator {
 			  public void run() {
 				  Platform.runLater(() -> {
 					  
-					  System.out.println("starting timer");
-					  
 						FadeTransition ft = new FadeTransition(Duration.millis(5*1000), notif);
 						ft.setFromValue(1.0);
 						ft.setToValue(0.0);
