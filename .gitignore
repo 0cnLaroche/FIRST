@@ -7,6 +7,9 @@ bin/*
 # Eclipse settings
 .settings
 
+# Eclipse File
+# .classpath
+
 # Log file
 *.log
 
@@ -25,8 +28,9 @@ bin/*
 *.tar.gz
 *.rar
 
-#Eclipse File
-.classpath
+# IntelliJ IDEA
+*.iml
+.idea/*
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
