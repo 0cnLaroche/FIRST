@@ -19,6 +19,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import module.CostCenterModule;
+import module.ProjectModule;
+import module.QueryModule;
+import module.RUNModule;
 import view.*;
 
 import java.io.IOException;

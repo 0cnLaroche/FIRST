@@ -1,4 +1,4 @@
-package view;
+package module;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -24,6 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -31,6 +32,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import model.*;
+import view.FormCostCenter;
 
 public class CostCenterModule extends BorderPane {
 
@@ -67,15 +69,19 @@ public class CostCenterModule extends BorderPane {
 		Button btn = new Button("Go");
 		btn.getStyleClass().add("primary");
 
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
+		btn.setOnAction((event) -> {
+			treeView.getSelectionModel().clearSelection();
+			treeView.refresh();
+			highlightCostCenter(treeView.getRoot());
+		});
+		
+		this.setOnKeyPressed((event) -> {
+			if (event.getCode() == KeyCode.ENTER) {
 				treeView.getSelectionModel().clearSelection();
 				treeView.refresh();
 				highlightCostCenter(treeView.getRoot());
 			}
 		});
-		
 
 		gSearch.add(btn, 2, 0);
 		this.setBottom(gSearch);
@@ -189,7 +195,8 @@ public class CostCenterModule extends BorderPane {
 		
 
 	}
-
+	@SuppressWarnings("unused")
+	@Deprecated
 	private class highlightTreeCellImpl extends TreeCell<CostCenter> {
 		// this is unused for now
 		@Override
@@ -202,7 +209,7 @@ public class CostCenterModule extends BorderPane {
 			setGraphic(circle);
 
 		}
-
+		@Deprecated
 		public highlightTreeCellImpl() {
 			super.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 

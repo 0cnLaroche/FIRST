@@ -1,4 +1,4 @@
-package view;
+package module;
 
 import java.awt.Desktop;
 import java.io.File;

@@ -1,4 +1,4 @@
-package view;
+package module;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

@@ -1,4 +1,4 @@
-package view;
+package module;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -14,7 +14,6 @@ import controler.TableTransferable;
 import first.FIRST;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,6 +27,7 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -43,6 +43,9 @@ public class ProjectModule extends BorderPane {
 	public FIRST main;
 	private Project project;
 	private GridPane gSearch;
+	private VBox vb,stage0,stage2,stage3,stage4,stage5;
+	private ScrollPane sp;	
+	private element.Project pdef;
 	private Label label;
     private String txtStageStyle = "-fx-font:40px Tahoma;-fx-fill:white;";
 	
@@ -73,65 +76,13 @@ public class ProjectModule extends BorderPane {
 		Button btn = new Button("Go");
 		btn.getStyleClass().add("primary");
 
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-
-				Dialog<Project> dialog = new Dialog<Project>();
-				dialog.setTitle("Project Selection Dialog");
-				dialog.setHeaderText("Please select your project");
-				ButtonType selectButtonType = new ButtonType("Select", ButtonData.OK_DONE);
-				dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
-
-				ListView<Project> lv = new ListView<Project>();
-				lv.setPrefSize(500, 300);
-
-
-				try {
-
-					ObservableList<Project> items = FXCollections
-							.observableArrayList(DataLayer.queryProjects(tfKeyword.getText()));
-					lv.setItems(items);
-					MultipleSelectionModel<Project> lvSelModel = lv.getSelectionModel();
-					dialog.getDialogPane().setContent(lv);
-					
-					lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					    @Override
-					    public void handle(MouseEvent mouseEvent) {
-					        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-					            if(mouseEvent.getClickCount() == 2){
-					            	dialog.setResult(lvSelModel.selectedItemProperty().getValue());
-					            	dialog.close();
-					            }
-					        }
-					    }
-					});
-					
-					dialog.setResultConverter(dialogButton -> {
-					    if (dialogButton == selectButtonType) {
-					        return lvSelModel.selectedItemProperty().getValue();
-					    }
-					    return null;
-					});
-					
-					if (items.size() == 1) {
-						setProject(items.get(0));
-						clear();
-						load();
-					} else {
-						Optional<Project> result = dialog.showAndWait();
-
-						result.ifPresent(selection -> {
-							setProject(selection);
-							clear();
-							load();
-						});					
-					}
-
-				} catch (NotFoundException e1) {
-					System.err.println(e1);
-					e1.showDialog();
-				}
+		btn.setOnAction((event) -> {
+			search(tfKeyword.getText());
+		});
+		// Works only when cursor is in the text field
+		this.setOnKeyPressed((event) -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				search(tfKeyword.getText());
 			}
 		});
 		
@@ -152,10 +103,6 @@ public class ProjectModule extends BorderPane {
 		this.project = project;
 	}
 	public void load() {
-		
-		VBox vb,stage0,stage2,stage3,stage4,stage5;
-		ScrollPane sp;	
-		element.Project pdef;
 		
 		// setting source for project definition header
 		pdef = new element.Project(main);
@@ -292,8 +239,69 @@ public class ProjectModule extends BorderPane {
         });
 		main.notify("Copied Project to Clipboard");
 	}
+	public double getScrollPosition() {
+		return sp.getVvalue();
+	}
+	public void setScrollPosition(Double value) {
+		sp.setVvalue(value);
+	}
+	private void search(String keyword) {
+		Dialog<Project> dialog = new Dialog<Project>();
+		dialog.setTitle("Project Selection Dialog");
+		dialog.setHeaderText("Please select your project");
+		ButtonType selectButtonType = new ButtonType("Select", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(selectButtonType, ButtonType.CANCEL);
 
-	
+		ListView<Project> lv = new ListView<Project>();
+		lv.setPrefSize(500, 300);
+
+
+		try {
+
+			ObservableList<Project> items = FXCollections
+					.observableArrayList(DataLayer.queryProjects(keyword));
+			lv.setItems(items);
+			MultipleSelectionModel<Project> lvSelModel = lv.getSelectionModel();
+			dialog.getDialogPane().setContent(lv);
+			
+			lv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			    @Override
+			    public void handle(MouseEvent mouseEvent) {
+			        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+			            if(mouseEvent.getClickCount() == 2){
+			            	dialog.setResult(lvSelModel.selectedItemProperty().getValue());
+			            	dialog.close();
+			            }
+			        }
+			    }
+			});
+			
+			dialog.setResultConverter(dialogButton -> {
+			    if (dialogButton == selectButtonType) {
+			        return lvSelModel.selectedItemProperty().getValue();
+			    }
+			    return null;
+			});
+			
+			if (items.size() == 1) {
+				setProject(items.get(0));
+				clear();
+				load();
+			} else {
+				Optional<Project> result = dialog.showAndWait();
+
+				result.ifPresent(selection -> {
+					setProject(selection);
+					clear();
+					load();
+				});					
+			}
+
+		} catch (NotFoundException e1) {
+			System.err.println(e1);
+			e1.showDialog();
+		}
+	}
 }
 
 

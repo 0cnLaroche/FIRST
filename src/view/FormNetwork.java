@@ -136,9 +136,11 @@ public class FormNetwork extends GridPane {
 					try {
 						DataLayer.insertWbs(wbs);
 						main.notify("Creation of WBS " + wbs.getId() + ": SUCCESS");
+						double scrollPos = main.getProjectModule().getScrollPosition();
 						main.getProjectModule().setProject(project);
 						main.getProjectModule().clear();
 						main.getProjectModule().load();
+						main.getProjectModule().setScrollPosition(scrollPos);
 					} catch (SQLException e1) {
 						main.notify("Creation of WBS " + wbs.getId() + ": FAILED");
 						e1.getSQLState();
