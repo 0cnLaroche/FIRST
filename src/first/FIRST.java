@@ -361,8 +361,8 @@ public class FIRST  extends Application {
 	public void notify(String text) {
 		notificator.add(new Notification(text));
 	}
-	public static float getVersion() {
-		float version = Float.parseFloat(System.getProperty("java.specification.version"));
+	public static Double getVersion() {
+		Double version = Double.parseDouble(System.getProperty("java.specification.version"));
 		return version;
 	}
 	
