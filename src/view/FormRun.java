@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -21,8 +22,10 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.CostCenter;
 import model.Run;
+import element.SolutionMap;
 
 /**The RUN form has two event handlers one to edit and the other one to create a new run code. The constructor sets 
  * the form in "Creation Mode";
@@ -36,6 +39,7 @@ public class FormRun extends GridPane {
 	Button submit;
 	Run run;
 	EventHandler<ActionEvent> editHandler, newHandler;
+	SolutionMap map;
 	private FormRun me = this;
 	
 	public FormRun(FIRST main) {
@@ -48,9 +52,13 @@ public class FormRun extends GridPane {
 		this.setHgap(10);
 		this.setVgap(10);
 		this.setPadding(new Insets(25, 25, 25, 25));
+		
+		//CSD Mapping
+		map = new SolutionMap();
 
 		this.add(new Label("RUN Code"), 0, 0);
 		tfRunID = new TextField();
+		tfRunID.setMaxWidth(75.0);
 		this.add(tfRunID, 1, 0);
 
 		this.add(new Label("Description EN"), 0, 1);
@@ -64,10 +72,18 @@ public class FormRun extends GridPane {
 		this.add(new Label("Type"), 0, 3);
 		cbType = new ChoiceBox<String>(); 
 		cbType.setItems(FXCollections.observableArrayList(Run.getTypeList()));
+		cbType.getSelectionModel().selectedItemProperty().addListener((arg, oldVal, newVal) -> {
+			if (newVal.equals(Run.MAINTENANCE)) {
+				this.add(map, 1, 10);
+			} else {
+				this.getChildren().remove(map);
+			}
+		});
 		this.add(cbType, 1, 3);
 		
 		this.add(new Label("Cost Center"), 0, 4);
 		tfCostCenter = new TextField();
+		tfCostCenter.setMaxWidth(80);
 		this.add(tfCostCenter, 1, 4);
 
 		this.add(new Label("Responsible"), 0, 5);
@@ -82,7 +98,6 @@ public class FormRun extends GridPane {
 		cbStatus = new ChoiceBox<String>(); 
 		cbStatus.setItems(FXCollections.observableArrayList(Run.getStatusList()));
 		this.add(cbStatus, 1, 7);
-		
 		
 		this.add(new Label("Closing Date"), 0, 8);
 		datePicker = new DatePicker();
@@ -214,6 +229,12 @@ public class FormRun extends GridPane {
 		tfReplacedBy.setText(run.getReplacedBy());
 		cbStatus.setValue(run.getStatus());
 		datePicker.setValue(run.getClosingDate());
+		
+		if (run.getCsdAllocation() != null) {
+			map.set(run.getCsdAllocation());
+		}
+		//this.add(map, 1, 10);
+				
 
 	}
 }

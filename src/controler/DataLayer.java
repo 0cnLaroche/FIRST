@@ -22,6 +22,8 @@ import java.util.Properties;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
+import csd.Allocation;
+import csd.Solution;
 import javafx.util.Pair;
 import model.*;
 
@@ -509,9 +511,9 @@ public class DataLayer {
 		return list;
 		
 	}
-	public HashMap<String, Pair<Integer,Double>> getCSDMapping() {
+	public ArrayList<Allocation> getCSDMapping() {
 		
-		HashMap<String, Pair<Integer,Double>> map = new HashMap<String, Pair<Integer,Double>>();
+		ArrayList<Allocation> map = new ArrayList<Allocation>();
 		String query = "SELECT RUN, Solution, Weight FROM RUN_Solution WHERE RUN IS NOT NULL;";
 		
 		try {
@@ -519,9 +521,11 @@ public class DataLayer {
 			ResultSet rs = select.executeQuery(query);
 			
 			while (rs.next()) {
-				String id = rs.getString(1);
-				Pair<Integer,Double> pair = new Pair<Integer,Double>(rs.getInt(2),rs.getDouble(3));
-				map.put(id, pair);
+				Allocation a = new Allocation();
+				a.runId = rs.getString(1);
+				a.solutionId = rs.getInt(2);
+				a.weight = rs.getDouble(3);
+				map.add(a);
 			}
 	
 		} catch (SQLException e) {
@@ -971,12 +975,12 @@ public class DataLayer {
 
 		}
 	}
-	private void mapCSD(HashMap<String, Pair<Integer,Double>> map, HashMap<String,Run> runs) {
-		for(String key: map.keySet()) {
+	private void mapCSD(ArrayList<Allocation> map, HashMap<String,Run> runs) {
+		for(Allocation a: map) {
 			try {
-				runs.get(key).getCsdMapping().put(map.get(key).getKey(), map.get(key).getValue());
+				runs.get(a.runId).addAllocation(a);
 			} catch (NullPointerException e) {
-				System.err.println(" Error Mapping csd @ " + key);
+				System.err.println(" Error Mapping csd @ " + a.runId);
 			}
 		}
 	}

@@ -2,13 +2,15 @@ package model;
 
 import java.util.HashMap;
 
+import csd.Allocation;
+
 public class Run extends FinancialCode {
 
 	private String type;
 	private String responsible;
 	private String replacedBy;
 	private CostCenter costcenter;
-	private HashMap<Integer, Double> csdMap ;
+	private Allocation[] csdalloc;
 	public static final String MAINTENANCE = "MNT-Maintenance";
 	public static final String SERVICE = "SRV-Service";
 	public static final String BUSINESSMANAGEMENT = "BMT-Business Management";
@@ -17,14 +19,29 @@ public class Run extends FinancialCode {
 	
 	public Run() {
 		super();
-		csdMap = new HashMap<Integer, Double>();
 	}
-	public HashMap<Integer, Double> getCsdMapping() {
-		return csdMap;
+	
+	public Allocation[] getCsdAllocation() {
+		return csdalloc;
 	}
-	public void setCsdMapping(HashMap<Integer, Double> csdMap) {
-		this.csdMap = csdMap;
+
+	public void setCsdAllocation(Allocation[] csdalloc) {
+		this.csdalloc = csdalloc;
 	}
+	
+	public void addAllocation(Allocation alloc) {
+		if (csdalloc == null) {
+			csdalloc = new Allocation[] {alloc};
+		} else {
+			Allocation[] temp = new Allocation[csdalloc.length + 1];
+			for (int i = 1; i < temp.length; i++) {
+				temp[i] = csdalloc[i-1];
+			}
+			temp[0] = alloc;
+			this.csdalloc = temp;
+		}
+	}
+
 	public static String[] getTypeList() {
 		return new String[]{MAINTENANCE, SERVICE, BUSINESSMANAGEMENT, INVESTMENT};
 	}

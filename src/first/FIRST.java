@@ -28,6 +28,9 @@ import view.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+
+import javax.swing.JOptionPane;
+
 import controler.*;
 import element.Notification;
 
@@ -346,12 +349,21 @@ public class FIRST  extends Application {
 	
 	public static void main(String[] args) {
 		
-		launch(args);
+		if (getVersion() >= 1.8) {
+			launch(args);
+		} else {
+			JOptionPane.showMessageDialog(null, "FIRST can't run because your version of Java is outdated. "
+					+ "Please contact your Service Desk in order to have Java 1.8 or higher installed on your"
+					+ " computer.\nYour Java version is " + getVersion());
+		}
 
 	}
 	public void notify(String text) {
-		
 		notificator.add(new Notification(text));
-		
 	}
+	public static float getVersion() {
+		float version = Float.parseFloat(System.getProperty("java.specification.version"));
+		return version;
+	}
+	
 }
