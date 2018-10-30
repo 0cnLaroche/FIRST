@@ -19,7 +19,7 @@ FIRST stands for  *Financial Information Reference and Search Tool Version 2*. I
 
 #### Access FIRST
 1. Go to [ITCAR SharePoint](http://dialogue/grp/SFI-IFS/SitePages/Home.aspx) site or [CATS Intranet page](http://esdc.prv/en/iitb/corporate/CATS/index.shtml) and click on the link for FIRST.
-1. FIRST will lunch on your desktop
+1. FIRST will launch on your desktop
 
 ### Tabs
 ![Image of tabs](http://dialogue/grp/SFI-IFS/SiteAssets/IT_Costing_Assets/images/tabs.PNG)
