@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import controler.QueryWriter;
 import element.Loading;
+import first.FIRST;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -38,9 +39,9 @@ public class QueryModule extends StackPane {
 	GridPane grid;
 	TextArea text;
 	private String[] names = {"Networks by Approvers", "Project List", "RUN codes", 
-			"Cost Centers by level"};
+			"Cost Centers by level","Corporate Solution Directory to RUN mapping"};
 
-	public <FIRST>QueryModule(FIRST main) {
+	public QueryModule(FIRST main) {
 		
 		Loading loadAnim = new Loading();
 		
@@ -83,6 +84,9 @@ public class QueryModule extends StackPane {
 					break;
 				case "Cost Centers by level":
 					text.setText("A list of cost centers followed by their reporting cost center (parents) on 6 levels.");
+					break;
+				case "Corporate Solution Directory to RUN mapping":
+					text.setText("A mapping of IITB Solutions to RUN codes and weight allocation");
 					break;
 				}
 			}
@@ -208,7 +212,29 @@ public class QueryModule extends StackPane {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					break;					
+					break;
+				case "Corporate Solution Directory to RUN mapping":
+					fChooser.setInitialFileName("CSD_Mapping");
+					selectedFile = fChooser.showSaveDialog(null);
+
+					try {
+						qw.exportCSDMapping(selectedFile);
+
+						Optional<ButtonType> result = alert.showAndWait();
+
+						if (result.get() == btnYes) {
+							desktop.open(selectedFile);
+						} else {
+							// ... user chose CANCEL or closed the dialog
+						}
+					} catch (NullPointerException e) {
+						System.out.println("Export cancelled by User");
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					break;
+					
 				}
 				me.getChildren().remove(loadAnim);
 			}

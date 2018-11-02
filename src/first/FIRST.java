@@ -81,6 +81,8 @@ public class FIRST  extends Application {
 		//Loading the data layer
 		try {
 			manager = new DataLayer();
+			manager.connect();
+			manager.load();
 		} catch (controler.DatabaseCommunicationsException e) {
 			this.stop();
 		}

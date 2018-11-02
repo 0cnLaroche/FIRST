@@ -45,7 +45,7 @@ public class DataLayer {
 	/**All data for cost centers, Run, and projects are loaded by the constructor.
 	 * @throws DatabaseCommunicationsException
 	 */
-	public DataLayer() throws DatabaseCommunicationsException {
+	public DataLayer() {
 		
 		runs = new HashMap<String,Run>();
 		wbs = new HashMap<String, Wbs>();
@@ -53,13 +53,14 @@ public class DataLayer {
 		projects = new HashMap<String, Project>();
 		costcenters = new HashMap<String, CostCenter>();
 		
-		this.connect();
+	}
+	public void load() {
+		
 		loadCostCenters();
 		loadRuns();
 		mapCSD(getCSDMapping(),runs);
 		loadProjects();
 		
-
 	}
 	public static HashMap<String, CostCenter> getCostCenterList() {
 		return costcenters;
@@ -1138,6 +1139,16 @@ public class DataLayer {
 
 			System.err.println("Error while closing the connection with MySql");
 		}
+	}
+	public boolean isConnected() {
+		try {
+			con.isValid(1);
+				return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

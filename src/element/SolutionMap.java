@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import csd.Solution;
@@ -81,7 +84,7 @@ public class SolutionMap extends Group {
 			System.err.println(e.getMessage());;
 			sol = new Solution();
 			sol.setId(id);
-			sol.setName("not found");
+			sol.setName("");
 		}
 
 		box = new HBox();
@@ -90,9 +93,36 @@ public class SolutionMap extends Group {
 		idf = new Label(Integer.toString(sol.getId()));
 		idf.setPrefWidth(45.0);
 		idf.setAlignment(Pos.CENTER);
+		idf.setOnMouseClicked((event) -> {
+			csd.openInBrowser(id);
+		});
+		
 		name = new Label(sol.getName());
 		name.setPrefWidth(200);
 		name.setAlignment(Pos.CENTER_LEFT);
+		name.setOnMouseClicked((event) -> {
+			csd.openInBrowser(id);
+		});
+		name.setOnMouseEntered((event) -> {
+			this.getScene().setCursor(Cursor.HAND);
+			idf.setStyle("-fx-underline: true;"); //  -fx-text-decoration-color:#66afe9"
+			name.setStyle("-fx-underline: true;");
+		});
+		name.setOnMouseExited((event) -> {
+			this.getScene().setCursor(Cursor.DEFAULT);
+			idf.setStyle("");
+			name.setStyle("");
+		});
+		idf.setOnMouseEntered((event) -> {
+			this.getScene().setCursor(Cursor.HAND);
+			idf.setStyle("-fx-underline: true;"); //  -fx-text-decoration-color:#66afe9"
+			name.setStyle("-fx-underline: true;");
+		});
+		idf.setOnMouseExited((event) -> {
+			this.getScene().setCursor(Cursor.DEFAULT);
+			idf.setStyle("");
+			name.setStyle("");
+		});
 		w = new Label(Double.toString(weight));
 		w.setAlignment(Pos.CENTER_LEFT);
 		del = new Button("x");
@@ -101,8 +131,7 @@ public class SolutionMap extends Group {
 			// TODO: Update db to remove mapping
 			// TODO: Check if Admin rights
 			list.getChildren().remove(box);
-		});
-		
+		});	
 		box.getChildren().addAll(idf, name, w, del);
 		
 		list.getChildren().add(box);

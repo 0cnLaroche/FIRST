@@ -42,7 +42,7 @@ public class QueryWriter {
 			for (int i = 0; i<data.size() -1; i++) {
 		        Row row = sheet.createRow(i);
 		        String[] line = data.get(i);
-				for (int j = 0; j<line.length-1;j++) {
+				for (int j = 0; j<line.length;j++) {
 			        Cell cell = row.createCell(j);
 			        cell.setCellValue(line[j]);
 				}
@@ -66,6 +66,15 @@ public class QueryWriter {
 		
 		if (file != null) {
 			this.export(file, "/sql/network_by_approver.sql", "Network by Approver");
+		} else {
+			throw new NullPointerException();
+		}
+
+	}
+	public void exportCSDMapping(File file) throws NullPointerException {
+		
+		if (file != null) {
+			this.export(file, "/sql/csd_map.sql", "CSD-RUN Mapping");
 		} else {
 			throw new NullPointerException();
 		}

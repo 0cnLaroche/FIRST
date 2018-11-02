@@ -1,7 +1,11 @@
 package csd;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.json.simple.JSONArray;
@@ -69,6 +73,24 @@ public class CorporateSolutionDirectory {
 			}
 			
 			return obj;
+	}
+	public void openInBrowser(int id) {
+		
+		if (Desktop.isDesktopSupported()) {
+			
+			try {
+				URI uri = new URI("http://dialogue/proj/ITCD-RMTI/APM-GPA/Site%20Pages%20Library/CSD_SolutionView.aspx?SolutionID=" + id);
+				Desktop.getDesktop().browse(uri);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+
+		
 	}
 }
 
