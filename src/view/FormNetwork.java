@@ -233,7 +233,7 @@ public class FormNetwork extends GridPane {
 						}
 						
 						try {
-							DataLayer.updateNetwork(nw);
+							main.getManager().updateNetwork(nw);
 							main.notify("Update of Network " + nw.getId() + ": SUCCESS");
 							main.getProjectModule().setProject(
 									main.getManager().getProject(wbs.getProject().getId()));

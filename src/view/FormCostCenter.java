@@ -173,7 +173,7 @@ public class FormCostCenter extends GridPane {
 							}
 
 							
-							DataLayer.updateCostCenter(newcc);
+							main.getManager().updateCostCenter(newcc);
 							
 							main.notify("Update of Cost Center " + newcc.getId() + ": SUCCESS");
 							

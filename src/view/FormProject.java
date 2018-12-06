@@ -137,7 +137,7 @@ public class FormProject extends GridPane {
 						project.setProposal(me.tfProposal.getText());
  
 						try {
-							DataLayer.updateProject(project);
+							main.getManager().updateProject(project);
 							main.notify("Update of Project " + project.getId() + ": SUCCESS");
 							main.getProjectModule().setProject(main.getManager().getProject(project.getId()));
 							main.getProjectModule().clear();

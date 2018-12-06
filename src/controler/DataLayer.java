@@ -42,6 +42,8 @@ public class DataLayer {
 	private static HashMap<String, CostCenter> costcenters;
 	private HashMap<Integer,Solution> solutions;
 	
+	Thread refreshService;
+	
 	/**All data for cost centers, Run, and projects are loaded by the constructor.
 	 * @throws DatabaseCommunicationsException
 	 */
@@ -53,6 +55,31 @@ public class DataLayer {
 		projects = new HashMap<String, Project>();
 		costcenters = new HashMap<String, CostCenter>();
 		
+		refreshService = new Thread(() -> {
+			//try {
+				while(true) {
+					try {
+					Thread.sleep(100000);
+					loadCostCenters();
+					loadRuns();
+					mapCSD(getCSDMapping(),runs);
+					loadProjects();
+					//System.out.println("Refreshed");
+
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+
+					
+				}
+
+			
+			
+		});
+
+
+		
 	}
 	public void load() {
 		
@@ -61,6 +88,9 @@ public class DataLayer {
 		mapCSD(getCSDMapping(),runs);
 		loadProjects();
 		
+	}
+	public Thread getRefreshService() {
+		return this.refreshService;
 	}
 	public static HashMap<String, CostCenter> getCostCenterList() {
 		return costcenters;
@@ -158,7 +188,7 @@ public class DataLayer {
 		insert.close();
 
 	}
-	public static void updateProject(Project project) throws SQLException {
+	public void updateProject(Project project) throws SQLException {
 
 		String query = "UPDATE ProjectDefinition SET Name = ?, NameFR = ?, Model = ?, Status = ?, "
 				+ "Proposal = ?, ClosingDate = ?, ProjectManager = ? "
@@ -182,7 +212,7 @@ public class DataLayer {
 	
 		projects.put(project.getId(), project);
 			
-		loadProjects();
+		this.loadProjects();
 			
 		System.out.println("Update for project " + project.toString() + ": SUCCESS");
 		
@@ -259,7 +289,7 @@ public class DataLayer {
 
 	}
 		
-	public static void updateNetwork(Network nw) throws SQLException {
+	public void updateNetwork(Network nw) throws SQLException {
 		
 		String queryNw = "UPDATE Network SET Name = ?, NameFR = ?, EffectiveDate = ?, "
 				+ "ClosingDate = ?, ReplacedBy = ?, Status = ?, Stage = ? " + "WHERE ID = ?;";
@@ -310,7 +340,7 @@ public class DataLayer {
 
 		System.out.println("Update to database for WBS : " + nw.getWbs().toString() + ": SUCCESS");
 
-		loadProjects();
+		this.loadProjects();
 
 		update.close();
 
@@ -320,7 +350,7 @@ public class DataLayer {
 	 * @param run
 	 * @throws SQLException 
 	 */
-	public static void insertRun(Run run) throws SQLException {
+	public void insertRun(Run run) throws SQLException {
 
 		String query = "INSERT INTO RUN (Name, NameFR, CostCenter_Responsible, CostCenter_Requesting, "
 				+ "Responsible, Type, ClosingDate, EffectiveDate, Status, ReplacedBy, ID) "
@@ -351,7 +381,7 @@ public class DataLayer {
 
 		insert.executeUpdate();
 
-		loadRuns();
+		this.loadRuns();
 
 		System.out.println("Update for WBS " + run.toString() + ": SUCCESS");
 
@@ -363,7 +393,7 @@ public class DataLayer {
 	 * @param run Object
 	 * @throws SQLException 
 	 */
-	public static void updateRun(Run run) throws SQLException {
+	public void updateRun(Run run) throws SQLException {
 		
 		String query = "UPDATE RUN SET Name = ?, NameFR = ?, "
 				+ "CostCenter_Responsible = ?, CostCenter_Requesting = ?, "
@@ -401,7 +431,7 @@ public class DataLayer {
 			
 			update.executeUpdate();
 			
-			loadRuns();
+			this.loadRuns();
 			
 			update.close();
 		
@@ -439,7 +469,7 @@ public class DataLayer {
 
 	}
 
-	public static void updateCostCenter(CostCenter cc) throws SQLException {
+	public void updateCostCenter(CostCenter cc) throws SQLException {
 
 		String query = "UPDATE CostCenter SET Name = ?, " + "ReportsTo = ?, " + "Manager = ?, " + "Directorate = ?, "
 				+ "EffectiveDate = ?, " + "ClosingDate = ? " + "WHERE ID = ?;";
@@ -468,12 +498,52 @@ public class DataLayer {
 
 		update.executeUpdate();
 
-		loadCostCenters();
+		this.loadCostCenters();
 
 		System.out.println("Update cost Center : SUCCESS");
 
 		update.close();
 
+	}
+	public static void updateCsdMapping(Allocation a) {
+		String query = "UPDATE RUN_Solution SET RUN = ?, Solution = ?, Weight = ? WHERE ID = ?;";
+		
+		try (PreparedStatement update = con.prepareStatement(query)) {
+			
+			update.setString(1, a.runId);
+			update.setInt(2, a.solutionId);
+			update.setDouble(3, a.weight);
+			update.setInt(4, a.uid);
+			
+			update.execute();
+			
+		} catch (SQLException e) {
+
+		} 
+	}
+	public static void insertCsdMapping(Allocation a) throws SQLException {
+		
+		String query = "INSERT INTO RUN_Solution(RUN, Solution, Weight, ID) VALUES(?, ?, ?, ?);";
+		
+		PreparedStatement insert = con.prepareStatement(query);
+			
+			insert.setString(1, a.runId);
+			insert.setInt(2, a.solutionId);
+			insert.setDouble(3, a.weight);
+			insert.setInt(4, a.uid);
+			
+			insert.execute();
+			
+	}
+	public static void deleteCsdMapping(Allocation a) throws SQLException {
+		String query = "DELETE FROM RUN_Solution WHERE ID = ?;";
+		
+		PreparedStatement del = con.prepareStatement(query);
+			
+			del.setInt(1, a.uid);
+			
+			del.execute();
+		 
 	}
 	public static Run getRun(String id) throws NotFoundException {
 		if (runs.containsKey(id)) {
@@ -515,7 +585,7 @@ public class DataLayer {
 	public ArrayList<Allocation> getCSDMapping() {
 		
 		ArrayList<Allocation> map = new ArrayList<Allocation>();
-		String query = "SELECT RUN, Solution, Weight FROM RUN_Solution WHERE RUN IS NOT NULL;";
+		String query = "SELECT RUN, Solution, Weight, ID FROM RUN_Solution WHERE RUN IS NOT NULL;";
 		
 		try {
 			Statement select = con.createStatement();
@@ -526,6 +596,7 @@ public class DataLayer {
 				a.runId = rs.getString(1);
 				a.solutionId = rs.getInt(2);
 				a.weight = rs.getDouble(3);
+				a.uid = rs.getInt(4);
 				map.add(a);
 			}
 	
@@ -709,12 +780,12 @@ public class DataLayer {
 		}
 
 	}
-	public static void refresh() {
-		loadCostCenters();
+	public void refresh() {
+		this.loadCostCenters();
 		loadRuns();
 		loadProjects();
 	}
-	private static void loadCostCenterRelationships(ArrayList<String[]> index, String parent){
+	private void loadCostCenterRelationships(ArrayList<String[]> index, String parent){
 
 		for (String[] entry: index) {
 			if (entry[1].equals(parent)) {
@@ -725,7 +796,7 @@ public class DataLayer {
 			}
 		}
 	}
-	private static void loadCostCenters() {
+	private synchronized void loadCostCenters() {
 
 		try (Statement statement = con.createStatement()) {
 
@@ -756,6 +827,7 @@ public class DataLayer {
 				}
 				costcenters.put(cc.getId(), cc);
 				//Other fields to be added
+				notify();
 
 			}
 			loadCostCenterRelationships(index, "103100");
@@ -768,7 +840,7 @@ public class DataLayer {
 		}
 	}
 
-	private static void loadRuns() {
+	private synchronized void loadRuns() {
 		
 		runs.clear();
 		
@@ -832,6 +904,8 @@ public class DataLayer {
 					//Other fields to be added
 					
 					runs.put(run.getId(), run);
+					notify();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -844,7 +918,7 @@ public class DataLayer {
 			e.printStackTrace();
 		}
 	}
-	private static void loadProjects() {
+	private synchronized void loadProjects() {
 		
 		ArrayList<String[]> wbsToProject = new ArrayList<String[]>();
 		ArrayList<String[]> networkToWbs = new ArrayList<String[]>();
@@ -895,6 +969,7 @@ public class DataLayer {
 				
 				// Other fields to be added
 				networks.put(nw.getId(), nw);
+				notify();
 			}
 			rs.close();
 			
@@ -923,6 +998,7 @@ public class DataLayer {
 				// Other fields to be added
 				wbs.put(wbsNew.getId(), wbsNew);
 				mapNetwork(networkToWbs, wbsNew.getId());
+				notify();
 
 			}
 			rs.close();
@@ -942,6 +1018,7 @@ public class DataLayer {
 				// Other fields to be added
 				projects.put(project.getId(), project);
 				mapWbs(wbsToProject, project.getId());
+				notify();
 			}
 			
 			rs.close();
@@ -967,7 +1044,7 @@ public class DataLayer {
 		}
 
 	}
-	private static void mapNetwork(ArrayList<String[]> networkToWbs, String parent) {
+	private void mapNetwork(ArrayList<String[]> networkToWbs, String parent) {
 		for (String[] entry : networkToWbs) {
 			if (entry[1].equals(parent)) {
 				wbs.get(entry[1]).addNetwork(networks.get(entry[0]));
@@ -985,6 +1062,7 @@ public class DataLayer {
 			}
 		}
 	}
+	
 	public static String getUserHash(String id) {
 
 		String query = "SELECT Hash FROM Admin WHERE ID = ?;";

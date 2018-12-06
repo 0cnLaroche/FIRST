@@ -83,6 +83,7 @@ public class FIRST  extends Application {
 			manager = new DataLayer();
 			manager.connect();
 			manager.load();
+			manager.getRefreshService().start();
 		} catch (controler.DatabaseCommunicationsException e) {
 			this.stop();
 		}
@@ -220,11 +221,11 @@ public class FIRST  extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
-				DataLayer.refresh(); // refresh data from db
+				manager.refresh(); // refresh data from db
 				// reload modules
 				ccMod.load();
 				runMod.load();
-				// Project Module doesn't need to be reloaded right now since we still need a keywork to open it
+				projectMod.load();
 			}
 		});
 		hbox.getChildren().addAll(btnCopy,btnExport,btnLock,btnRefresh);
