@@ -1,76 +1,95 @@
 package element;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import javafx.event.EventHandler;
+import controler.DataLayer;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import csd.Solution;
+import first.FIRST;
 import csd.Allocation;
 import csd.CorporateSolutionDirectory;
 
 public class SolutionMap extends Group {
 	
-	VBox list;
-	ArrayList<Solution> solutions;
-	Button addbtn;
-	CorporateSolutionDirectory csd;
+	private VBox list;
+	private ArrayList<Allocation> allocation;
+	private Button addbtn;
+	private CorporateSolutionDirectory csd;
+	private model.Run run;
 	boolean manAllocation;
+	private TextField newidf;
+	private TextField newweight;
+	private boolean admin;
+	private FIRST main;
 	
-	public SolutionMap() {
+	
+	public SolutionMap(FIRST main) {
+		this.main = main;
+		this.allocation = new ArrayList<Allocation>(5);
+		this.admin = false;
 		
-		csd = new CorporateSolutionDirectory();
-		list = new VBox();
+		this.csd = new CorporateSolutionDirectory();
+		this.list = new VBox();
 		list.setStyle("	-fx-border-color: #cccccc;" + 
 				"-fx-background-color: #FFFFFF;" + 
 				"-fx-border-radius: 4;" + 
 				"-fx-background-radius: 4;" + 
 				"-fx-effect: innershadow(gaussian, transparent, 0, 0, 0, 0);");
-		addbtn = new Button("+");
+		list.setPadding(new Insets(5.0));
+		list.setSpacing(2.5);
+		this.addbtn = new Button("add");
 		
 		addbtn.setOnAction((event) -> {
+			if (main.getAdministrationModule().isAdmin()) {
+				list.getChildren().remove(addbtn);
+				this.addBlank();
+				list.getChildren().add(addbtn);
+			}
 
 		});
 		
-		HBox box = new HBox();
-		box.setSpacing(10.0);
+		HBox head = new HBox();
+		head.setSpacing(10.0);
 		
-		Label idf = new Label("csd #");
-		idf.setPrefWidth(45.0);
-		idf.setAlignment(Pos.CENTER);
+		Label idl = new Label("csd #");
+		idl.setPrefWidth(45.0);
+		idl.setAlignment(Pos.CENTER);
 		Label name = new Label("Solution");
 		name.setPrefWidth(200);
 		name.setAlignment(Pos.CENTER_LEFT);
 		Label w = new Label("Weight");
 		w.setAlignment(Pos.CENTER_LEFT);
 		
-		box.getChildren().addAll(idf, name, w);
+		head.getChildren().addAll(idl, name, w);
 		
-		list.getChildren().add(box);
-		
-		//this.getChildren().add(addbtn);
+		list.getChildren().add(head);
+		list.getChildren().add(addbtn);
+
+		this.getChildren().add(list);
 
 	}
 	public void set(Allocation[] map) {
 		
+		list.getChildren().remove(addbtn);
+		
 		for (int i = 0; i < map.length; i++) {
-
-			add(map[i].solutionId, map[i].weight);
+			allocation.add(map[i]);
+			add(map[i]);
+			
 		}
 		
-		this.getChildren().add(list);
+		list.getChildren().add(addbtn);
 	}
-	public void add(int id, double weight) {
+	public void add(Allocation a) {
 		
 		Label idf;
 		Label name, w;
@@ -79,11 +98,11 @@ public class SolutionMap extends Group {
 		Solution sol;
 		
 		try {
-			sol = csd.getSolution(id);
+			sol = csd.getSolution(a.solutionId);
 		} catch (IOException e) {
 			System.err.println(e.getMessage());;
 			sol = new Solution();
-			sol.setId(id);
+			sol.setId(a.solutionId);
 			sol.setName("");
 		}
 
@@ -94,14 +113,14 @@ public class SolutionMap extends Group {
 		idf.setPrefWidth(45.0);
 		idf.setAlignment(Pos.CENTER);
 		idf.setOnMouseClicked((event) -> {
-			csd.openInBrowser(id);
+			csd.openInBrowser(a.solutionId);
 		});
-		
+
 		name = new Label(sol.getName());
 		name.setPrefWidth(200);
 		name.setAlignment(Pos.CENTER_LEFT);
 		name.setOnMouseClicked((event) -> {
-			csd.openInBrowser(id);
+			csd.openInBrowser(a.solutionId);
 		});
 		name.setOnMouseEntered((event) -> {
 			this.getScene().setCursor(Cursor.HAND);
@@ -123,24 +142,37 @@ public class SolutionMap extends Group {
 			idf.setStyle("");
 			name.setStyle("");
 		});
-		w = new Label(Double.toString(weight));
+		w = new Label(Double.toString(a.weight));
 		w.setAlignment(Pos.CENTER_LEFT);
+		w.setPrefWidth(30.0);
 		del = new Button("x");
 		
 		del.setOnAction((event) -> {
-			// TODO: Update db to remove mapping
-			// TODO: Check if Admin rights
-			list.getChildren().remove(box);
+			// FIXME DELETE command denied to user 'firstadmin'@'n30013192.hrdc-drhc.net' for table 'RUN_Solution'
+			if (main.getAdministrationModule().isAdmin()) {
+				
+				list.getChildren().remove(box);
+
+				try {
+					DataLayer.deleteCsdMapping(a);
+					main.notify("Deleted mapping for CSD ID# " + a.solutionId);
+				} catch (SQLException e) {
+					System.err.println(e.getMessage());
+				}
+				
+			}
+
+			
 		});	
 		box.getChildren().addAll(idf, name, w, del);
 		
 		list.getChildren().add(box);
 		
 	}
-	public void add() {
+	public void addBlank() {
 		
-		TextField idf;
-		Label name, w;
+		TextField idf, w;
+		Label name;
 		Button del;
 		HBox box;
 		Solution sol;
@@ -148,14 +180,15 @@ public class SolutionMap extends Group {
 		box = new HBox();
 		box.setSpacing(10.0);
 		
-		idf = new TextField();
-		idf.setPrefWidth(45.0);
-		idf.setAlignment(Pos.CENTER);
+		newidf = new TextField();
+		newidf.setPrefWidth(45.0);
+		newidf.setAlignment(Pos.CENTER);
 		name = new Label();
 		name.setPrefWidth(200);
 		name.setAlignment(Pos.CENTER_LEFT);
-		w = new Label();
-		w.setAlignment(Pos.CENTER_LEFT);
+		newweight = new TextField();
+		//w.setPrefWidth(15.0);
+		//w.setAlignment(Pos.CENTER_LEFT);
 		del = new Button("x");
 		
 		del.setOnAction((event) -> {
@@ -164,10 +197,26 @@ public class SolutionMap extends Group {
 			list.getChildren().remove(box);
 		});
 		
-		box.getChildren().addAll(idf, name, w, del);
+		box.getChildren().addAll(newidf, name, newweight, del);
 		
 		list.getChildren().add(box);
 		
+	}
+	public void save() throws SQLException {
+				
+				Allocation a = new Allocation();
+				a.solutionId = Integer.parseInt(newidf.getText());
+				a.weight = Double.parseDouble(newweight.getText());
+				a.runId = this.run.getId();
+
+				DataLayer.insertCsdMapping(a);
+		
+	}
+	public void setRun(model.Run run) {
+		this.run = run;
+	}
+	public void edit(boolean admin) {
+		this.admin = admin;
 	}
 
 }

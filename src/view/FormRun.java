@@ -54,7 +54,7 @@ public class FormRun extends GridPane {
 		this.setPadding(new Insets(25, 25, 25, 25));
 		
 		//CSD Mapping
-		map = new SolutionMap();
+		map = new SolutionMap(main);
 
 		this.add(new Label("RUN Code"), 0, 0);
 		tfRunID = new TextField();
@@ -74,7 +74,7 @@ public class FormRun extends GridPane {
 		cbType.setItems(FXCollections.observableArrayList(Run.getTypeList()));
 		cbType.getSelectionModel().selectedItemProperty().addListener((arg, oldVal, newVal) -> {
 			if (newVal.equals(Run.MAINTENANCE)) {
-				this.add(map, 1, 10);
+				this.add(map, 1, 9);
 			} else {
 				this.getChildren().remove(map);
 			}
@@ -107,7 +107,7 @@ public class FormRun extends GridPane {
 		
 		submit = new Button();
 		submit.setGraphic(new ImageView(new Image(FormRun.class.getResourceAsStream("/res/save.png"), 40, 40, false, true)));
-		this.add(submit, 1, 9);
+		this.add(submit, 1, 10);
 				
 		editHandler = new EventHandler<ActionEvent>() {
 			// Action to change data
@@ -143,14 +143,22 @@ public class FormRun extends GridPane {
 						run.setClosingDate(datePicker.getValue());
 						
 						try {
-							DataLayer.updateRun(run);
+							main.getManager().updateRun(run);
 							main.notify("Update of IO " + run.getId() + ": SUCCESS");
 						} catch (SQLException e1) {
 							main.notify("Update of IO " + run.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
 						}
-
-						main.notify("Update of IO " + run.getId() + ": SUCCESS");
+						
+						if(run.getType() == Run.MAINTENANCE) {
+							try {
+								map.setRun(run);
+								map.save();
+								main.notify("Update of CSD mapping " + run.getId() + ": SUCCESS");
+							} catch (SQLException e1) {
+								System.err.println(e1.getMessage());
+							}
+						}
 					}
 					
 				} else {
@@ -184,12 +192,24 @@ public class FormRun extends GridPane {
 				run.setClosingDate(datePicker.getValue());
 				run.setEffectiveDate(LocalDate.now());
 				
+				if(run.getType() == Run.MAINTENANCE) {
+					map.setRun(run);
+				}
+
 				try {
-					DataLayer.insertRun(run);
+					main.getManager().insertRun(run);
 					main.notify("Creation of IO " + run.getId() + ": SUCCESS");
 				} catch (SQLException e) {
 					main.notify("Creation of IO " + run.getId() + ": FAILED");
-					System.err.println(e.getSQLState());
+					System.err.println(e.getMessage());
+				}
+
+				try {
+					map.save();
+					main.notify("Mapping of " + run.getId() + " to CSD successfully added");
+				} catch (SQLException e) {
+					main.notify("Mapping of " + run.getId() + " to CSD FAILED");
+					System.err.println(e.getMessage());
 				}
 			}
 			

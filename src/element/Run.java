@@ -59,7 +59,7 @@ public class Run extends HBox {
 			public void handle(MouseEvent event) {
 				FormRun form = new FormRun(main);
 				form.edit(r);
-				Scene scene = new Scene(form,600,600);
+				Scene scene = new Scene(form,500,600);
 				Stage stage = new Stage();
 				stage.setScene(scene);
 				stage.setTitle("RUN form");
