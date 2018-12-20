@@ -17,7 +17,11 @@ import csd.Solution;
 import first.FIRST;
 import csd.Allocation;
 import csd.CorporateSolutionDirectory;
-
+/**
+ * View that contains the mapping of CSD solution to run codes and their weights
+ * @author samuel.laroche
+ *
+ */
 public class SolutionMap extends Group {
 	
 	private VBox list;
@@ -25,7 +29,7 @@ public class SolutionMap extends Group {
 	private Button addbtn;
 	private CorporateSolutionDirectory csd;
 	private model.Run run;
-	boolean manAllocation;
+	private boolean manAllocation;
 	private TextField newidf;
 	private TextField newweight;
 	private boolean admin;
@@ -77,6 +81,10 @@ public class SolutionMap extends Group {
 		this.getChildren().add(list);
 
 	}
+	/**
+	 * Adds a line for each solution allocated to the RUN code.
+	 * @param map Array of allocation
+	 */
 	public void set(Allocation[] map) {
 		
 		list.getChildren().remove(addbtn);
@@ -89,6 +97,10 @@ public class SolutionMap extends Group {
 		
 		list.getChildren().add(addbtn);
 	}
+	/**
+	 * Adds an allocation line to view.
+	 * @param a Allocation
+	 */
 	public void add(Allocation a) {
 		
 		Label idf;
@@ -169,6 +181,9 @@ public class SolutionMap extends Group {
 		list.getChildren().add(box);
 		
 	}
+	/**
+	 * Adds a blank space to allow user to enter a new allocation
+	 */
 	public void addBlank() {
 		
 		TextField idf, w;

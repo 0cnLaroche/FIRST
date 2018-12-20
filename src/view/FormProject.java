@@ -189,7 +189,7 @@ public class FormProject extends GridPane {
 					main.getProjectModule().clear();
 					main.getProjectModule().load();
 				} catch (SQLException e) {
-					main.notify("Creation of Cost Center " + project.getId() + ": FAILED");
+					main.notify("Creation of Project " + project.getId() + " FAILED");
 					System.err.println(e.getSQLState());
 				} catch (NotFoundException e) {
 					// TODO Auto-generated catch block

@@ -16,8 +16,6 @@ public class Loading extends StackPane {
 		this.setStyle("-fx-background-color: rgba(50, 50, 50, 0.5);");
 		this.setAlignment(Pos.CENTER);
 		
-		//this.prefHeight(100);
-		//this.prefWidth(200);
 		image.setFitHeight(80);
 		image.setFitWidth(80);
 
@@ -34,4 +32,5 @@ public class Loading extends StackPane {
 		
 
 	}
+
 }
