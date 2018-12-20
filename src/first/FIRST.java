@@ -272,6 +272,8 @@ public class FIRST  extends Application {
 		stage.setOnCloseRequest(e -> {
 			manager.disconnect();
 			Platform.exit();
+			System.out.println("Bye bye");
+			System.exit(0);
 		});
 		
 	}
