@@ -1,4 +1,4 @@
 Manifest-Version: 2.1.0
 Created-By: SamuelLaroche
-Main-Class: first.FIRST
+Main-Class: first.MAIN
 Permissions: sandbox

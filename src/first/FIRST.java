@@ -3,10 +3,8 @@ package first;
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -43,42 +41,22 @@ public class FIRST  extends Application {
 	private ProjectModule projectMod;
 	private Admin adminMod;
 	private Notificator notificator;
-	public VBox notbox;
-	public About about;
+	private VBox notbox;
+	private AnchorPane mainAnchor;
+	private About about;
 	public FIRST me = this;
-	public DataLayer manager;
+	private DataLayer manager;
 	
+	/**
+	 * Loads all objects before start()
+	 */
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void init() throws Exception {
 
-		//This is an opening message while FIRST is loading
-		Stage opening = new Stage();
-		VBox vb = new VBox();
-		vb.setAlignment(Pos.CENTER);
-		vb.getChildren().addAll(
-				new ImageView(new Image( FIRST.class.getResourceAsStream("/res/raccoon.png"))),
-				new Label("Please wait while FIRST 2 is loading ..."));
-		vb.setSpacing(10.0);
-		opening.setScene(new Scene (vb,300,300));
-		opening.initStyle(StageStyle.UTILITY);
-		opening.setAlwaysOnTop(true);
-		opening.show();
-		
-		//Redirect system.out and system.err to a window 'console'
-		 //redirectSystemStreams();
-		/*console = new Stage();
-		TextArea cout = new TextArea();
-		console.setScene(new Scene(cout));
-		console.initStyle(StageStyle.UTILITY);
-		console.show();	*/
-		
-		//Application icon
-		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
-		
-		//Loading Admin module
+		// Loading Admin module
 		adminMod = new Admin(this);
-		
-		//Loading the data layer
+
+		// Loading the data layer
 		try {
 			manager = new DataLayer();
 			manager.connect();
@@ -94,20 +72,21 @@ public class FIRST  extends Application {
 		queryMod = new QueryModule(this);
 		projectMod = new ProjectModule(this);
 		about = new About(this);
-		
+
 		// Notificator
 		notbox = new VBox();
 		notificator = new Notificator(notbox);
-		
-			
-		//Tabulation
+
+		// Tabulation
 		TabPane tabPane = new TabPane();
+
 		// HBox of control buttons
 		HBox hbox = new HBox();
 		hbox.setSpacing(2);
-		
+
+		// New Action
 		Button btnNew = createButton("new.png");
-		btnNew.setOnAction(new EventHandler<ActionEvent>(){
+		btnNew.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent e) {
@@ -143,15 +122,15 @@ public class FIRST  extends Application {
 					stage.showAndWait();
 					stage = null;
 					scene = null;
-					
+
 					break;
-				
+
 				}
-				
+
 			}
-			
+
 		});
-		
+
 		// Copy Action
 		Button btnCopy = createButton("copy.png");
 		btnCopy.setTooltip(new Tooltip("Copy to clipboard"));
@@ -159,7 +138,7 @@ public class FIRST  extends Application {
 
 			@Override
 			public void handle(ActionEvent e) {
-					
+
 				switch (tabPane.getSelectionModel().getSelectedIndex()) {
 				case 0: // Project
 					getProjectModule().toClipboard();
@@ -170,13 +149,14 @@ public class FIRST  extends Application {
 				case 2: // CostCenter
 					getCostCenterModule().toClipboard();
 					break;
-					
-				}				
-				
+
+				}
+
 			}
-			
+
 		});
-		
+
+		// Export Action
 		Button btnExport = createButton("export.png");
 		btnExport.setTooltip(new Tooltip("Export to PDF"));
 		btnExport.setOnAction(new EventHandler<ActionEvent>() {
@@ -184,37 +164,37 @@ public class FIRST  extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				// TODO Export to PDF
-				
-			}
-			
-		});
-		
 
+			}
+
+		});
+
+		// Admin Access Action
 		Button btnLock = createButton("lock.png");
 		btnLock.setTooltip(new Tooltip("Administrator Access"));
-		
 		btnLock.setOnAction(new EventHandler<ActionEvent>() {
 			// Just switch the image whether or not the user is logged as admin
 			@Override
 			public void handle(ActionEvent event) {
 				if (!adminMod.isAdmin()) {
-					if(adminMod.showLoginDialog()) {
-				        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/unlock.png").toExternalForm(),
-				                40, 40, false, true));
-				        btnLock.setGraphic(imageView);
-				        hbox.getChildren().add(btnNew);
-				        
+					if (adminMod.showLoginDialog()) {
+						ImageView imageView = new ImageView(new Image(
+								getClass().getResource("/res/unlock.png").toExternalForm(), 40, 40, false, true));
+						btnLock.setGraphic(imageView);
+						hbox.getChildren().add(btnNew);
+
 					}
 				} else {
 					adminMod.logoff();
-			        ImageView imageView = new ImageView(new Image(getClass().getResource("/res/lock.png").toExternalForm(),
-			                40, 40, false, true));
-			        btnLock.setGraphic(imageView);
-			        hbox.getChildren().remove(btnNew);
+					ImageView imageView = new ImageView(
+							new Image(getClass().getResource("/res/lock.png").toExternalForm(), 40, 40, false, true));
+					btnLock.setGraphic(imageView);
+					hbox.getChildren().remove(btnNew);
 				}
 			}
 		});
-		
+
+		// Refresh Action
 		Button btnRefresh = createButton("refresh.png");
 		btnRefresh.setTooltip(new Tooltip("Refresh"));
 		btnRefresh.setOnAction(new EventHandler<ActionEvent>() {
@@ -228,47 +208,53 @@ public class FIRST  extends Application {
 				projectMod.load();
 			}
 		});
-		hbox.getChildren().addAll(btnCopy,btnExport,btnLock,btnRefresh);
-		
-		
-        // Anchor the controls
-        AnchorPane mainAnchor = new AnchorPane();
-        mainAnchor.getChildren().addAll(tabPane, hbox,notbox);
-        AnchorPane.setTopAnchor(hbox, 3.0);
-        AnchorPane.setRightAnchor(hbox, 5.0);
-        AnchorPane.setTopAnchor(tabPane, 1.0);
-        AnchorPane.setRightAnchor(tabPane, 1.0);
-        AnchorPane.setLeftAnchor(tabPane, 1.0);
-        AnchorPane.setBottomAnchor(tabPane, 1.0);
-        AnchorPane.setBottomAnchor(notbox, 75.0);
-        AnchorPane.setRightAnchor(notbox, 30.0);
-		
-		
+		hbox.getChildren().addAll(btnCopy, btnExport, btnLock, btnRefresh);
+
+		// Anchor the controls
+		mainAnchor = new AnchorPane();
+		mainAnchor.getChildren().addAll(tabPane, hbox, notbox);
+		AnchorPane.setTopAnchor(hbox, 3.0);
+		AnchorPane.setRightAnchor(hbox, 5.0);
+		AnchorPane.setTopAnchor(tabPane, 1.0);
+		AnchorPane.setRightAnchor(tabPane, 1.0);
+		AnchorPane.setLeftAnchor(tabPane, 1.0);
+		AnchorPane.setBottomAnchor(tabPane, 1.0);
+		AnchorPane.setBottomAnchor(notbox, 75.0);
+		AnchorPane.setRightAnchor(notbox, 30.0);
+
+		// Adding Tabs
+
 		Tab tabProjet = new Tab();
 		tabProjet.setText("Projects");
-		//tabProjet.setContent(projectAnchor);
 		tabProjet.setContent(projectMod);
-		
+
 		Tab tabRun = new Tab();
 		tabRun.setText("RUN");
 		tabRun.setContent(runMod);
-		
+
 		Tab tabCC = new Tab();
 		tabCC.setText("Cost Centers");
 		tabCC.setContent(ccMod);
-		
+
 		Tab tabQueries = new Tab();
-		tabQueries.setText("Export");	// Changed that from 'Queries' to 'Export' cause seems to make more sense 
+		tabQueries.setText("Export"); // Changed that from 'Queries' to 'Export' cause seems to make more sense
 		tabQueries.setContent(queryMod); // to from a user perspective
-		
+
 		Tab tabAbout = new Tab();
 		tabAbout.setText("About");
 		tabAbout.setContent(about);
-		
-		
-		tabPane.getTabs().addAll(tabProjet,tabRun,tabCC,tabQueries,tabAbout);
+
+		tabPane.getTabs().addAll(tabProjet, tabRun, tabCC, tabQueries, tabAbout);
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+
+	}
+	@Override
+	public void start(Stage stage) throws Exception {
+				
+		//Application icon
+		stage.getIcons().add(new Image(FIRST.class.getResourceAsStream("/res/raccoon.png")));
 		
+		// Creating main scene
 		
 		Scene scene = new Scene(mainAnchor, 1440, 900);
 
@@ -280,9 +266,8 @@ public class FIRST  extends Application {
 		
 		scene.getStylesheets().clear();
 		scene.getStylesheets().add(css);
-		
+
 		stage.show();
-		opening.close();
 		
 		stage.setOnCloseRequest(e -> {
 			manager.disconnect();
@@ -290,6 +275,11 @@ public class FIRST  extends Application {
 		});
 		
 	}
+	/**
+	 * Fetch an icon image from resources and applies graphic to a new button
+	 * @param iconName name of file
+	 * @return new button with graphic
+	 */
     private Button createButton(String iconName) {
         Button button = new Button();
         ImageView imageView = new ImageView(new Image(getClass().getResource("/res/" + iconName).toExternalForm(),
@@ -349,11 +339,18 @@ public class FIRST  extends Application {
 		  System.setOut(new PrintStream(out, true));
 		  System.setErr(new PrintStream(out, true));
 		}
-	
+
+	/**
+	 * Main method for the program is now called from the Main class so that the preloader
+	 * can be called.
+	 * @param args none
+	 */
+	@Deprecated
 	public static void main(String[] args) {
 		
 		if (getVersion() >= 1.8) {
 			launch(args);
+			//LauncherImpl.launchApplication(FIRST.class, Splash.class, args);
 		} else {
 			JOptionPane.showMessageDialog(null, "FIRST can't run because your version of Java is outdated. "
 					+ "Please contact your Service Desk in order to have Java 1.8 or higher installed on your"
@@ -367,6 +364,16 @@ public class FIRST  extends Application {
 	public static Double getVersion() {
 		Double version = Double.parseDouble(System.getProperty("java.specification.version"));
 		return version;
+	}
+	public void initConsole() {
+		
+		//Redirect system.out and system.err to a window 'console'
+		 redirectSystemStreams();
+		console = new Stage();
+		TextArea cout = new TextArea();
+		console.setScene(new Scene(cout));
+		console.initStyle(StageStyle.UTILITY);
+		console.show();
 	}
 	
 }
