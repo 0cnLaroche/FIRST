@@ -63,7 +63,12 @@ public class FIRST  extends Application {
 			manager.load();
 			manager.getRefreshService().start();
 		} catch (controler.DatabaseCommunicationsException e) {
+			
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "FIRST can't connect to its database... Contact NC-ART-GD@hrsdc-rhdcc.gc.ca \n"
+					+ "for support");
 			this.stop();
+			System.exit(1);
 		}
 
 		// Modules
