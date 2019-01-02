@@ -196,6 +196,8 @@ public class FormNetwork extends GridPane {
 					
 					if (me.nw != null ) {
 						
+						double scrollPos = main.getProjectModule().getScrollPosition();
+						
 						model.Network nw = new Network();
 						nw.setId(tfNetwork.getText());
 						nw.setNameEN(tfDescEN.getText());
@@ -239,6 +241,7 @@ public class FormNetwork extends GridPane {
 									main.getManager().getProject(wbs.getProject().getId()));
 							main.getProjectModule().clear();
 							main.getProjectModule().load();
+							main.getProjectModule().setScrollPosition(scrollPos);
 						} catch (SQLException e1) {
 							main.notify("Update of Network " + nw.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
