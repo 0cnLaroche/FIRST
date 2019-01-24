@@ -7,14 +7,19 @@ import java.time.LocalDate;
  */
 public abstract class FinancialCode {
 	
-	private String id, nameEN, nameFR;
-	LocalDate effectiveDate, closingDate;
+	private String id, nameEN, nameFR, definition;
+	private LocalDate effectiveDate, closingDate;
 	private String status;
 	public static final String UNRELEASED = "Unreleased";
 	public static final String ACTIVE = "Active";
 	public static final String CLOSED = "Closed";
 	
-	
+	public String getDefinition() {
+		return definition;
+	}
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
 	public String getStatus() {
 		return status;
 	}

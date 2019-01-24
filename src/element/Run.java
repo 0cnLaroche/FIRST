@@ -1,6 +1,7 @@
 package element;
 
 import first.FIRST;
+import form.FormRun;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -12,7 +13,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import module.RUNModule;
-import view.FormRun;
 
 public class Run extends HBox {
 	// Should change this into an anchorPane

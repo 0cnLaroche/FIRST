@@ -1,4 +1,4 @@
-package view;
+package form;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

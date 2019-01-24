@@ -1,4 +1,4 @@
-package view;
+package form;
 
 import first.FIRST;
 import javafx.event.ActionEvent;

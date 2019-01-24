@@ -1,6 +1,7 @@
 package element;
 
 import first.FIRST;
+import form.FormNetwork;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,7 +16,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.FinancialCode;
-import view.FormNetwork;
 
 public class Network extends Sprite {
 	
