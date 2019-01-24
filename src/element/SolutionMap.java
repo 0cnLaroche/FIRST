@@ -167,7 +167,7 @@ public class SolutionMap extends Group {
 
 				try {
 					DataLayer.deleteCsdMapping(a);
-					main.notify("Deleted mapping for CSD ID# " + a.solutionId);
+					main.notifyUser("Deleted mapping for CSD ID# " + a.solutionId);
 				} catch (SQLException e) {
 					System.err.println(e.getMessage());
 				}

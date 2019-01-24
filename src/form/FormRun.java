@@ -1,4 +1,4 @@
-package view;
+package form;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -144,9 +144,9 @@ public class FormRun extends GridPane {
 						
 						try {
 							main.getManager().updateRun(run);
-							main.notify("Update of IO " + run.getId() + ": SUCCESS");
+							main.notifyUser("Update of IO " + run.getId() + ": SUCCESS");
 						} catch (SQLException e1) {
-							main.notify("Update of IO " + run.getId() + ": FAILED");
+							main.notifyUser("Update of IO " + run.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
 						}
 						
@@ -154,7 +154,7 @@ public class FormRun extends GridPane {
 							try {
 								map.setRun(run);
 								map.save();
-								main.notify("Update of CSD mapping " + run.getId() + ": SUCCESS");
+								main.notifyUser("Update of CSD mapping " + run.getId() + ": SUCCESS");
 							} catch (SQLException e1) {
 								System.err.println(e1.getMessage());
 							}
@@ -198,17 +198,17 @@ public class FormRun extends GridPane {
 
 				try {
 					main.getManager().insertRun(run);
-					main.notify("Creation of IO " + run.getId() + ": SUCCESS");
+					main.notifyUser("Creation of IO " + run.getId() + ": SUCCESS");
 				} catch (SQLException e) {
-					main.notify("Creation of IO " + run.getId() + ": FAILED");
+					main.notifyUser("Creation of IO " + run.getId() + ": FAILED");
 					System.err.println(e.getMessage());
 				}
 
 				try {
 					map.save();
-					main.notify("Mapping of " + run.getId() + " to CSD successfully added");
+					main.notifyUser("Mapping of " + run.getId() + " to CSD successfully added");
 				} catch (SQLException e) {
-					main.notify("Mapping of " + run.getId() + " to CSD FAILED");
+					main.notifyUser("Mapping of " + run.getId() + " to CSD FAILED");
 					System.err.println(e.getMessage());
 				}
 			}

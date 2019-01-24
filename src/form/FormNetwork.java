@@ -1,4 +1,4 @@
-package view;
+package form;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -80,7 +80,7 @@ public class FormNetwork extends GridPane {
 		this.add(tfApprover, 1, 5);
 		
 		this.add(new Label("Status"),0,6);
-		cbStatus = new ChoiceBox<String>(); // TODO: Replace with a dropdown list
+		cbStatus = new ChoiceBox<String>();
 		cbStatus.setItems(FXCollections.observableArrayList(Network.getStatusList()));
 		this.add(cbStatus, 1, 6);
 		
@@ -125,7 +125,7 @@ public class FormNetwork extends GridPane {
 						wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
 					} catch (NotFoundException e1) {
 
-						main.notify("Didn't find the Cost Center");
+						main.notifyUser("Didn't find the Cost Center");
 					}
 					
 					nw.setWbs(wbs);
@@ -135,21 +135,21 @@ public class FormNetwork extends GridPane {
 										
 					try {
 						DataLayer.insertWbs(wbs);
-						main.notify("Creation of WBS " + wbs.getId() + ": SUCCESS");
+						main.notifyUser("Creation of WBS " + wbs.getId() + ": SUCCESS");
 						double scrollPos = main.getProjectModule().getScrollPosition();
 						main.getProjectModule().setProject(project);
 						main.getProjectModule().clear();
 						main.getProjectModule().load();
 						main.getProjectModule().setScrollPosition(scrollPos);
 					} catch (SQLException e1) {
-						main.notify("Creation of WBS " + wbs.getId() + ": FAILED");
+						main.notifyUser("Creation of WBS " + wbs.getId() + ": FAILED");
 						e1.getSQLState();
 					} 
 					try {
 						DataLayer.insertNetwork(nw);
-						main.notify("Creation of Network " + nw.getId() + ": SUCCESS");
+						main.notifyUser("Creation of Network " + nw.getId() + ": SUCCESS");
 					} catch (SQLException e1) {
-						main.notify("Creation of Network " + nw.getId() + ": FAILED");
+						main.notifyUser("Creation of Network " + nw.getId() + ": FAILED");
 						e1.getSQLState();
 					}
 
@@ -221,7 +221,7 @@ public class FormNetwork extends GridPane {
 							wbs.setCostcenter(DataLayer.getCostCenter(tfCostCenter.getText()));
 						} catch (NotFoundException e1) {
 
-							main.notify("Didn't find the Cost Center");
+							main.notifyUser("Didn't find the Cost Center");
 						}
 						
 						nw.setWbs(wbs);
@@ -236,17 +236,17 @@ public class FormNetwork extends GridPane {
 						
 						try {
 							main.getManager().updateNetwork(nw);
-							main.notify("Update of Network " + nw.getId() + ": SUCCESS");
+							main.notifyUser("Update of Network " + nw.getId() + ": SUCCESS");
 							main.getProjectModule().setProject(
 									main.getManager().getProject(wbs.getProject().getId()));
 							main.getProjectModule().clear();
 							main.getProjectModule().load();
 							main.getProjectModule().setScrollPosition(scrollPos);
 						} catch (SQLException e1) {
-							main.notify("Update of Network " + nw.getId() + ": FAILED");
+							main.notifyUser("Update of Network " + nw.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
 						} catch (NotFoundException e1) {
-							// TODO Auto-generated catch block
+
 							e1.printStackTrace();
 						}
 

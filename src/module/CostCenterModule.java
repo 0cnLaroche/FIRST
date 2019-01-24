@@ -12,6 +12,7 @@ import controler.DataLayer;
 import controler.NotFoundException;
 import controler.TableTransferable;
 import first.FIRST;
+import form.FormCostCenter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -32,7 +33,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import model.*;
-import view.FormCostCenter;
 
 public class CostCenterModule extends BorderPane {
 
@@ -142,7 +142,7 @@ public class CostCenterModule extends BorderPane {
                 System.out.println("You lose :(");
             }
         });
-		main.notify("Copied Cost Center to Clipboard");
+		main.notifyUser("Copied Cost Center to Clipboard");
 	}
 
 	private void highlightCostCenter(TreeItem<CostCenter> root) {

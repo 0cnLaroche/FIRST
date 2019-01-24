@@ -68,7 +68,7 @@ public class Admin {
 
 		}
 		adminUsr = false;
-		main.notify("Administrator loging out");
+		main.notifyUser("Administrator loging out");
 	}
 	/**Creates a dialog for the user to login. Check if the credentials match an administrator username and password
 	 * in the database. Informs the user if login is successful or not.
@@ -128,7 +128,7 @@ public class Admin {
 			
 			if (this.login(usernamePassword.getKey(), usernamePassword.getValue())) {
 				
-				main.notify("Administrator access granted!");
+				main.notifyUser("Administrator access granted!");
 				
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Login Confirmation");
@@ -138,7 +138,7 @@ public class Admin {
 				
 			} else {
 				
-				main.notify("Login failed");
+				main.notifyUser("Login failed");
 				
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Login failed");

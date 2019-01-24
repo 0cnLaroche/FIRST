@@ -413,7 +413,7 @@ public class RUNModule extends BorderPane {
                 System.out.println("You lose :(");
             }
         });
-		main.notify("Copied RUN to Clipboard");
+		main.notifyUser("Copied RUN to Clipboard");
 		                                                                  
 	
 	}

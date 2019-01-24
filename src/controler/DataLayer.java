@@ -40,6 +40,9 @@ public class DataLayer {
 	private static HashMap<String, Wbs> wbs;
 	private static HashMap<String, Network> networks;
 	private static HashMap<String, CostCenter> costcenters;
+	private HashMap<String, Fund> funds;
+	private HashMap<String, FunctionalArea> fas;
+	private HashMap<String, GL> gls;
 	private HashMap<Integer,Solution> solutions;
 	
 	Thread refreshService;
@@ -54,31 +57,9 @@ public class DataLayer {
 		networks = new HashMap<String, Network>();
 		projects = new HashMap<String, Project>();
 		costcenters = new HashMap<String, CostCenter>();
-		
-		refreshService = new Thread(() -> {
-			//try {
-				while(true) {
-					try {
-					Thread.sleep(100000);
-					loadCostCenters();
-					loadRuns();
-					mapCSD(getCSDMapping(),runs);
-					loadProjects();
-					//System.out.println("Refreshed");
-
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-
-					
-				}
-
-			
-			
-		});
-
-
+		funds = new HashMap<String, Fund>();
+		fas = new HashMap<String, FunctionalArea>();
+		gls = new HashMap<String, GL>();
 		
 	}
 	public void load() {
@@ -87,6 +68,47 @@ public class DataLayer {
 		loadRuns();
 		mapCSD(getCSDMapping(),runs);
 		loadProjects();
+		loadFunds();
+		
+		// Mocking Funds
+		
+		for (int i = 0; i < 10; i++) {
+			Fund fund = new Fund();
+			fund.setId("B00" + i );
+			fund.setNameEN("Fund test with long name all over" + i);
+			fund.setDefinition("Returns the 1-based position where an object is on this stack. "
+					+ "If the object o occurs as an item in this stack, this method returns the "
+					+ "distance from the top of the stack of the occurrence nearest the top of "
+					+ "the stack; the topmost item on the stack is considered to be at distance 1. "
+					+ "The equals method is used to compare o to the items in this stack.");
+			funds.put(fund.getId(), fund);
+		}
+		
+		// Mocking FAs
+		for (int i = 0; i < 10; i++) {
+			FunctionalArea fa = new FunctionalArea();
+			fa.setId("0140-000" + i );
+			fa.setNameEN("Fund test with long name all over" + i);
+			fa.setDefinition("Returns the 1-based position where an object is on this stack. "
+					+ "If the object o occurs as an item in this stack, this method returns the "
+					+ "distance from the top of the stack of the occurrence nearest the top of "
+					+ "the stack; the topmost item on the stack is considered to be at distance 1. "
+					+ "The equals method is used to compare o to the items in this stack.");
+			fas.put(fa.getId(), fa);
+		}
+		// Mocking GLs
+		for (int i = 0; i < 10; i++) {
+			GL gl = new GL();
+			gl.setId("1111" + i );
+			gl.setNameEN("Fund test with long name all over" + i);
+			gl.setDefinition("Returns the 1-based position where an object is on this stack. "
+					+ "If the object o occurs as an item in this stack, this method returns the "
+					+ "distance from the top of the stack of the occurrence nearest the top of "
+					+ "the stack; the topmost item on the stack is considered to be at distance 1. "
+					+ "The equals method is used to compare o to the items in this stack.");
+			gls.put(gl.getId(), gl);
+		}
+		
 		
 	}
 	public Thread getRefreshService() {
@@ -582,6 +604,61 @@ public class DataLayer {
 		return list;
 		
 	}
+	public HashMap<String, Fund> getFunds() {
+		return funds;
+	}
+	public Fund[] getFundArray() {
+		Fund[] list = new Fund[funds.size()];
+		int i = 0;
+		for (String key : funds.keySet()) {
+			list[i++] = funds.get(key);
+		}
+		return list;
+		
+	}
+	public void setFunds(HashMap<String, Fund> funds) {
+		this.funds = funds;
+	}
+	public Fund getFund(String id) {
+		return this.funds.get(id);
+	}
+	
+	public HashMap<String, FunctionalArea> getFunctionalAreas() {
+		return fas;
+	}
+	public void setFunctionalAreas(HashMap<String, FunctionalArea> fas) {
+		this.fas = fas;
+	}
+	public FunctionalArea getFunctionalArea(String id) {
+		return this.fas.get(id);
+	}
+	public FunctionalArea[] getFunctionalAreaArray() {
+		FunctionalArea[] list = new FunctionalArea[fas.size()];
+		int i = 0;
+		for (String key : fas.keySet()) {
+			list[i++] = fas.get(key);
+		}
+		return list;
+		
+	}
+	public HashMap<String, GL> getGLs() {
+		return gls;
+	}
+	public void setGLs(HashMap<String, GL> gls) {
+		this.gls = gls;
+	}
+	public GL getGL(String id) {
+		return gls.get(id);
+	}
+	public GL[] getGLArray() {
+		GL[] list = new GL[gls.size()];
+		int i = 0;
+		for (String key : gls.keySet()) {
+			list[i++] = gls.get(key);
+		}
+		return list;
+		
+	}
 	public ArrayList<Allocation> getCSDMapping() {
 		
 		ArrayList<Allocation> map = new ArrayList<Allocation>();
@@ -838,6 +915,35 @@ public class DataLayer {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void loadFunds() {
+		
+		funds.clear();
+		
+		try (Statement stmt = con.createStatement()) {
+			String query = "SELECT ID, Name, NameFR, Definition, DefinitionFR, FundGroup0, FundGroup1, FundGroup2, FundGroup3, FundGroup4, FundGroup5 FROM Fund "
+					+ "ORDER BY FundGroup0, FundGroup1, FundGroup2, FundGroup3, FundGroup4, FundGroup5, ID;";
+			
+			ResultSet rs = stmt.executeQuery(query);
+			
+			while (rs.next()) {
+				
+				Fund fund = new Fund();
+				fund.setId(rs.getString(1));
+				fund.setNameEN(rs.getString(2));
+				fund.setNameFR(rs.getString(3));
+				fund.setDefinition(rs.getString(4));
+				//TODO : import groups
+				funds.put(fund.getId(), fund);
+			}
+			
+			rs.close();
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		} 
 	}
 
 	private synchronized void loadRuns() {
@@ -1219,14 +1325,20 @@ public class DataLayer {
 		}
 	}
 	public boolean isConnected() {
+
 		try {
-			con.isValid(1);
+			if(con.isValid(1)) {
 				return true;
+			} else {
+				return false;
+			}
+
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return false;
 		}
-		return false;
+
 	}
 
 }

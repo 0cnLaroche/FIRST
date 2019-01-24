@@ -1,4 +1,4 @@
-package view;
+package form;
 
 import java.sql.SQLException;
 
@@ -138,12 +138,12 @@ public class FormProject extends GridPane {
  
 						try {
 							main.getManager().updateProject(project);
-							main.notify("Update of Project " + project.getId() + ": SUCCESS");
+							main.notifyUser("Update of Project " + project.getId() + ": SUCCESS");
 							main.getProjectModule().setProject(main.getManager().getProject(project.getId()));
 							main.getProjectModule().clear();
 							main.getProjectModule().load();
 						} catch (SQLException e1) {
-							main.notify("Update of Project " + project.getId() + ": FAILED");
+							main.notifyUser("Update of Project " + project.getId() + ": FAILED");
 							System.err.println(e1.getSQLState());
 						} catch (NotFoundException e1) {
 							
@@ -181,7 +181,7 @@ public class FormProject extends GridPane {
 				
 				try {
 					DataLayer.insertProject(project);
-					main.notify("Creation of Cost Center " + project.getId() + ": SUCCESS");
+					main.notifyUser("Creation of Cost Center " + project.getId() + ": SUCCESS");
 					
 					me.setProject(
 							main.getManager().getProject(project.getId()));
@@ -189,10 +189,10 @@ public class FormProject extends GridPane {
 					main.getProjectModule().clear();
 					main.getProjectModule().load();
 				} catch (SQLException e) {
-					main.notify("Creation of Project " + project.getId() + " FAILED");
+					main.notifyUser("Creation of Project " + project.getId() + " FAILED");
 					System.err.println(e.getSQLState());
 				} catch (NotFoundException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 				}
 

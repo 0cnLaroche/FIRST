@@ -237,7 +237,7 @@ public class ProjectModule extends BorderPane {
                 System.out.println("You lose :(");
             }
         });
-		main.notify("Copied Project to Clipboard");
+		main.notifyUser("Copied Project to Clipboard");
 	}
 	public double getScrollPosition() {
 		return sp.getVvalue();

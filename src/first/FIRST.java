@@ -1,6 +1,7 @@
 package first;
 
 import javafx.application.*;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -18,10 +19,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import module.CostCenterModule;
+import module.FAModule;
+import module.FundModule;
+import module.GLModule;
 import module.ProjectModule;
 import module.QueryModule;
 import module.RUNModule;
-import view.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +34,7 @@ import javax.swing.JOptionPane;
 
 import controler.*;
 import element.Notification;
+import form.*;
 
 public class FIRST  extends Application {
 	
@@ -46,6 +50,10 @@ public class FIRST  extends Application {
 	private About about;
 	public FIRST me = this;
 	private DataLayer manager;
+	private FundModule fundMod;
+	private FAModule faMod;
+	private GLModule glMod;
+	private RefreshService refreshService;
 	
 	/**
 	 * Loads all objects before start()
@@ -61,7 +69,7 @@ public class FIRST  extends Application {
 			manager = new DataLayer();
 			manager.connect();
 			manager.load();
-			manager.getRefreshService().start();
+			//manager.getRefreshService().start();
 		} catch (controler.DatabaseCommunicationsException e) {
 			
 			e.printStackTrace();
@@ -70,15 +78,24 @@ public class FIRST  extends Application {
 			this.stop();
 			System.exit(1);
 		}
+				
+		refreshService = new RefreshService(this);
+		refreshService.start();
 
 		// Modules
 		runMod = new RUNModule(this);
 		ccMod = new CostCenterModule(this);
 		queryMod = new QueryModule(this);
 		projectMod = new ProjectModule(this);
+		fundMod = new FundModule(this);
+		fundMod.setList(this.manager.getFundArray());
+		faMod = new FAModule(this);
+		faMod.setList(this.getManager().getFunctionalAreaArray()); 
+		glMod = new GLModule(this);
+		glMod.setList(this.manager.getGLArray()); 
 		about = new About(this);
 
-		// Notificator
+		// Notification Module
 		notbox = new VBox();
 		notificator = new Notificator(notbox);
 
@@ -240,16 +257,28 @@ public class FIRST  extends Application {
 		Tab tabCC = new Tab();
 		tabCC.setText("Cost Centers");
 		tabCC.setContent(ccMod);
+		
+		Tab tabFund = new Tab();
+		tabFund.setText("Funds");
+		tabFund.setContent(fundMod);
+		
+		Tab tabFA = new Tab();
+		tabFA.setText("Functional Area");
+		tabFA.setContent(faMod);
+		
+		Tab tabGL = new Tab();
+		tabGL.setText("GL");
+		tabGL.setContent(glMod);
 
 		Tab tabQueries = new Tab();
 		tabQueries.setText("Export"); // Changed that from 'Queries' to 'Export' cause seems to make more sense
-		tabQueries.setContent(queryMod); // to from a user perspective
+		tabQueries.setContent(queryMod); // from a user perspective
 
 		Tab tabAbout = new Tab();
 		tabAbout.setText("About");
 		tabAbout.setContent(about);
 
-		tabPane.getTabs().addAll(tabProjet, tabRun, tabCC, tabQueries, tabAbout);
+		tabPane.getTabs().addAll(tabProjet, tabRun, tabCC, tabFund, tabFA, tabGL, tabQueries, tabAbout);
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
 	}
@@ -365,7 +394,7 @@ public class FIRST  extends Application {
 		}
 
 	}
-	public void notify(String text) {
+	public void notifyUser(String text) {
 		notificator.add(new Notification(text));
 	}
 	public static Double getVersion() {

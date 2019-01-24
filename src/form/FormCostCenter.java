@@ -1,4 +1,4 @@
-package view;
+package form;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -107,7 +107,7 @@ public class FormCostCenter extends GridPane {
 						
 							main.getManager().insertCostCenter(newcc);
 							
-							main.notify("Creation of Cost Center " + newcc.getId() + ": SUCCESS");
+							main.notifyUser("Creation of Cost Center " + newcc.getId() + ": SUCCESS");
 							
 							main.getCostCenterModule().load();
 
@@ -175,7 +175,7 @@ public class FormCostCenter extends GridPane {
 							
 							main.getManager().updateCostCenter(newcc);
 							
-							main.notify("Update of Cost Center " + newcc.getId() + ": SUCCESS");
+							main.notifyUser("Update of Cost Center " + newcc.getId() + ": SUCCESS");
 							
 							main.getCostCenterModule().load();
 
@@ -185,7 +185,7 @@ public class FormCostCenter extends GridPane {
 							lbParent.setText("Invalid");
 							lbParent.setStyle("-fx-text-fill: red;");
 						} catch (SQLException e1) {
-							main.notify("Update of Cost Center " + newcc.getId() + ": FAILED");
+							main.notifyUser("Update of Cost Center " + newcc.getId() + ": FAILED");
 							System.out.println(e1.getSQLState());
 						}
 
