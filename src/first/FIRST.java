@@ -278,7 +278,9 @@ public class FIRST  extends Application {
 		tabAbout.setText("About");
 		tabAbout.setContent(about);
 
-		tabPane.getTabs().addAll(tabProjet, tabRun, tabCC, tabFund, tabFA, tabGL, tabQueries, tabAbout);
+		// tabPane.getTabs().addAll(tabProjet, tabRun, tabCC, tabFund, tabFA, tabGL, tabQueries, tabAbout);
+		// TODO: Remove once new tabs are implemented
+		tabPane.getTabs().addAll(tabProjet, tabRun, tabCC, tabQueries, tabAbout); 
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
 	}

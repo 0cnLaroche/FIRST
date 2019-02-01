@@ -22,6 +22,8 @@ import java.util.Properties;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
+//import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
 import csd.Allocation;
 import csd.Solution;
 import javafx.util.Pair;
@@ -33,7 +35,8 @@ public class DataLayer {
 	private static Connection con = null;
 	private final String user = "firstusr";
 	private final String password = "Pa$$w0rd";
-	private final String url = "jdbc:mysql://10.54.223.154:3306/costing";
+	// private final String url = "jdbc:mysql://10.54.223.154:3306/costing"; // CentOS
+	private final String url = "jdbc:mysql://10.54.219.12:3306/costing"; // RedHat
 	
 	private static HashMap<String,Run> runs;
 	private static HashMap<String, Project> projects;
@@ -69,22 +72,11 @@ public class DataLayer {
 		mapCSD(getCSDMapping(),runs);
 		loadProjects();
 		loadFunds();
+		loadFAs();
+		loadGLs();
 		
-		// Mocking Funds
-		
-		for (int i = 0; i < 10; i++) {
-			Fund fund = new Fund();
-			fund.setId("B00" + i );
-			fund.setNameEN("Fund test with long name all over" + i);
-			fund.setDefinition("Returns the 1-based position where an object is on this stack. "
-					+ "If the object o occurs as an item in this stack, this method returns the "
-					+ "distance from the top of the stack of the occurrence nearest the top of "
-					+ "the stack; the topmost item on the stack is considered to be at distance 1. "
-					+ "The equals method is used to compare o to the items in this stack.");
-			funds.put(fund.getId(), fund);
-		}
-		
-		// Mocking FAs
+		// Mocking FAs 
+		/*
 		for (int i = 0; i < 10; i++) {
 			FunctionalArea fa = new FunctionalArea();
 			fa.setId("0140-000" + i );
@@ -95,8 +87,9 @@ public class DataLayer {
 					+ "the stack; the topmost item on the stack is considered to be at distance 1. "
 					+ "The equals method is used to compare o to the items in this stack.");
 			fas.put(fa.getId(), fa);
-		}
+		}*/
 		// Mocking GLs
+		/*
 		for (int i = 0; i < 10; i++) {
 			GL gl = new GL();
 			gl.setId("1111" + i );
@@ -107,7 +100,7 @@ public class DataLayer {
 					+ "the stack; the topmost item on the stack is considered to be at distance 1. "
 					+ "The equals method is used to compare o to the items in this stack.");
 			gls.put(gl.getId(), gl);
-		}
+		}*/
 		
 		
 	}
@@ -945,6 +938,65 @@ public class DataLayer {
 			e.printStackTrace();
 		} 
 	}
+	
+	private void loadGLs() {
+		
+		gls.clear();
+		
+		try (Statement stmt = con.createStatement()) {
+			String query = "SELECT ID, Name, NameFR, Definition, DefinitionFR, GLLevel1, "
+					+ "GLLevel2, GLLevel3, GLLevel4 FROM GL ORDER BY ID ASC;";
+			
+			ResultSet rs = stmt.executeQuery(query);
+			
+			while (rs.next()) {
+				
+				GL gl = new GL();
+				gl.setId(rs.getString(1));
+				gl.setNameEN(rs.getString(2));
+				gl.setNameFR(rs.getString(3));
+				gl.setDefinition(rs.getString(4));
+				//TODO : import groups
+				gls.put(gl.getId(), gl);
+			}
+			
+			rs.close();
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		} 
+	}
+	
+	private void loadFAs() {
+		
+		fas.clear();
+		
+		try (Statement stmt = con.createStatement()) {
+			String query = "SELECT ID, Name, NameFR, Definition, DefinitionFR, "
+					+ "PAALevel1, PAALevel2, PAALevel3, PAALevel4 FROM FunctionalArea ORDER BY ID ASC;";
+			
+			ResultSet rs = stmt.executeQuery(query);
+			
+			while (rs.next()) {
+				
+				FunctionalArea fa = new FunctionalArea();
+				fa.setId(rs.getString(1));
+				fa.setNameEN(rs.getString(2));
+				fa.setNameFR(rs.getString(3));
+				fa.setDefinition(rs.getString(4));
+				//TODO : import groups
+				fas.put(fa.getId(), fa);
+			}
+			
+			rs.close();
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		} 
+	}
+	
 
 	private synchronized void loadRuns() {
 		

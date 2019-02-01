@@ -40,14 +40,12 @@ public class Admin {
 		try {
 			if (compareHash(pwrd,hash)) {
 				adminUsr = true;
-				// TODO : Connect as firstadmin
+				// TODO : Hide password in code (use hashed variable as argument)
 				main.getManager().disconnect();
 				main.getManager().connect("firstadmin", "Pa$$w0rd");
-				//main.notify("Administrator access granted to user " + user );
 				System.out.println(user + " : Administrator access granted");
 			} else {
 				adminUsr = false;
-				//main.notify("Administrator login failed for user " + user );
 				System.out.println(user + " : Administrator login failed");
 			}
 		} catch (Exception e) {

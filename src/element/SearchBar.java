@@ -1,8 +1,5 @@
 package element;
 
-import java.util.function.Function;
-
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,13 +8,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.TextAlignment;
+
 
 public class SearchBar extends GridPane {
 	
 	Button btn;
 	TextField tfKeyword;
-	EventHandler action;
 	
 	public SearchBar() {
 		
@@ -63,10 +59,5 @@ public class SearchBar extends GridPane {
 	public String getKeyword() {
 		return tfKeyword.getText();
 	}
-	
-	
-	
-	
-
 
 }

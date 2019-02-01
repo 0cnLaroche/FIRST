@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 
 public class GL extends Pane {
 	
@@ -24,26 +25,33 @@ public class GL extends Pane {
 		this.id = new Label(gl.getId());
 		this.name = new Label(gl.getNameEN());
 		
+		definition.setMaxWidth(800);
+		definition.setTextAlignment(TextAlignment.JUSTIFY);
+		definition.setWrapText(true);
+		
 		details.setSpacing(15.0);
 		details.getChildren().addAll(id, name);
 		
-		details.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+		if (gl.getDefinition().length() > 0) {
 
-			@Override
-			public void handle(MouseEvent e) {
-				vb.getChildren().add(definition);
-			}
-			
-		});
-		
-		details.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+			details.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 
-			@Override
-			public void handle(MouseEvent e) {
-				vb.getChildren().remove(definition);
-			}
-			
-		});
+				@Override
+				public void handle(MouseEvent e) {
+					vb.getChildren().add(definition);
+				}
+
+			});
+
+			details.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent e) {
+					vb.getChildren().remove(definition);
+				}
+
+			});
+		}
 		
 		vb.setStyle(style);
 		vb.setSpacing(15.0);
